@@ -44,4 +44,4 @@ public class ConsultaService(IConsultaNFeService service, PedidoConsultaNFeFacto
 - [Registro de serviços](registro-de-servicos.md)
 - [Resiliência e retry](resiliencia.md)
 - [Diagnóstico e tracing](diagnostico.md)
-- [Referência de API](../api/index.md)
+- [Referência de API](../api/index.html)
