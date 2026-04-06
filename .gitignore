@@ -409,5 +409,6 @@ ASALocalRun/
 .localhistory/
 
 # DocFX — gerados em tempo de build, não versionados
-api/
+api/*.yml
+api/.manifest
 _site/
