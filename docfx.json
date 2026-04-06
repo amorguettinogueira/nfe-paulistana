@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["src/Nfe.Paulistana.csproj"],
+          "exclude": ["**/obj/**", "**/bin/**"]
+        }
+      ],
+      "dest": "api",
+      "properties": {
+        "TargetFramework": "net10.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["api/**.yml", "api/index.md"]
+      },
+      {
+        "files": ["docs/**.{md,yml}", "toc.yml", "index.md"]
+      }
+    ],
+    "resource": [
+      {
+        "files": ["Nfe.Paulistana.png"]
+      }
+    ],
+    "output": "_site",
+    "template": ["default", "modern"],
+    "globalMetadata": {
+      "_appName": "Nfe.Paulistana",
+      "_appTitle": "Nfe.Paulistana — SDK NFS-e Paulistana",
+      "_appIconPath": "Nfe.Paulistana.png",
+      "_enableSearch": true,
+      "_appFooter": "© 2025 Adriano Morguetti Nogueira — MIT License",
+      "_gitContribute": {
+        "repo": "https://github.com/amorguettinogueira/nfe-paulistana",
+        "branch": "main",
+        "path": "docs"
+      }
+    }
+  }
+}
