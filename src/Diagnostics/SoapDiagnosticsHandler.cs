@@ -1,5 +1,6 @@
 using Nfe.Paulistana.Extensions;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Nfe.Paulistana.Diagnostics;
@@ -45,6 +46,8 @@ public sealed class SoapDiagnosticsHandler(Action<SoapExchange> onExchange) : De
     /// <param name="request">Mensagem HTTP da requisição SOAP.</param>
     /// <param name="cancellationToken">Token de cancelamento propagado ao handler interno.</param>
     /// <returns>A <see cref="HttpResponseMessage"/> recebida do handler interno, com conteúdo re-embalado.</returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "As exceções lançadas pelo callback de diagnóstico são descartadas intencionalmente.")]
+    [SuppressMessage("Roslynator", "RCS1075:Avoid empty catch clause that catches System.Exception", Justification = "As exceções lançadas pelo callback de diagnóstico são descartadas intencionalmente.")]
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)

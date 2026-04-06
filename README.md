@@ -1,11 +1,11 @@
 # Nfe.Paulistana
 
 [![Build](https://img.shields.io/github/actions/workflow/status/amorguettinogueira/nfe-paulistana/ci.yml?branch=main&label=build)](https://github.com/amorguettinogueira/nfe-paulistana/actions)
-[![Coverage](https://codecov.io/gh/amorguettinogueira/nfe-paulistana/graph/badge.svg)](https://codecov.io/gh/amorguettinogueira/nfe-paulistana)
+[![Coverage](https://codecov.io/github/amorguettinogueira/nfe-paulistana/graph/badge.svg?token=RZY4IPJ49W)](https://codecov.io/github/amorguettinogueira/nfe-paulistana)
 [![NuGet](https://img.shields.io/nuget/v/Nfe.Paulistana?label=nuget)](https://www.nuget.org/packages/Nfe.Paulistana)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Nfe.Paulistana)](https://www.nuget.org/packages/Nfe.Paulistana)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET](https://img.shields.io/badge/.NET-8_%7C_9_%7C_10-512BD4)](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 Biblioteca .NET para integração com o webservice SOAP da **Nota Fiscal de Serviços Eletrônica Paulistana (NFS-e)** da Prefeitura de São Paulo.
 
