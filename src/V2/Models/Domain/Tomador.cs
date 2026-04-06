@@ -8,9 +8,9 @@ namespace Nfe.Paulistana.V2.Models.Domain;
 /// </summary>
 /// <remarks>
 /// Fonte: <c>TiposNFe_v01.xsd</c>.
-/// Construa instâncias via <see cref="Nfe.Paulistana.Builders.TomadorBuilder"/>.
+/// Construa instâncias via <see cref="Builders.TomadorBuilder"/>.
 /// </remarks>
-/// <param name="cpfOrCnpjTomador">CPF ou CNPJ do tomador, ou <c>null</c> quando identificado apenas pela Razão Social.</param>
+/// <param name="cpfOrCnpjTomador">CPF, CNPJ ou NIF do tomador, ou <c>null</c> quando identificado apenas pela Razão Social.</param>
 /// <param name="razaoSocialTomador">Razão Social do tomador.</param>
 /// <param name="inscricaoMunicipalTomador">Inscrição Municipal do tomador, ou <c>null</c>.</param>
 /// <param name="inscricaoEstadualTomador">Inscrição Estadual do tomador, ou <c>null</c>.</param>
@@ -23,7 +23,7 @@ public sealed class Tomador(CpfOrCnpjOrNif? cpfOrCnpjTomador,
                             Email? emailTomador,
                             Endereco? enderecoTomador)
 {
-    /// <summary>CPF ou CNPJ do tomador.</summary>
+    /// <summary>CPF, CNPJ ou NIF do tomador.</summary>
     public CpfOrCnpjOrNif? CpfOrCnpjTomador { get; set; } = cpfOrCnpjTomador;
 
     /// <summary>Razão Social do tomador de serviços.</summary>

@@ -5,7 +5,7 @@ using Nfe.Paulistana.V1.Models.Domain;
 namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
-/// Último passo da cadeia de construção do <see cref="Nfe.Paulistana.Models.Domain.Rps"/>.
+/// Último passo da cadeia de construção do <see cref="Rps"/>.
 /// Exposto após <see cref="IRpsSetIss.SetIss"/> e permite o preenchimento de todos os
 /// campos opcionais antes da chamada final de <see cref="Build"/>.
 /// </summary>
@@ -45,7 +45,7 @@ public interface IRpsSetOptionals
     IRpsSetOptionals SetEncapsulamento(Numero numeroEncapsulamento);
 
     /// <summary>
-    /// Substitui a Inscrição Municipal do prestador informada em <see cref="Nfe.Paulistana.Builders.RpsBuilder.New"/>.
+    /// Substitui a Inscrição Municipal do prestador informada em <see cref="RpsBuilder.New"/>.
     /// </summary>
     /// <param name="inscricaoMunicipal">Nova Inscrição Municipal.</param>
     /// <returns>Esta mesma instância para encadeamento.</returns>

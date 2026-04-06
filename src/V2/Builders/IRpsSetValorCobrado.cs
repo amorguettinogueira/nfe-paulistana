@@ -4,9 +4,9 @@ using Nfe.Paulistana.V2.Models.Domain;
 namespace Nfe.Paulistana.V2.Builders;
 
 /// <summary>
-/// Quarto e último passo obrigatório da cadeia de construção do <see cref="Rps"/>.
-/// Exposto após <see cref="IRpsSetIss.SetIss"/> e requer a chamada de <see cref="SetIbsCbs"/>
-/// antes de avançar para <see cref="IRpsSetOptionals"/>, que expõe campos opcionais e <see cref="IRpsSetOptionals.Build"/>.
+/// Quinto passo obrigatório da cadeia de construção do <see cref="Rps"/>.
+/// Exposto após <see cref="IRpsSetIbsCbs.SetIbsCbs"/> e requer a chamada de <see cref="SetValorInicialCobrado"/>
+/// ou <see cref="SetValorFinalCobrado"/> antes de avançar para <see cref="IRpsSetLocalPrestacao"/>.
 /// </summary>
 public interface IRpsSetValorCobrado
 {

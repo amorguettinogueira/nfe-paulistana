@@ -11,12 +11,12 @@ namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
 /// <para>
-/// Fábrica para construir objetos PedidoEnvioLote com geração automática de assinatura digital para envios em lote.
+/// Fábrica para construir objetos <see cref="PedidoEnvioLote"/> com geração automática de assinatura digital para envios em lote.
 /// </para>
 /// <para>
-/// Esta fábrica fornece uma API simples one-shot para criar objetos PedidoEnvioLote totalmente assinados contendo
-/// múltiplas submissões de RPS. Ela gerencia certificados, geração automática de cabeçalho de lote (com totalizações
-/// e contagem de RPS), assinatura individual de RPS e assinatura de nível de lote automaticamente, garantindo que objetos
+/// Esta fábrica fornece uma API simples one-shot para criar objetos <see cref="PedidoEnvioLote"/> totalmente assinados contendo
+/// múltiplas submissões de <see cref="Rps"/>. Ela gerencia certificados, geração automática de cabeçalho de lote (com totalizações
+/// e contagem de RPS), assinatura individual de <see cref="Rps"/> e assinatura de nível de lote automaticamente, garantindo que objetos
 /// retornados estejam sempre corretamente assinados e prontos para envio à prefeitura de São Paulo.
 /// </para>
 /// </summary>
@@ -38,7 +38,7 @@ namespace Nfe.Paulistana.V1.Builders;
 /// - Assina o lote completo
 /// </item>
 /// <item>
-/// <strong>Gerenciamento de Certificado:</strong> Recebe CertificadoNfePaulistana via dependency injection
+/// <strong>Gerenciamento de Certificado:</strong> Recebe <see cref="Certificado"/> via dependency injection
 /// (construtor primário). Um único certificado é construído uma vez por chamada da fábrica e usado para assinar todos
 /// os RPS e o lote. Certificados são apropriadamente descartados usando padrão "using".
 /// </item>
@@ -118,9 +118,9 @@ public sealed class PedidoEnvioLoteFactory(Certificado certificate)
     private readonly XmlFileSignatureGenerator<PedidoEnvioLote> _pedidoSignatureGenerator = new XmlFileSignatureGenerator<PedidoEnvioLote>();
 
     /// <summary>
-    /// Cria um PedidoEnvioLote totalmente assinado a partir de um CPF contendo múltiplos RPS.
+    /// Cria um <see cref="PedidoEnvioLote"/> totalmente assinado a partir de um CPF contendo múltiplos <see cref="Rps"/>.
     /// </summary>
-    /// <param name="cpf">CPF do prestador de serviços como Value Object type-safe.</param>
+    /// <param name="cpf">CPF do prestador de serviços.</param>
     /// <param name="transacao">Indica se esta é uma submissão de transação.</param>
     /// <param name="rpsList">Coleção de objetos RPS a incluir no lote. Deve conter pelo menos um RPS.</param>
     /// <returns>
@@ -161,9 +161,9 @@ public sealed class PedidoEnvioLoteFactory(Certificado certificate)
     }
 
     /// <summary>
-    /// Cria um PedidoEnvioLote totalmente assinado a partir de um CNPJ contendo múltiplos RPS.
+    /// Cria um <see cref="PedidoEnvioLote"/> totalmente assinado a partir de um CNPJ contendo múltiplos <see cref="Rps"/>.
     /// </summary>
-    /// <param name="cnpj">CNPJ do prestador de serviços como Value Object type-safe.</param>
+    /// <param name="cnpj">CNPJ do prestador de serviços.</param>
     /// <param name="transacao">Indica se esta é uma submissão de transação.</param>
     /// <param name="rpsList">Coleção de objetos RPS a incluir no lote. Deve conter pelo menos um RPS.</param>
     /// <returns>
@@ -216,7 +216,7 @@ public sealed class PedidoEnvioLoteFactory(Certificado certificate)
     /// </para>
     /// <list type="number">
     /// <item>Valida que rpsList contém pelo menos um RPS não-nulo</item>
-    /// <item>Constrói X509Certificate2 a partir da configuração CertificadoNfePaulistana injetada</item>
+    /// <item>Constrói X509Certificate2 a partir da configuração <see cref="Certificado"/> injetada</item>
     /// <item>Itera através de todos os RPS no lote:
     ///     <list type="bullet">
     ///     <item>Incrementa contador de quantidade (QtdRps)</item>

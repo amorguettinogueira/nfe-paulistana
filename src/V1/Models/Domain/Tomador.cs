@@ -8,7 +8,7 @@ namespace Nfe.Paulistana.V1.Models.Domain;
 /// </summary>
 /// <remarks>
 /// Fonte: <c>TiposNFe_v01.xsd</c>.
-/// Construa instâncias via <see cref="Nfe.Paulistana.Builders.TomadorBuilder"/>.
+/// Construa instâncias via <see cref="Builders.TomadorBuilder"/>.
 /// </remarks>
 /// <param name="cpfOrCnpjTomador">CPF ou CNPJ do tomador, ou <c>null</c> quando identificado apenas pela Razão Social.</param>
 /// <param name="razaoSocialTomador">Razão Social do tomador.</param>

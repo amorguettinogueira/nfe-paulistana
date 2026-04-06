@@ -4,7 +4,7 @@ using Nfe.Paulistana.V1.Models.Domain;
 namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
-/// Define o contrato para construir objetos <see cref="Nfe.Paulistana.Models.Domain.Endereco"/>
+/// Define o contrato para construir objetos <see cref="Endereco"/>
 /// com padrão fluente e validação cruzada de campos.
 /// </summary>
 public interface IEnderecoBuilder
@@ -81,9 +81,9 @@ public interface IEnderecoBuilder
     IEnumerable<string> GetValidationErrors();
 
     /// <summary>
-    /// Constrói e retorna o objeto <see cref="Nfe.Paulistana.Models.Domain.Endereco"/> a partir dos campos configurados.
+    /// Constrói e retorna o objeto <see cref="Endereco"/> a partir dos campos configurados.
     /// </summary>
-    /// <returns>Uma nova instância de <see cref="Nfe.Paulistana.Models.Domain.Endereco"/> com os campos informados.</returns>
+    /// <returns>Uma nova instância de <see cref="Endereco"/> com os campos informados.</returns>
     /// <exception cref="ArgumentException">
     /// Se nenhum campo foi definido, ou se <c>logradouro</c> é nulo quando <c>tipo</c>,
     /// <c>numero</c> ou <c>complemento</c> estão definidos.

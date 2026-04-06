@@ -4,7 +4,7 @@ using Nfe.Paulistana.V1.Models.Domain;
 namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
-/// Define o contrato para construir objetos <see cref="Nfe.Paulistana.Models.Domain.Intermediario"/>
+/// Define o contrato para construir objetos <see cref="Intermediario"/>
 /// com padrão fluente.
 /// </summary>
 public interface IIntermediarioBuilder
@@ -33,9 +33,9 @@ public interface IIntermediarioBuilder
     IEnumerable<string> GetValidationErrors();
 
     /// <summary>
-    /// Constrói e retorna o objeto <see cref="Nfe.Paulistana.Models.Domain.Intermediario"/> a partir das propriedades configuradas.
+    /// Constrói e retorna o objeto <see cref=" Intermediario"/> a partir das propriedades configuradas.
     /// </summary>
-    /// <returns>Uma nova instância de <see cref="Nfe.Paulistana.Models.Domain.Intermediario"/>.</returns>
+    /// <returns>Uma nova instância de <see cref="Intermediario"/>.</returns>
     /// <exception cref="ArgumentException">Se CPF/CNPJ e Inscrição Municipal forem ambos nulos.</exception>
     Intermediario Build();
 }

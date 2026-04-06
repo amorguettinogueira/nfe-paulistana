@@ -20,7 +20,9 @@ namespace Nfe.Paulistana.Options;
 /// </remarks>
 public sealed class Certificado
 {
+#pragma warning disable IDE0032
     private string? filePath;
+#pragma warning restore IDE0032
 
     private const string InvalidConfiguration =
         "Nenhuma fonte de certificado válida configurada. Defina FilePath, RawData, PointerHandle ou Certificate.";
@@ -32,16 +34,20 @@ public sealed class Certificado
         set => filePath = !string.IsNullOrWhiteSpace(value) ? value : null;
     }
 
+#pragma warning disable IDE0032
     private ReadOnlyCollection<byte>? rawData;
+#pragma warning restore IDE0032
 
     /// <summary>Bytes brutos do certificado (.pfx / .p12) encapsulados em coleção somente leitura.</summary>
     public ReadOnlyCollection<byte>? RawData
     {
         get => rawData;
-        set => rawData = value?.Count > 0 ? value : null;
+        set => rawData = (value?.Count ?? 0) > 0 ? value : null;
     }
 
+#pragma warning disable IDE0032
     private nint? pointerHandle;
+#pragma warning restore IDE0032
 
     /// <summary>Handle nativo do certificado carregado na memória do sistema operacional.</summary>
     public nint? PointerHandle
@@ -50,14 +56,8 @@ public sealed class Certificado
         set => pointerHandle = value != (nint)0 ? value : null;
     }
 
-    private string? password;
-
     /// <summary>Senha do certificado, quando exigida pelo arquivo ou dados brutos.</summary>
-    public string? Password
-    {
-        get => password;
-        set => password = !string.IsNullOrWhiteSpace(value) ? value : null;
-    }
+    public string? Password { get; set; }
 
     /// <summary>Opções de armazenamento de chave aplicadas ao carregar o certificado via <see cref="FilePath"/> ou <see cref="RawData"/>.</summary>
     public X509KeyStorageFlags? KeyStorageFlags { get; set; }
@@ -75,8 +75,8 @@ public sealed class Certificado
         if (!string.IsNullOrEmpty(FilePath))
         {
             return KeyStorageFlags.HasValue
-                ? new X509Certificate2(FilePath, Password, KeyStorageFlags.Value)
-                : new X509Certificate2(FilePath, Password);
+                ? X509CertificateLoader.LoadPkcs12FromFile(FilePath, Password, KeyStorageFlags.Value)
+                : X509CertificateLoader.LoadPkcs12FromFile(FilePath, Password);
         }
 
         if (PointerHandle != null)
@@ -87,8 +87,8 @@ public sealed class Certificado
         if (RawData?.Count > 0)
         {
             return KeyStorageFlags.HasValue
-                 ? new X509Certificate2(RawData.ToArray(), Password, KeyStorageFlags.Value)
-                 : new X509Certificate2([.. RawData], Password);
+                 ? X509CertificateLoader.LoadPkcs12(RawData.ToArray(), Password, KeyStorageFlags.Value)
+                 : X509CertificateLoader.LoadPkcs12(RawData.ToArray(), Password);
         }
 
         if (Certificate != null)

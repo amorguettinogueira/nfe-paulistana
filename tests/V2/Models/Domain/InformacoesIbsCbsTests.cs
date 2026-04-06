@@ -92,7 +92,7 @@ public class InformacoesIbsCbsTests
         info.EnteGovernamental = TipoEnteGovernamental.Municipios;
         info.EnteGovernamentalSpecified = true;
         info.DestinatarioServicos = DestinatarioServicos.OutraPessoa;
-        info.Destinatario = new InformacoesPessoa(new Cpf(cpfNumber), new RazaoSocial("Nome"));
+        info.Destinatario = new InformacoesPessoa((Cpf)cpfNumber, new RazaoSocial("Nome"));
         info.Valores = new Valores(new TributosIbsCbs());
         var imovel = new ImovelObra(new CadastroImovel("ABCDEFGH"));
         info.ImovelObra = imovel;

@@ -30,6 +30,7 @@ namespace Nfe.Paulistana.V2.Builders;
 /// </remarks>
 /// <example>
 /// <code>
+/// // Endereço nacional
 /// var endereco = EnderecoBuilder.New()
 ///     .SetTipo((TipoLogradouro)"Av")
 ///     .SetLogradouro((Logradouro)"Paulista")
@@ -38,7 +39,11 @@ namespace Nfe.Paulistana.V2.Builders;
 ///     .SetCodigoIbge((CodigoIbge)3550308)
 ///     .SetUf((Uf)"SP")
 ///     .SetCep((Cep)1310100)
-///     .SetEnderecoExterior((CodigoPaisISO)"BR", (CodigoEndPostal)"12345", (NomeCidade)"São Paulo", (EstadoProvinciaRegiao)"SP")
+///     .Build();
+///
+/// // Endereço exterior (mutuamente exclusivo com os campos nacionais)
+/// var enderecoExt = EnderecoBuilder.New()
+///     .SetEnderecoExterior((CodigoPaisISO)"US", (CodigoEndPostal)"10001", (NomeCidade)"New York", (EstadoProvinciaRegiao)"NY")
 ///     .Build();
 /// </code>
 /// </example>
@@ -80,7 +85,6 @@ public sealed class EnderecoBuilder : IEnderecoBuilder
     /// <param name="nomeCidade">Nome da cidade pré-preenchido ou <c>null</c>.</param>
     /// <param name="estadoProvinciaRegiao">Estado, província ou região pré-preenchida ou <c>null</c>.</param>
     /// <returns>Uma nova instância de <see cref="IEnderecoBuilder"/> com os campos informados.</returns>
-    /// <exception cref="ArgumentNullException">Se forem fornecidos dados parciais para a construção de um endereço exterior <paramref name="enderecoExterior"/>.</exception>
     public static IEnderecoBuilder New(Uf? uf = null,
                                        CodigoIbge? cidade = null,
                                        Bairro? bairro = null,
@@ -229,7 +233,7 @@ public sealed class EnderecoBuilder : IEnderecoBuilder
     /// <param name="nomeCidade">Nome da cidade.</param>
     /// <param name="estadoProvinciaRegiao">Estado, província ou região.</param>
     /// <returns>Esta mesma instância para encadeamento.</returns>
-    /// <exception cref="ArgumentNullException">Se <paramref name="enderecoExterior"/> for nulo.</exception>
+    /// <exception cref="ArgumentNullException">Se <paramref name="codigoPais"/>, <paramref name="codigoEndereco"/>, <paramref name="nomeCidade"/> ou <paramref name="estadoProvinciaRegiao"/> for nulo.</exception>
     public IEnderecoBuilder SetEnderecoExterior(CodigoPaisISO codigoPais,
                                                 CodigoEndPostal codigoEndereco,
                                                 NomeCidade nomeCidade,
@@ -246,7 +250,7 @@ public sealed class EnderecoBuilder : IEnderecoBuilder
     /// <summary>
     /// Verifica se o estado atual do construtor é válido para construção, incluindo
     /// presença de ao menos um campo e ausência de violações de dependência cruzada entre campos.
-    /// Equivalente a <c>!<see cref="GetValidationErrors"/>.Any()</c>.
+    /// Equivalente a <c>!<see cref="GetValidationErrors"/>().Any()</c>.
     /// </summary>
     /// <returns><c>true</c> se não houver nenhum erro de validação; caso contrário, <c>false</c>.</returns>
     public bool IsValid() => !GetValidationErrors().Any();

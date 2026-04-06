@@ -22,7 +22,7 @@ public class TomadorBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void NewCpf_WithValidCpf_ReturnsBuilder(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var builder = TomadorBuilder.NewCpf(cpf);
         Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }

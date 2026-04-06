@@ -12,9 +12,10 @@ namespace Nfe.Paulistana.Models.DataTypes;
 /// apenas a data é armazenada. Fonte: Manual NF-e Web Service v2.8.1, seção 3.4.4.
 /// </para>
 /// <para>
-/// <see cref="FromData"/> e o operador de conversão implícita retornam
-/// <see cref="DateTime.MinValue"/> quando o valor é <c>null</c> ou vazio,
-/// pois <see cref="DateTime"/> é um tipo de valor não-anulável.
+/// Os métodos <see cref="ToDateTime"/> e <see cref="ToDateOnly"/>, assim como os
+/// operadores de conversão implícita, retornam <see cref="DateTime.MinValue"/> e
+/// <see cref="DateOnly.MinValue"/> respectivamente quando o valor é <c>null</c> ou
+/// vazio, pois são tipos de valor não-anuláveis.
 /// </para>
 /// </remarks>
 [Serializable]

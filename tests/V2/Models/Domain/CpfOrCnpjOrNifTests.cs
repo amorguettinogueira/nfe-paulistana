@@ -26,7 +26,7 @@ public sealed class CpfOrCnpjOrNifTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Constructor_WithCpf_SetsCpfAndLeavesOthersNull(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = new CpfOrCnpjOrNif(cpf);
         Assert.Equal(cpf, doc.Cpf);
         Assert.Null(doc.Cnpj);
@@ -96,7 +96,7 @@ public sealed class CpfOrCnpjOrNifTests
     [ClassData(typeof(ValidCpfNumber))]
     public void ToString_ReturnsCpfWhenSet(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = new CpfOrCnpjOrNif(cpf);
         Assert.Equal(cpf.ToString(), doc.ToString());
     }
@@ -130,7 +130,7 @@ public sealed class CpfOrCnpjOrNifTests
     [ClassData(typeof(ValidCpfNumber))]
     public void FromCpf_StaticMethod_CreatesInstanceWithCpf(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = CpfOrCnpjOrNif.FromCpf(cpf);
         Assert.Equal(cpf, doc.Cpf);
         Assert.Null(doc.Cnpj);
@@ -176,7 +176,7 @@ public sealed class CpfOrCnpjOrNifTests
     [ClassData(typeof(ValidCpfNumber))]
     public void ExplicitOperator_FromCpf_CreatesInstanceWithCpf(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = (CpfOrCnpjOrNif)cpf;
         Assert.Equal(cpf, doc.Cpf);
         Assert.Null(doc.Cnpj);

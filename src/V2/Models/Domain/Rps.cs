@@ -193,7 +193,7 @@ public sealed class Rps : ISignedElement
 
     /// <summary>
     /// Valor das deduções aplicadas sobre o serviço em R$.
-    /// Quando não informado via <see cref="Nfe.Paulistana.Builders.RpsBuilder"/>,
+    /// Quando não informado via <see cref="Builders.RpsBuilder"/>,
     /// o builder injeta <c>0</c> — valor exigido pelo XSD quando não há deduções.
     /// </summary>
     [XmlElement(Form = XmlSchemaForm.Unqualified)]

@@ -19,7 +19,7 @@ namespace Nfe.Paulistana.V1.Models.Operations;
 /// Permite consultar quais Inscrições Municipais (CCM) estão vinculadas a um
 /// determinado CNPJ e se estes CCM emitem NFS-e.
 /// Instâncias devem ser criadas via
-/// <see cref="Nfe.Paulistana.Builders.PedidoConsultaCNPJFactory"/>, que garante
+/// <see cref="Builders.PedidoConsultaCNPJFactory"/>, que garante
 /// que o pedido esteja corretamente assinado antes do envio.
 /// </para>
 /// </remarks>

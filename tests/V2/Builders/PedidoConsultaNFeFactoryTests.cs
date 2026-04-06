@@ -1,0 +1,122 @@
+using Nfe.Paulistana.Models.DataTypes;
+using Nfe.Paulistana.Options;
+using Nfe.Paulistana.V2.Builders;
+using Nfe.Paulistana.V2.Models.DataTypes;
+using Nfe.Paulistana.V2.Models.Domain;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Nfe.Paulistana.Tests.V2.Builders;
+
+/// <summary>
+/// Testes unitários para <see cref="PedidoConsultaNFeFactory"/>.
+/// </summary>
+public sealed class PedidoConsultaNFeFactoryTests
+{
+    private static Certificado CriarCertificado()
+    {
+        using var rsa = RSA.Create(2048);
+        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        return new Certificado
+        {
+            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
+        };
+    }
+
+    [Fact]
+    public void Construtor_CertificadoNulo_ThrowsArgumentNullException()
+    {
+        // Arrange & Act & Assert
+        Assert.ThrowsAny<ArgumentNullException>(() => new PedidoConsultaNFeFactory(null!));
+    }
+
+    [Fact]
+    public void Construtor_CertificadoValido_NaoLancaExcecao()
+    {
+        // Arrange & Act
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+
+        // Assert
+        Assert.NotNull(factory);
+    }
+
+    [Fact]
+    public void NewCpf_CpfNulo_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+        var detalhes = new[] { new DetalheConsultaNFe() };
+
+        // Act & Assert
+        Assert.ThrowsAny<ArgumentNullException>(() => factory.NewCpf(null!, detalhes));
+    }
+
+    [Fact]
+    public void NewCpf_DetalhesNulo_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+        var cpf = new Cpf(46381819618);
+
+        // Act & Assert
+        Assert.ThrowsAny<ArgumentNullException>(() => factory.NewCpf(cpf, null!));
+    }
+
+    [Fact]
+    public void NewCpf_ComParametrosValidos_RetornaPedidoAssinado()
+    {
+        // Arrange
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+        var cpf = new Cpf(46381819618);
+        var detalhes = new[] { new DetalheConsultaNFe() };
+
+        // Act
+        var pedido = factory.NewCpf(cpf, detalhes);
+
+        // Assert
+        Assert.NotNull(pedido);
+        Assert.NotNull(pedido.Cabecalho);
+        Assert.NotNull(pedido.Detalhe);
+        Assert.Single(pedido.Detalhe);
+    }
+
+    [Fact]
+    public void NewCnpj_CnpjNulo_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+        var detalhes = new[] { new DetalheConsultaNFe() };
+
+        // Act & Assert
+        Assert.ThrowsAny<ArgumentNullException>(() => factory.NewCnpj(null!, detalhes));
+    }
+
+    [Fact]
+    public void NewCnpj_DetalhesNulo_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+        var cnpj = new Cnpj("12345678000195");
+
+        // Act & Assert
+        Assert.ThrowsAny<ArgumentNullException>(() => factory.NewCnpj(cnpj, null!));
+    }
+
+    [Fact]
+    public void NewCnpj_ComParametrosValidos_RetornaPedidoAssinado()
+    {
+        // Arrange
+        var factory = new PedidoConsultaNFeFactory(CriarCertificado());
+        var cnpj = new Cnpj("12345678000195");
+        var detalhes = new[] { new DetalheConsultaNFe() };
+
+        // Act
+        var pedido = factory.NewCnpj(cnpj, detalhes);
+
+        // Assert
+        Assert.NotNull(pedido);
+        Assert.NotNull(pedido.Cabecalho);
+        Assert.NotNull(pedido.Detalhe);
+        Assert.Single(pedido.Detalhe);
+    }
+}

@@ -203,7 +203,7 @@ public sealed class EnderecoBuilder : IEnderecoBuilder
     /// <summary>
     /// Verifica se o estado atual do construtor é válido para construção, incluindo
     /// presença de ao menos um campo e ausência de violações de dependência cruzada entre campos.
-    /// Equivalente a <c>!<see cref="GetValidationErrors"/>.Any()</c>.
+    /// Equivalente a <c>!<see cref="GetValidationErrors"/>().Any()</c>.
     /// </summary>
     /// <returns><c>true</c> se não houver nenhum erro de validação; caso contrário, <c>false</c>.</returns>
     public bool IsValid() => !GetValidationErrors().Any();

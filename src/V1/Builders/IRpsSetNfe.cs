@@ -4,8 +4,8 @@ using Nfe.Paulistana.Models.Enums;
 namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
-/// Primeiro passo obrigatório da cadeia de construção do <see cref="Nfe.Paulistana.Models.Domain.Rps"/>.
-/// Exposto após <see cref="Nfe.Paulistana.Builders.RpsBuilder.New"/> e requer
+/// Primeiro passo obrigatório da cadeia de construção do <see cref="Models.Domain.Rps"/>.
+/// Exposto após <see cref="RpsBuilder.New"/> e requer
 /// a chamada de <see cref="SetNFe"/> antes de avançar para <see cref="IRpsSetServico"/>.
 /// </summary>
 public interface IRpsSetNfe

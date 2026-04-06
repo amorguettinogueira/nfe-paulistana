@@ -29,7 +29,7 @@ public class InformacoesPessoaTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Constructor_WithCpf_SetsProperties(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var nome = new RazaoSocial("Pessoa");
         var endereco = new EnderecoSimplesIBSCBS(
             new Logradouro("Rua Teste"),
@@ -94,7 +94,7 @@ public class InformacoesPessoaTests
     public void Constructor_NullNome_ThrowsArgumentNullException_ForCpf(long cpfNumber)
     {
         RazaoSocial? nome = null;
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
 
         _ = Assert.Throws<ArgumentNullException>(() => new InformacoesPessoa(cpf, nome!));
     }
@@ -147,7 +147,7 @@ public class InformacoesPessoaTests
     public void Xml_SerializeAndDeserialize_RoundTripPreservesValues(long cpfNumber)
     {
         // Arrange
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var nome = new RazaoSocial("Pessoa XML");
         var endereco = new EnderecoSimplesIBSCBS(
             new Logradouro("Rua XML"),
@@ -191,7 +191,7 @@ public class InformacoesPessoaTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Xml_Serialize_WithoutDefaultNamespaces_WhenEmptyNamespacesProvided(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var p = new InformacoesPessoa(cpf, new RazaoSocial("X"));
 
         var serializer = new XmlSerializer(typeof(InformacoesPessoa));

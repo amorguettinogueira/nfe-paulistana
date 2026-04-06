@@ -18,7 +18,7 @@ namespace Nfe.Paulistana.V1.Models.Operations;
 /// <para>
 /// Compartilhado pelas operações <c>ConsultaNFeRecebidas</c> e <c>ConsultaNFeEmitidas</c>.
 /// Instâncias devem ser criadas via
-/// <see cref="Nfe.Paulistana.Builders.PedidoConsultaNFePeriodoFactory"/>, que garante
+/// <see cref="Builders.PedidoConsultaNFePeriodoFactory"/>, que garante
 /// que o pedido esteja corretamente assinado antes do envio.
 /// </para>
 /// </remarks>

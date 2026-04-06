@@ -6,16 +6,19 @@ using Nfe.Paulistana.V2.Models.Enums;
 namespace Nfe.Paulistana.V2.Builders;
 
 /// <summary>
-/// Construtor fluente de objetos <see cref="Tomador"/> com três pontos de entrada distintos
-/// conforme a identificação do tomador: CPF, CNPJ ou exclusivamente Razão Social.
+/// Construtor fluente de objetos <see cref="Tomador"/> com seis pontos de entrada distintos
+/// conforme a identificação do tomador: CPF, CNPJ, NIF, Inscrição Municipal, Inscrição Estadual
+/// ou exclusivamente Razão Social.
 /// </summary>
 /// <remarks>
 /// <para><strong>Design Arquitetural:</strong></para>
 /// <list type="bullet">
 /// <item>
-/// <strong>Identificação obrigatória na construção:</strong> A <see cref="RazaoSocial"/> é sempre
-/// requerida. CPF ou CNPJ são opcionais — use <see cref="NewRazaoSocial(RazaoSocial)"/>
-/// quando o tomador for identificado apenas pela razão social.
+/// <strong>Identificação obrigatória na construção:</strong> O tipo de identificação do tomador
+/// é definido no momento da criação via um dos métodos estáticos (<see cref="NewCpf"/>,
+/// <see cref="NewCnpj"/>, <see cref="NewNif"/>, <see cref="NewInscricaoMunicipal"/>,
+/// <see cref="NewInscricaoEstadual"/> ou <see cref="NewRazaoSocial(MotivoNifNaoInformado, RazaoSocial)"/>).
+/// Cada método aceita apenas os campos pertinentes à identificação escolhida.
 /// </item>
 /// <item>
 /// <strong>Sealed Pattern:</strong> Esta classe é sealed para proteger os invariantes
@@ -25,9 +28,7 @@ namespace Nfe.Paulistana.V2.Builders;
 /// </remarks>
 /// <example>
 /// <code>
-/// var tomador = TomadorBuilder.NewCpf(
-///         (Cpf)12345678909L,
-///         (RazaoSocial)"Razão Social")
+/// var tomador = TomadorBuilder.NewCpf((Cpf)12345678909L)
 ///     .SetEmail((Email)"tomador@example.com")
 ///     .SetEndereco(endereco)
 ///     .Build();
@@ -55,11 +56,11 @@ public sealed class TomadorBuilder : ITomadorBuilder
     }
 
     /// <summary>
-    /// Cria uma instância do construtor a partir de um CPF e Razão Social.
+    /// Cria uma instância do construtor a partir de um CPF.
     /// </summary>
     /// <param name="cpf">CPF do tomador de serviços.</param>
     /// <returns>Uma nova instância de <see cref="ITomadorBuilder"/>.</returns>
-    /// <exception cref="ArgumentNullException">Se <paramref name="cpf"/> ou <paramref name="razaoSocial"/> for nulo.</exception>
+    /// <exception cref="ArgumentNullException">Se <paramref name="cpf"/> for nulo.</exception>
     public static ITomadorBuilder NewCpf(Cpf cpf)
     {
         ArgumentNullException.ThrowIfNull(cpf, nameof(cpf));
@@ -174,7 +175,7 @@ public sealed class TomadorBuilder : ITomadorBuilder
     /// <summary>
     /// Verifica se o estado atual do construtor é válido para construção, incluindo
     /// presença de ao menos um campo e ausência de violações de dependência cruzada entre campos.
-    /// Equivalente a <c>!<see cref="GetValidationErrors"/>.Any()</c>.
+    /// Equivalente a <c>!<see cref="GetValidationErrors"/>().Any()</c>.
     /// </summary>
     /// <returns><c>true</c> se não houver nenhum erro de validação; caso contrário, <c>false</c>.</returns>
     public bool IsValid() => !GetValidationErrors().Any();
@@ -194,10 +195,6 @@ public sealed class TomadorBuilder : ITomadorBuilder
     /// Constrói e retorna o objeto <see cref="Tomador"/> a partir dos atributos fornecidos na cadeia de chamadas.
     /// </summary>
     /// <returns>Uma nova instância de <see cref="Tomador"/> com os campos informados.</returns>
-    /// <exception cref="ArgumentException">
-    /// Se o campo endereço não foi informado quando o prestador foi identificado por CNPJ ou NIF.
-    /// Consulte <see cref="GetValidationErrors"/> para inspecionar todos os erros antes de construir.
-    /// </exception>
     public Tomador Build()
     {
         string[] errors = [.. GetValidationErrors()];

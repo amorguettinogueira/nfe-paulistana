@@ -77,7 +77,7 @@ public class PedidoEnvioFactoryTests
         var factory = new PedidoEnvioFactory(CriarConfiguracao());
         Rps? rps = null;
 
-        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf(new Cpf(cpfNumber), rps!));
+        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf((Cpf)cpfNumber, rps!));
     }
 
     [Theory()]
@@ -86,7 +86,7 @@ public class PedidoEnvioFactoryTests
     {
         var factory = new PedidoEnvioFactory(CriarConfiguracao());
 
-        PedidoEnvio resultado = factory.NewCpf(new Cpf(cpfNumber), CriarRps());
+        PedidoEnvio resultado = factory.NewCpf((Cpf)cpfNumber, CriarRps());
         Assert.NotNull(resultado.SignedXmlContent);
     }
 
@@ -96,7 +96,7 @@ public class PedidoEnvioFactoryTests
     {
         var factory = new PedidoEnvioFactory(CriarConfiguracao());
 
-        PedidoEnvio resultado = factory.NewCpf(new Cpf(cpfNumber), CriarRps());
+        PedidoEnvio resultado = factory.NewCpf((Cpf)cpfNumber, CriarRps());
         Assert.NotNull(resultado.Rps?.Assinatura);
     }
 
@@ -104,7 +104,7 @@ public class PedidoEnvioFactoryTests
     [ClassData(typeof(ValidCpfNumber))]
     public void NewCpf_ArgumentosValidos_CabecalhoContemCpfCorreto(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var factory = new PedidoEnvioFactory(CriarConfiguracao());
 
         PedidoEnvio resultado = factory.NewCpf(cpf, CriarRps());
@@ -118,7 +118,7 @@ public class PedidoEnvioFactoryTests
     {
         var factory = new PedidoEnvioFactory(CriarConfiguracao());
 
-        PedidoEnvio resultado = factory.NewCpf(new Cpf(cpfNumber), CriarRps());
+        PedidoEnvio resultado = factory.NewCpf((Cpf)cpfNumber, CriarRps());
         Assert.Null(resultado.Cabecalho?.CpfOrCnpj?.Cnpj);
     }
 

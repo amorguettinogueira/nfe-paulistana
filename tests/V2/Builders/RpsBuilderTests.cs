@@ -392,4 +392,244 @@ public class RpsBuilderTests
     [Fact]
     public void Build_WithoutTomador_ThrowsArgumentException() =>
         Assert.Throws<ArgumentException>(() => CadeiaObrigatoria(Serie).Build());
+
+    [Fact]
+    public void SetMulta_WithNull_ThrowsArgumentNullException()
+    {
+        Valor? multa = null;
+        Assert.Throws<ArgumentNullException>(() => CadeiaObrigatoria(Serie).SetMulta(multa!));
+    }
+
+    [Fact]
+    public void SetMulta_ComValorValido_PropagaCorretamente()
+    {
+        // Arrange
+        var valorMulta = (Valor)50m;
+
+        // Act
+        var rps = CadeiaObrigatoria(Serie)
+            .SetMulta(valorMulta)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(valorMulta, rps.ValorMulta);
+    }
+
+    [Fact]
+    public void SetJuros_WithNull_ThrowsArgumentNullException()
+    {
+        Valor? juros = null;
+        Assert.Throws<ArgumentNullException>(() => CadeiaObrigatoria(Serie).SetJuros(juros!));
+    }
+
+    [Fact]
+    public void SetJuros_ComValorValido_PropagaCorretamente()
+    {
+        // Arrange
+        var valorJuros = (Valor)25m;
+
+        // Act
+        var rps = CadeiaObrigatoria(Serie)
+            .SetJuros(valorJuros)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(valorJuros, rps.ValorJuros);
+    }
+
+    [Fact]
+    public void SetNcm_WithNull_ThrowsArgumentNullException()
+    {
+        CodigoNCM? ncm = null;
+        Assert.Throws<ArgumentNullException>(() => CadeiaObrigatoria(Serie).SetNcm(ncm!));
+    }
+
+    [Fact]
+    public void SetNcm_ComCodigoValido_PropagaCorretamente()
+    {
+        // Arrange
+        var ncm = new CodigoNCM("12345678");
+
+        // Act
+        var rps = CadeiaObrigatoria(Serie)
+            .SetNcm(ncm)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(ncm, rps.NCM);
+    }
+
+    [Fact]
+    public void SetAtividadeEvento_WithNull_ThrowsArgumentNullException()
+    {
+        AtividadeEvento? evento = null;
+        Assert.Throws<ArgumentNullException>(() => CadeiaObrigatoria(Serie).SetAtividadeEvento(evento!));
+    }
+
+    [Fact]
+    public void SetAtividadeEvento_ComEventoValido_PropagaCorretamente()
+    {
+        // Arrange
+        var evento = new AtividadeEvento();
+
+        // Act
+        var rps = CadeiaObrigatoria(Serie)
+            .SetAtividadeEvento(evento)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(evento, rps.AtividadeEvento);
+    }
+
+    [Fact]
+    public void SetLocalPrestacao_WithNull_ThrowsArgumentNullException()
+    {
+        CodigoIbge? local = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            RpsBuilder.New(InscricaoPrestador, TipoRps.NotaFiscalConjugada, NumeroRps, Discriminacao, Serie)
+                .SetNFe(DataEmissao, Tributacao, new NaoSim(false), new NaoSim(false))
+                .SetServico(CodigoServico, CodigoNbs)
+                .SetIss(Aliquota, false)
+                .SetIbsCbs(IbsCbs)
+                .SetValorInicialCobrado((Valor)1000m)
+                .SetLocalPrestacao(local!));
+    }
+
+    [Fact]
+    public void SetPaisPrestacao_WithNull_ThrowsArgumentNullException()
+    {
+        CodigoPaisISO? pais = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            RpsBuilder.New(InscricaoPrestador, TipoRps.NotaFiscalConjugada, NumeroRps, Discriminacao, Serie)
+                .SetNFe(DataEmissao, Tributacao, new NaoSim(false), new NaoSim(false))
+                .SetServico(CodigoServico, CodigoNbs)
+                .SetIss(Aliquota, false)
+                .SetIbsCbs(IbsCbs)
+                .SetValorInicialCobrado((Valor)1000m)
+                .SetPaisPrestacao(pais!));
+    }
+
+    [Fact]
+    public void SetValorInicialCobrado_WithNull_ThrowsArgumentNullException()
+    {
+        Valor? valor = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            RpsBuilder.New(InscricaoPrestador, TipoRps.NotaFiscalConjugada, NumeroRps, Discriminacao, Serie)
+                .SetNFe(DataEmissao, Tributacao, new NaoSim(false), new NaoSim(false))
+                .SetServico(CodigoServico, CodigoNbs)
+                .SetIss(Aliquota, false)
+                .SetIbsCbs(IbsCbs)
+                .SetValorInicialCobrado(valor!));
+    }
+
+    [Fact]
+    public void SetValorFinalCobrado_WithNull_ThrowsArgumentNullException()
+    {
+        Valor? valor = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            RpsBuilder.New(InscricaoPrestador, TipoRps.NotaFiscalConjugada, NumeroRps, Discriminacao, Serie)
+                .SetNFe(DataEmissao, Tributacao, new NaoSim(false), new NaoSim(false))
+                .SetServico(CodigoServico, CodigoNbs)
+                .SetIss(Aliquota, false)
+                .SetIbsCbs(IbsCbs)
+                .SetValorFinalCobrado(valor!));
+    }
+
+    [Fact]
+    public void Build_ComValorFinalCobrado_PropagaCorretamente()
+    {
+        // Arrange
+        var valorFinal = (Valor)1100m;
+
+        // Act
+        var rps = RpsBuilder.New(InscricaoPrestador, TipoRps.NotaFiscalConjugada, NumeroRps, Discriminacao, Serie)
+            .SetNFe(DataEmissao, Tributacao, new NaoSim(false), new NaoSim(false))
+            .SetServico(CodigoServico, CodigoNbs)
+            .SetIss(Aliquota, false)
+            .SetIbsCbs(IbsCbs)
+            .SetValorFinalCobrado(valorFinal)
+            .SetLocalPrestacao((CodigoIbge)1234567)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(valorFinal, rps.ValorFinalCobrado);
+        Assert.Null(rps.ValorInicialCobrado);
+    }
+
+    [Fact]
+    public void Build_ComPaisPrestacao_PropagaCorretamente()
+    {
+        // Arrange
+        var pais = (CodigoPaisISO)"US";
+
+        // Act
+        var rps = RpsBuilder.New(InscricaoPrestador, TipoRps.NotaFiscalConjugada, NumeroRps, Discriminacao, Serie)
+            .SetNFe(DataEmissao, Tributacao, new NaoSim(false), new NaoSim(false))
+            .SetServico(CodigoServico, CodigoNbs)
+            .SetIss(Aliquota, false)
+            .SetIbsCbs(IbsCbs)
+            .SetValorInicialCobrado((Valor)1000m)
+            .SetPaisPrestacao(pais)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(pais, rps.PaisPrestacaoServico);
+        Assert.Null(rps.LocalPrestacaoServico);
+    }
+
+    [Fact]
+    public void SetTributos_ComPeloMenosUmTributo_Sucesso()
+    {
+        // Arrange & Act
+        var rps = CadeiaObrigatoria(Serie)
+            .SetTributos(valorPis: (Valor)10m)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(((Valor)10m).ToString(), rps.ValorPis?.ToString());
+        Assert.Equal(((Valor)0m).ToString(), rps.ValorCofins?.ToString());
+    }
+
+    [Fact]
+    public void SetCargaTributaria_ComFonteEValor_Sucesso()
+    {
+        // Arrange
+        var fonte = new FonteCargaTributaria("IBPT");
+        var valor = (Valor)200m;
+
+        // Act
+        var rps = CadeiaObrigatoria(Serie)
+            .SetCargaTributaria(fonte, valor)
+            .SetTomador(TomadorPadrao)
+            .Build();
+
+        // Assert
+        Assert.Equal(fonte, rps.FonteCargaTributaria);
+        Assert.Equal(valor, rps.ValorCargaTributaria);
+    }
+
+    [Fact]
+    public void SetNFe_WithNullExigibilidadeSuspensa_ThrowsArgumentNullException()
+    {
+        NaoSim? exigibilidade = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            RpsBuilder.New(InscricaoPrestador, TipoRps.Rps, NumeroRps, Discriminacao, Serie)
+                .SetNFe(DataEmissao, Tributacao, exigibilidade!, new NaoSim(false)));
+    }
+
+    [Fact]
+    public void SetNFe_WithNullPagamentoParcelado_ThrowsArgumentNullException()
+    {
+        NaoSim? pagamento = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            RpsBuilder.New(InscricaoPrestador, TipoRps.Rps, NumeroRps, Discriminacao, Serie)
+                .SetNFe(DataEmissao, Tributacao, new NaoSim(false), pagamento!));
+    }
 }

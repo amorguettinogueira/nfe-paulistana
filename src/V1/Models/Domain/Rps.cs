@@ -16,13 +16,13 @@ namespace Nfe.Paulistana.V1.Models.Domain;
 /// <remarks>
 /// <para>
 /// Fonte: <c>TiposNFe_v01.xsd</c> — Tipo <c>tpRPS</c>, linha 798.
-/// Construa instâncias via <see cref="Nfe.Paulistana.Builders.RpsBuilder"/>.
+/// Construa instâncias via <see cref="Builders.RpsBuilder"/>.
 /// </para>
 /// <para><strong>Notas Arquiteturais:</strong></para>
 /// <list type="bullet">
 /// <item>
 /// <strong>Modelo de dados puro:</strong> <see cref="Rps"/> é um contêiner de dados
-/// que implementa <see cref="Nfe.Paulistana.Models.ISignedElement"/>.
+/// que implementa <see cref="ISignedElement"/>.
 /// Não contém lógica de negócio além da validação dos campos no construtor.
 /// </item>
 /// <item>
@@ -164,7 +164,7 @@ public sealed class Rps : ISignedElement
 
     /// <summary>
     /// Valor das deduções aplicadas sobre o serviço em R$.
-    /// Quando não informado via <see cref="Nfe.Paulistana.Builders.RpsBuilder"/>,
+    /// Quando não informado via <see cref="Builders.RpsBuilder"/>,
     /// o builder injeta <c>0</c> — valor exigido pelo XSD quando não há deduções.
     /// </summary>
     [XmlElement(Form = XmlSchemaForm.Unqualified)]

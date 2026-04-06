@@ -24,7 +24,7 @@ public class FornecedorTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Fornecedor_WithCpfAndNome_SetsProperties(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var nome = new RazaoSocial("Nome Fornecedor");
 
         var f = new Fornecedor(cpf, nome);
@@ -85,7 +85,7 @@ public class FornecedorTests
     public void Fornecedor_Ctor_NullNome_ThrowsArgumentNullException_ForCpf(long cpfNumber)
     {
         RazaoSocial? nome = null;
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
 
         _ = Assert.Throws<ArgumentNullException>(() => new Fornecedor(cpf, nome!));
     }

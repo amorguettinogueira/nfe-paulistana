@@ -19,7 +19,7 @@ namespace Nfe.Paulistana.V2.Models.Operations;
 /// <para>
 /// Representa uma solicitação de consulta de até 50 NFS-e ou RPS à Prefeitura de São Paulo.
 /// Instâncias devem ser criadas via
-/// <see cref="Nfe.Paulistana.V2.Builders.PedidoConsultaNFeFactory"/>, que garante
+/// <see cref="Builders.PedidoConsultaNFeFactory"/>, que garante
 /// que o pedido esteja corretamente assinado antes do envio.
 /// </para>
 /// </remarks>

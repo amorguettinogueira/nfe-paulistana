@@ -11,11 +11,11 @@ namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
 /// <para>
-/// Fábrica para construir objetos PedidoEnvio com geração automática de assinatura digital.
+/// Fábrica para construir objetos <see cref="PedidoEnvio"/> com geração automática de assinatura digital.
 /// </para>
 /// <para>
-/// Esta fábrica fornece uma API simples e one-shot para criar objetos PedidoEnvio totalmente assinados.
-/// Ela gerencia automaticamente certificados, assinatura de RPS e assinatura de PedidoEnvio,
+/// Esta fábrica fornece uma API simples e one-shot para criar objetos <see cref="PedidoEnvio"/> totalmente assinados.
+/// Ela gerencia automaticamente certificados, assinatura de <see cref="Rps"/> e assinatura de <see cref="PedidoEnvio"/>,
 /// garantindo que objetos retornados estejam sempre corretamente assinados e prontos para envio.
 /// </para>
 /// </summary>
@@ -29,7 +29,7 @@ namespace Nfe.Paulistana.V1.Builders;
 /// não builders intermediários.
 /// </item>
 /// <item>
-/// <strong>Gerenciamento de Certificado:</strong> Recebe CertificadoNfePaulistana via dependency injection
+/// <strong>Gerenciamento de Certificado:</strong> Recebe <see cref="Certificado"/> via dependency injection
 /// (construtor primário). Certificados são construídos sob demanda por chamada de método usando padrão "using"
 /// para limpeza apropriada de recursos.
 /// </item>
@@ -65,9 +65,11 @@ namespace Nfe.Paulistana.V1.Builders;
 ///         (InscricaoMunicipal)39616924,
 ///         TipoRps.NotaFiscalConjugada,
 ///         (Numero)4105,
-///         (Discriminacao)"Descrição",
+///         (Discriminacao)"Serviço de consultoria prestado",
 ///         (SerieRps)"BB")
-///     .SetNFe((Data)new DateTime(2024, 1, 20), (TributacaoNfe)'T', StatusNfe.Normal)
+///     .SetNFe((DataXsd)new DateTime(2024, 1, 20), (TributacaoNfe)'T', StatusNfe.Normal)
+///     .SetServico((CodigoServico)"01010", (Valor)1000.0m)
+///     .SetIss((Aliquota)5.0m, false)
 ///     .Build();
 ///
 /// // Cria PedidoEnvio totalmente assinado em uma chamada
@@ -103,20 +105,13 @@ public sealed class PedidoEnvioFactory(Certificado certificate)
     private readonly XmlFileSignatureGenerator<PedidoEnvio> _pedidoSignatureGenerator = new XmlFileSignatureGenerator<PedidoEnvio>();
 
     /// <summary>
-    /// Cria um PedidoEnvio totalmente assinado a partir de um CPF.
+    /// Cria um <see cref="PedidoEnvio"/> totalmente assinado a partir de um CPF.
     /// </summary>
-    /// <param name="cpf">CPF do prestador de serviços como Value Object type-safe.</param>
-    /// <param name="rps">O RPS (Recibo Provisório de Serviços) a incluir no PedidoEnvio.</param>
-    /// <returns>
-    /// Um objeto PedidoEnvio completamente assinado e pronto para envio.
-    /// Tanto RPS.Assinatura quanto PedidoEnvio.Assinatura são preenchidos e prontos para submissão.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">Se cpf ou rps é nulo.</exception>
-    /// <exception cref="System.Security.Cryptography.CryptographicException">Se o carregamento do certificado ou assinatura falhar.</exception>
-    /// <remarks>
-    /// O CPF é recebido como Value Object (Cpf) já validado conforme módulo 11.
-    /// Nenhuma validação adicional é necessária pois a validação é garantida pelo tipo.
-    /// </remarks>
+    /// <param name="cpf">CPF do prestador de serviços.</param>
+    /// <param name="rps">O <see cref="Rps"/> a incluir no pedido.</param>
+    /// <returns>Objeto <see cref="PedidoEnvio"/> completamente assinado e pronto para envio.</returns>
+    /// <exception cref="ArgumentNullException">Se <paramref name="cpf"/> ou <paramref name="rps"/> é nulo.</exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">Se o carregamento do certificado ou a assinatura falhar.</exception>
     public PedidoEnvio NewCpf(Cpf cpf, Rps rps)
     {
         ArgumentNullException.ThrowIfNull(cpf);
@@ -125,20 +120,13 @@ public sealed class PedidoEnvioFactory(Certificado certificate)
     }
 
     /// <summary>
-    /// Cria um PedidoEnvio totalmente assinado a partir de um CNPJ.
+    /// Cria um <see cref="PedidoEnvio"/> totalmente assinado a partir de um CNPJ.
     /// </summary>
-    /// <param name="cnpj">CNPJ do prestador de serviços como Value Object type-safe.</param>
-    /// <param name="rps">O RPS (Recibo Provisório de Serviços) a incluir no PedidoEnvio.</param>
-    /// <returns>
-    /// Um objeto PedidoEnvio completamente assinado e pronto para envio.
-    /// Tanto RPS.Assinatura quanto PedidoEnvio.Assinatura são preenchidos e prontos para submissão.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">Se cnpj ou rps é nulo.</exception>
-    /// <exception cref="System.Security.Cryptography.CryptographicException">Se o carregamento do certificado ou assinatura falhar.</exception>
-    /// <remarks>
-    /// O CNPJ é recebido como Value Object (Cnpj) já validado conforme módulo 11.
-    /// Nenhuma validação adicional é necessária pois a validação é garantida pelo tipo.
-    /// </remarks>
+    /// <param name="cnpj">CNPJ do prestador de serviços.</param>
+    /// <param name="rps">O <see cref="Rps"/> a incluir no pedido.</param>
+    /// <returns>Objeto <see cref="PedidoEnvio"/> completamente assinado e pronto para envio.</returns>
+    /// <exception cref="ArgumentNullException">Se <paramref name="cnpj"/> ou <paramref name="rps"/> é nulo.</exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">Se o carregamento do certificado ou a assinatura falhar.</exception>
     public PedidoEnvio NewCnpj(Cnpj cnpj, Rps rps)
     {
         ArgumentNullException.ThrowIfNull(cnpj);
@@ -158,7 +146,7 @@ public sealed class PedidoEnvioFactory(Certificado certificate)
     /// </para>
     /// <list type="number">
     /// <item>Valida que RPS não é nulo</item>
-    /// <item>Constrói X509Certificate2 a partir da configuração CertificadoNfePaulistana injetada</item>
+    /// <item>Constrói X509Certificate2 a partir da configuração <see cref="Certificado"/> injetada</item>
     /// <item>Assina o RPS usando RpsSignatureGenerator (popula RPS.Assinatura)</item>
     /// <item>Cria o PedidoEnvio com o RPS assinado</item>
     /// <item>Assina o PedidoEnvio completo usando XmlFileSignatureGenerator (popula PedidoEnvio.Assinatura)</item>

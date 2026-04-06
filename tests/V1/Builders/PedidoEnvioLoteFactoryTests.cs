@@ -76,7 +76,7 @@ public class PedidoEnvioLoteFactoryTests
     {
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
 
-        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf(new Cpf(cpfNumber), false, null!));
+        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf((Cpf)cpfNumber, false, null!));
     }
 
     [Theory()]
@@ -85,7 +85,7 @@ public class PedidoEnvioLoteFactoryTests
     {
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
 
-        _ = Assert.Throws<ArgumentException>(() => factory.NewCpf(new Cpf(cpfNumber), false, []));
+        _ = Assert.Throws<ArgumentException>(() => factory.NewCpf((Cpf)cpfNumber, false, []));
     }
 
     [Theory()]
@@ -94,7 +94,7 @@ public class PedidoEnvioLoteFactoryTests
     {
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
 
-        _ = Assert.Throws<ArgumentException>(() => factory.NewCpf(new Cpf(cpfNumber), false, [null!]));
+        _ = Assert.Throws<ArgumentException>(() => factory.NewCpf((Cpf)cpfNumber, false, [null!]));
     }
 
     [Theory()]
@@ -103,7 +103,7 @@ public class PedidoEnvioLoteFactoryTests
     {
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [CriarRps(DateTime.Today, 1000m)]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [CriarRps(DateTime.Today, 1000m)]);
         Assert.NotNull(resultado.SignedXmlContent);
     }
 
@@ -111,7 +111,7 @@ public class PedidoEnvioLoteFactoryTests
     [ClassData(typeof(ValidCpfNumber))]
     public void NewCpf_ArgumentosValidos_CabecalhoContemCpfCorreto(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
 
         PedidoEnvioLote resultado = factory.NewCpf(cpf, false, [CriarRps(DateTime.Today, 1000m)]);
@@ -125,7 +125,7 @@ public class PedidoEnvioLoteFactoryTests
     {
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [CriarRps(DateTime.Today, 1000m)]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [CriarRps(DateTime.Today, 1000m)]);
         Assert.Null(resultado.Cabecalho?.CpfOrCnpj?.Cnpj);
     }
 
@@ -196,7 +196,7 @@ public class PedidoEnvioLoteFactoryTests
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
         Rps rps = CriarRps(new DateTime(2024, 1, 20), 1000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps]);
 
         Assert.NotNull(resultado.SignedXmlContent);
     }
@@ -208,7 +208,7 @@ public class PedidoEnvioLoteFactoryTests
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
         Rps rps = CriarRps(new DateTime(2024, 1, 20), 1000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps]);
 
         Assert.All(resultado.Rps!, r => Assert.NotNull(r.Assinatura));
     }
@@ -225,7 +225,7 @@ public class PedidoEnvioLoteFactoryTests
         Rps rps1 = CriarRps(new DateTime(2024, 1, 1), 1000m);
         Rps rps2 = CriarRps(new DateTime(2024, 1, 31), 2000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps1, rps2]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps1, rps2]);
 
         Assert.Equal("2", resultado.Cabecalho?.QtdRps?.ToString());
     }
@@ -238,7 +238,7 @@ public class PedidoEnvioLoteFactoryTests
         Rps rps1 = CriarRps(new DateTime(2024, 1, 1), 1000m);
         Rps rps2 = CriarRps(new DateTime(2024, 1, 31), 2000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps1, rps2]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps1, rps2]);
 
         Assert.Equal(new Valor(3000m).ToString(), resultado.Cabecalho?.ValorTotalServicos?.ToString());
     }
@@ -250,7 +250,7 @@ public class PedidoEnvioLoteFactoryTests
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
         Rps rps = CriarRps(new DateTime(2024, 1, 20), 1000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps]);
 
         Assert.Null(resultado.Cabecalho?.ValorTotalDeducoes);
     }
@@ -264,7 +264,7 @@ public class PedidoEnvioLoteFactoryTests
         Rps rps1 = CriarRps(dataInicio, 1000m);
         Rps rps2 = CriarRps(new DateTime(2024, 1, 31), 2000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps1, rps2]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps1, rps2]);
 
         Assert.Equal(new DataXsd(dataInicio).ToString(), resultado.Cabecalho?.DtInicio?.ToString());
     }
@@ -278,7 +278,7 @@ public class PedidoEnvioLoteFactoryTests
         Rps rps1 = CriarRps(new DateTime(2024, 1, 1), 1000m);
         Rps rps2 = CriarRps(dataFim, 2000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps1, rps2]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps1, rps2]);
 
         Assert.Equal(new DataXsd(dataFim).ToString(), resultado.Cabecalho?.DtFim?.ToString());
     }
@@ -290,7 +290,7 @@ public class PedidoEnvioLoteFactoryTests
         var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
         Rps rps = CriarRps(new DateTime(2024, 1, 20), 1000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), true, [rps]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, true, [rps]);
 
         Assert.True(resultado.Cabecalho?.Transacao);
     }
@@ -303,7 +303,7 @@ public class PedidoEnvioLoteFactoryTests
         Rps rps1 = CriarRps(new DateTime(2024, 1, 1), 1000m);
         Rps rps2 = CriarRps(new DateTime(2024, 1, 31), 2000m);
 
-        PedidoEnvioLote resultado = factory.NewCpf(new Cpf(cpfNumber), false, [rps1, rps2]);
+        PedidoEnvioLote resultado = factory.NewCpf((Cpf)cpfNumber, false, [rps1, rps2]);
 
         Assert.Equal(2, resultado.Rps?.Length);
     }

@@ -21,7 +21,7 @@ public class CpfOrCnpjTests
     [ClassData(typeof(ValidCpfNumber))]
     public void CpfOrCnpj_WithCpf_SetsCpfAndLeavesNullCnpj(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = new CpfOrCnpj(cpf);
 
         Assert.Equal(cpf, doc.Cpf);
@@ -59,7 +59,7 @@ public class CpfOrCnpjTests
     [ClassData(typeof(ValidCpfNumber))]
     public void CpfOrCnpj_ToString_ReturnsCpfWhenCpfIsSet(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = new CpfOrCnpj(cpf);
 
         Assert.Equal(cpf.ToString(), doc.ToString());
@@ -83,7 +83,7 @@ public class CpfOrCnpjTests
     [ClassData(typeof(ValidCpfNumber))]
     public void CpfOrCnpj_FromCpf_CreatesCpfInstance(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var doc = CpfOrCnpj.FromCpf(cpf);
 
         Assert.Equal(cpf, doc.Cpf);
@@ -105,7 +105,7 @@ public class CpfOrCnpjTests
     [ClassData(typeof(ValidCpfNumber))]
     public void CpfOrCnpj_ExplicitCastFromCpf_EqualToFromCpf(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
 
         var viaFactory = CpfOrCnpj.FromCpf(cpf);
         var viaCast = (CpfOrCnpj)cpf;

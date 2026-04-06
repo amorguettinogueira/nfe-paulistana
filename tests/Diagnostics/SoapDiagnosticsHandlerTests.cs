@@ -1,4 +1,5 @@
 using Nfe.Paulistana.Diagnostics;
+using System.Diagnostics;
 using System.Net;
 
 namespace Nfe.Paulistana.Tests.Diagnostics;
@@ -125,5 +126,244 @@ public sealed class SoapDiagnosticsHandlerTests
 
         // Assert — conteúdo re-embalado pelo handler ainda é legível após falha do callback
         Assert.Equal("<body/>", body);
+    }
+
+    // ============================================
+    // Request.Content null (linha 57)
+    // ============================================
+
+    [Fact]
+    public async Task SendAsync_NullRequestContent_SetsEmptyRequestXml()
+    {
+        // Arrange
+        SoapExchange? captured = null;
+        using var invoker = CriarInvoker(exchange => captured = exchange);
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://fake-nfe/")
+        {
+            Content = null
+        };
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(captured);
+        Assert.Equal(string.Empty, captured.RequestXml);
+    }
+
+    // ============================================
+    // SOAPAction header (linha 61)
+    // ============================================
+
+    [Fact]
+    public async Task SendAsync_WithSoapActionHeader_CapturesSoapAction()
+    {
+        // Arrange
+        SoapExchange? captured = null;
+        using var invoker = CriarInvoker(exchange => captured = exchange);
+
+        var request = CriarRequisicao();
+        request.Headers.Add("SOAPAction", "\"http://test.com/TestAction\"");
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(captured);
+        Assert.Equal("http://test.com/TestAction", captured.SoapAction);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithoutSoapActionHeader_SetsEmptySoapAction()
+    {
+        // Arrange
+        SoapExchange? captured = null;
+        using var invoker = CriarInvoker(exchange => captured = exchange);
+
+        var request = CriarRequisicao();
+        // Não adiciona SOAPAction header
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(captured);
+        Assert.Equal(string.Empty, captured.SoapAction);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithMultipleSoapActionHeaders_UsesFirstValue()
+    {
+        // Arrange
+        SoapExchange? captured = null;
+        using var invoker = CriarInvoker(exchange => captured = exchange);
+
+        var request = CriarRequisicao();
+        request.Headers.Add("SOAPAction", "\"http://first.com/Action\"");
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(captured);
+        Assert.Equal("http://first.com/Action", captured.SoapAction);
+    }
+
+    // ============================================
+    // Activity e tags (linhas 65-72, 87, 91-92)
+    // ============================================
+
+    [Fact]
+    public async Task SendAsync_WithActivityListener_CreatesActivityWithSoapAction()
+    {
+        // Arrange
+        Activity? capturedActivity = null;
+        using var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name == SoapDiagnosticsHandler.ActivitySourceName,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStarted = activity => capturedActivity = activity
+        };
+        ActivitySource.AddActivityListener(listener);
+
+        SoapExchange? captured = null;
+        using var invoker = CriarInvoker(exchange => captured = exchange);
+
+        var request = CriarRequisicao();
+        request.Headers.Add("SOAPAction", "\"http://test.com/TestAction\"");
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(capturedActivity);
+        Assert.Equal("http://test.com/TestAction", capturedActivity.DisplayName);
+        Assert.Equal(ActivityKind.Client, capturedActivity.Kind);
+        Assert.Equal("http://test.com/TestAction", capturedActivity.GetTagItem("soap.action"));
+        Assert.Equal("fake-nfe", capturedActivity.GetTagItem("server.address"));
+        Assert.Equal("https://fake-nfe/", capturedActivity.GetTagItem("url.full"));
+        Assert.Equal("POST", capturedActivity.GetTagItem("http.request.method"));
+        Assert.Equal(200, capturedActivity.GetTagItem("http.response.status_code"));
+        Assert.Equal(ActivityStatusCode.Ok, capturedActivity.Status);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithoutSoapAction_CreatesActivityWithDefaultName()
+    {
+        // Arrange
+        Activity? capturedActivity = null;
+        using var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name == SoapDiagnosticsHandler.ActivitySourceName,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStarted = activity => capturedActivity = activity
+        };
+        ActivitySource.AddActivityListener(listener);
+
+        using var invoker = CriarInvoker(_ => { });
+
+        var request = CriarRequisicao();
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(capturedActivity);
+        Assert.Equal("soap.send", capturedActivity.DisplayName);
+    }
+
+    [Fact]
+    public async Task SendAsync_ErrorResponse_SetsActivityErrorStatus()
+    {
+        // Arrange
+        Activity? capturedActivity = null;
+        using var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name == SoapDiagnosticsHandler.ActivitySourceName,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStarted = activity => capturedActivity = activity
+        };
+        ActivitySource.AddActivityListener(listener);
+
+        using var invoker = CriarInvoker(
+            _ => { },
+            HttpStatusCode.InternalServerError,
+            "<error/>");
+
+        var request = CriarRequisicao();
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(capturedActivity);
+        Assert.Equal(500, capturedActivity.GetTagItem("http.response.status_code"));
+        Assert.Equal(ActivityStatusCode.Error, capturedActivity.Status);
+        Assert.Equal("HTTP 500", capturedActivity.StatusDescription);
+        Assert.Equal("HTTP_500", capturedActivity.GetTagItem("error.type"));
+    }
+
+    [Fact]
+    public async Task SendAsync_BadRequestResponse_SetsActivityErrorStatusWith400()
+    {
+        // Arrange
+        Activity? capturedActivity = null;
+        using var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name == SoapDiagnosticsHandler.ActivitySourceName,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStarted = activity => capturedActivity = activity
+        };
+        ActivitySource.AddActivityListener(listener);
+
+        using var invoker = CriarInvoker(
+            _ => { },
+            HttpStatusCode.BadRequest,
+            "<error/>");
+
+        var request = CriarRequisicao();
+
+        // Act
+        using var response = await invoker.SendAsync(request, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(capturedActivity);
+        Assert.Equal(400, capturedActivity.GetTagItem("http.response.status_code"));
+        Assert.Equal(ActivityStatusCode.Error, capturedActivity.Status);
+        Assert.Equal("HTTP_400", capturedActivity.GetTagItem("error.type"));
+    }
+
+    // ============================================
+    // Re-embalagem do conteúdo (linha 83)
+    // ============================================
+
+    [Fact]
+    public async Task SendAsync_AfterReading_ResponseContentIsRereadable()
+    {
+        // Arrange
+        using var invoker = CriarInvoker(_ => { }, HttpStatusCode.OK, "<original/>");
+
+        // Act
+        using var response = await invoker.SendAsync(CriarRequisicao(), CancellationToken.None);
+
+        // Lê o conteúdo duas vezes para garantir que foi re-embalado
+        var firstRead = await response.Content.ReadAsStringAsync();
+        var secondRead = await response.Content.ReadAsStringAsync();
+
+        // Assert
+        Assert.Equal("<original/>", firstRead);
+        Assert.Equal("<original/>", secondRead);
+    }
+
+    [Fact]
+    public async Task SendAsync_WithNullRequest_ThrowsArgumentNullException()
+    {
+        // Arrange
+        using var invoker = CriarInvoker(_ => { });
+
+        // Act & Assert
+        _ = await Assert.ThrowsAnyAsync<ArgumentNullException>(
+            () => invoker.SendAsync(null!, CancellationToken.None));
     }
 }

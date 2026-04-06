@@ -21,7 +21,7 @@ public class CabecalhoTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Cabecalho_WithCpfOrCnpj_SetsCpfOrCnpj(long cpfNumber)
     {
-        var cpfOrCnpj = new CpfOrCnpj(new Cpf(cpfNumber));
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
         var cab = new Cabecalho(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
@@ -32,7 +32,7 @@ public class CabecalhoTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Cabecalho_FromCpf_SetsCpfField(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var cab = Cabecalho.FromCpf(cpf);
 
         Assert.NotNull(cab.CpfOrCnpj);
@@ -56,7 +56,7 @@ public class CabecalhoTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Cabecalho_ExplicitCastFromCpf_EqualToFromCpf(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
 
         var viaFactory = Cabecalho.FromCpf(cpf);
         var viaCast = (Cabecalho)cpf;

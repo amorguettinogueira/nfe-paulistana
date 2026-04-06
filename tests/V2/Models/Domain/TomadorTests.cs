@@ -12,7 +12,7 @@ public class TomadorTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Tomador_WithAllFields_SetsAllProperties(long cpfNumber)
     {
-        var cpfOrCnpj = CpfOrCnpjOrNif.FromCpf(new Cpf(cpfNumber));
+        var cpfOrCnpj = CpfOrCnpjOrNif.FromCpf((Cpf)cpfNumber);
         var razaoSocial = new RazaoSocial("Empresa Teste Ltda");
         var inscricaoMunicipal = new InscricaoMunicipal(12345678);
         var inscricaoEstadual = new InscricaoEstadual(123456789);

@@ -9,7 +9,7 @@ namespace Nfe.Paulistana.V1.Models.Domain;
 /// </summary>
 /// <remarks>
 /// Fonte: <c>TiposNFe_v01.xsd</c>.
-/// Construa instâncias via <see cref="Nfe.Paulistana.Builders.IntermediarioBuilder"/>.
+/// Construa instâncias via <see cref="Builders.IntermediarioBuilder"/>.
 /// </remarks>
 /// <param name="cpfCnpjIntermediario">CPF ou CNPJ do intermediário, ou <c>null</c> se identificado apenas pela Inscrição Municipal.</param>
 /// <param name="inscricaoMunicipalIntermediario">Inscrição Municipal do intermediário, ou <c>null</c>.</param>

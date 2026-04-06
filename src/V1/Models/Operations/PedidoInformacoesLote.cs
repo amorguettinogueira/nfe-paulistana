@@ -18,7 +18,7 @@ namespace Nfe.Paulistana.V1.Models.Operations;
 /// <para>
 /// Permite obter informações sobre lotes de RPS que geraram NFS-e.
 /// Instâncias devem ser criadas via
-/// <see cref="Nfe.Paulistana.Builders.PedidoInformacoesLoteFactory"/>, que garante
+/// <see cref="Builders.PedidoInformacoesLoteFactory"/>, que garante
 /// que o pedido esteja corretamente assinado antes do envio.
 /// </para>
 /// </remarks>

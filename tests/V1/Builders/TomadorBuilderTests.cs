@@ -20,7 +20,7 @@ public class TomadorBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void NewCpf_WithValidCpfAndRazaoSocial_ReturnsBuilder(long cpfNumber)
     {
-        var builder = TomadorBuilder.NewCpf(new Cpf(cpfNumber));
+        var builder = TomadorBuilder.NewCpf((Cpf)cpfNumber);
 
         Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
@@ -152,7 +152,7 @@ public class TomadorBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Build_WithCpf_ReturnsTomadorWithCpfAndRazaoSocial(long cpfNumber)
     {
-        var tomador = TomadorBuilder.NewCpf(new Cpf(cpfNumber)).Build();
+        var tomador = TomadorBuilder.NewCpf((Cpf)cpfNumber).Build();
 
         Assert.NotNull(tomador);
         Assert.NotNull(tomador.CpfOrCnpjTomador);
@@ -203,7 +203,7 @@ public class TomadorBuilderTests
             .SetNumero(new NumeroEndereco("1578"))
             .Build();
 
-        var tomador = TomadorBuilder.NewCpf(new Cpf(cpfNumber))
+        var tomador = TomadorBuilder.NewCpf((Cpf)cpfNumber)
             .SetEmail(EmailPadrao)
             .SetEndereco(endereco)
             .Build();

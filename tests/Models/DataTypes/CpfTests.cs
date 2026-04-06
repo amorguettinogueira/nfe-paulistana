@@ -90,10 +90,10 @@ public class CpfTests
     // Operator Tests
     // ============================================
 
-    [Fact]
-    public void ExplicitOperators_CreateInstances()
+    [Theory]
+    [ClassData(typeof(ValidCpfNumbers))]
+    public void ExplicitOperators_CreateInstances(long cpfNumber)
     {
-        long cpfNumber = new ValidCpfNumber().Min();
         Cpf cpfFromLong = (Cpf)cpfNumber;
         Cpf cpfFromString = (Cpf)FormatCpf(cpfNumber);
 

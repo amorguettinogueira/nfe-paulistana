@@ -19,7 +19,7 @@ namespace Nfe.Paulistana.V1.Models.Operations;
 /// <para>
 /// Representa uma solicitação de cancelamento de até 50 NFS-e à Prefeitura de São Paulo.
 /// Instâncias devem ser criadas via
-/// <see cref="Nfe.Paulistana.Builders.PedidoCancelamentoNFeFactory"/>, que garante
+/// <see cref="Builders.PedidoCancelamentoNFeFactory"/>, que garante
 /// que o pedido esteja corretamente assinado antes do envio.
 /// </para>
 /// </remarks>

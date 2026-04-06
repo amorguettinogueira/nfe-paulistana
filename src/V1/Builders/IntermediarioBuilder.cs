@@ -6,7 +6,7 @@ namespace Nfe.Paulistana.V1.Builders;
 
 /// <summary>
 /// Construtor fluente de objetos <see cref="Intermediario"/>, com entrada obrigatória
-/// de ao menos um identificador (CPF, CNPJ ou Inscrição Municipal) via factory method.
+/// de ao menos um identificador (CPF ou CNPJ) via factory method.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -15,9 +15,8 @@ namespace Nfe.Paulistana.V1.Builders;
 /// <list type="bullet">
 /// <item>
 /// <strong>Identificador obrigatório na construção:</strong> Diferentemente de <see cref="EnderecoBuilder"/>,
-/// todo caminho de entrada via <see cref="New(Cpf, bool, InscricaoMunicipal?)"/>,
-/// <see cref="New(Cnpj, bool, InscricaoMunicipal?)"/> ou
-/// <see cref="New(InscricaoMunicipal, bool)"/> garante que ao menos um identificador
+/// todo caminho de entrada via <see cref="New(Cpf, bool)"/> ou
+/// <see cref="New(Cnpj, bool, InscricaoMunicipal?)"/> garante que ao menos um identificador
 /// esteja sempre definido. <see cref="IIntermediarioBuilder.IsValid"/> e
 /// <see cref="IIntermediarioBuilder.GetValidationErrors"/> existem como contrato defensivo
 /// e para consistência com os demais builders da biblioteca.
@@ -36,13 +35,13 @@ namespace Nfe.Paulistana.V1.Builders;
 /// <code>
 /// // Com CPF
 /// var intermediario = IntermediarioBuilder
-///     .New((Cpf)12345678909L, intermediarioRetemIss: true, inscricaoMunicipal: null)
+///     .New((Cpf)12345678909L, intermediarioRetemIss: true)
 ///     .SetEmail((Email)"intermediario@example.com")
 ///     .Build();
 ///
-/// // Com Inscrição Municipal apenas
+/// // Com CNPJ e Inscrição Municipal
 /// var intermediario = IntermediarioBuilder
-///     .New((InscricaoMunicipal)12345678, intermediarioRetemIss: false)
+///     .New((Cnpj)12345678000195L, intermediarioRetemIss: false, inscricaoMunicipal: (InscricaoMunicipal)12345678)
 ///     .Build();
 /// </code>
 /// </example>
@@ -61,8 +60,7 @@ public sealed class IntermediarioBuilder : IIntermediarioBuilder
     }
 
     /// <summary>
-    /// Cria uma instância do construtor a partir de um CPF, indicando se o ISS foi retido
-    /// e, opcionalmente, a Inscrição Municipal.
+    /// Cria uma instância do construtor a partir de um CPF, indicando se o ISS foi retido.
     /// </summary>
     /// <param name="cpf">Cadastro de Pessoa Física (CPF) do intermediário.</param>
     /// <param name="intermediarioRetemIss"><c>true</c> indica que o ISS foi retido pelo intermediário.</param>
@@ -81,7 +79,7 @@ public sealed class IntermediarioBuilder : IIntermediarioBuilder
     /// </summary>
     /// <param name="cnpj">Cadastro Nacional de Pessoa Jurídica (CNPJ) do intermediário.</param>
     /// <param name="intermediarioRetemIss"><c>true</c> indica que o ISS foi retido pelo intermediário.</param>
-    /// <param name="inscricaoMunicipal">Inscrição Municipal do intermediário, ou <c>null</c> se não aplicaável.</param>
+    /// <param name="inscricaoMunicipal">Inscrição Municipal do intermediário, ou <c>null</c> se não aplicável.</param>
     /// <returns>Uma nova instância de <see cref="IIntermediarioBuilder"/>.</returns>
     /// <exception cref="ArgumentNullException">Se <paramref name="cnpj"/> for nulo.</exception>
     public static IIntermediarioBuilder New(Cnpj cnpj, bool intermediarioRetemIss, InscricaoMunicipal? inscricaoMunicipal = null)

@@ -205,7 +205,7 @@ public class RpsBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void SetIntermediario_WithValidIntermediario_ReturnsIRpsSetOptionals(long cpfNumber)
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
 
         IRpsSetOptionals result = CadeiaObrigatoria(Serie).SetIntermediario(intermediario);
 
@@ -404,7 +404,7 @@ public class RpsBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Build_WithIntermediario_PropagatesCorrectly(long cpfNumber)
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
 
         Rps rps = CadeiaObrigatoria(Serie)
             .SetIntermediario(intermediario)
@@ -468,7 +468,7 @@ public class RpsBuilderTests
     public void Build_WithTomadorCpf_PropagatesCpfAndRazaoSocial(long cpfNumber)
     {
         Tomador tomador = TomadorBuilder
-            .NewCpf(new Cpf(cpfNumber))
+            .NewCpf((Cpf)cpfNumber)
             .SetEmail(new Email("tomador@teste.com.br"))
             .Build();
 

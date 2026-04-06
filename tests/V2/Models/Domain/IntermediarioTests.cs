@@ -11,7 +11,7 @@ public class IntermediarioTests
     [ClassData(typeof(ValidCpfNumber))]
     public void Intermediario_WithCpf_SetsAllFields(long cpfNumber)
     {
-        var cpfOrCnpj = new CpfOrCnpj(new Cpf(cpfNumber));
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
         var inscricao = new InscricaoMunicipal(12345678);
         var email = new Email("inter@teste.com.br");
 

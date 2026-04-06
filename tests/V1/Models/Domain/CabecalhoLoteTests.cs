@@ -23,7 +23,7 @@ public class CabecalhoLoteTests
     [ClassData(typeof(ValidCpfNumber))]
     public void CabecalhoLote_WithCpfOrCnpj_SetsCpfOrCnpj(long cpfNumber)
     {
-        var cpfOrCnpj = new CpfOrCnpj(new Cpf(cpfNumber));
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
         var cab = new CabecalhoLote(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);

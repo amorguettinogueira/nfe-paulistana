@@ -37,7 +37,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void SetEmail_WithNullEmail_ThrowsArgumentNullException(long cpfNumber)
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New(new Cpf(cpfNumber), true);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)cpfNumber, true);
         Email? email = null;
 
         _ = Assert.Throws<ArgumentNullException>(() => builder.SetEmail(email!));
@@ -47,7 +47,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void SetEmail_WithInvalidEmailFormat_ThrowsArgumentException(long cpfNumber)
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New(new Cpf(cpfNumber), true);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)cpfNumber, true);
 
         _ = Assert.Throws<ArgumentException>(() => builder.SetEmail(new Email("formato-invalido")));
     }
@@ -60,7 +60,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void New_WithCpfDomainObject_ReturnsBuilder(long cpfNumber)
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New(new Cpf(cpfNumber), true);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)cpfNumber, true);
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(builder);
     }
@@ -91,7 +91,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void New_WithCpfOnly_BuildIncludesCpfAndNullInscricao(long cpfNumber)
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
 
         Assert.NotNull(intermediario.CpfCnpjIntermediario);
         Assert.Null(intermediario.InscricaoMunicipalIntermediario);
@@ -117,7 +117,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void New_WithCpf_IssRetidoTrue_CorrectlySet(long cpfNumber)
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
 
         Assert.True(intermediario.IssRetidoIntermediario);
     }
@@ -126,7 +126,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void New_WithCpf_IssRetidoFalse_CorrectlySet(long cpfNumber)
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), false).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, false).Build();
 
         Assert.False(intermediario.IssRetidoIntermediario);
     }
@@ -157,7 +157,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void SetEmail_OnCpfBuilder_ReturnsBuilder(long cpfNumber)
     {
-        IIntermediarioBuilder result = IntermediarioBuilder.New(new Cpf(cpfNumber), true)
+        IIntermediarioBuilder result = IntermediarioBuilder.New((Cpf)cpfNumber, true)
             .SetEmail(new Email("intermediario@teste.com.br"));
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(result);
@@ -168,7 +168,7 @@ public partial class IntermediarioBuilderTests
     public void SetEmail_OnCpfBuilder_BuildIncludesEmail(long cpfNumber)
     {
         var email = new Email("intermediario@teste.com.br");
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), true)
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true)
             .SetEmail(email)
             .Build();
 
@@ -209,7 +209,7 @@ public partial class IntermediarioBuilderTests
     {
         var email = new Email("intermediario@teste.com.br");
 
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), true)
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true)
             .SetEmail(email)
             .Build();
 
@@ -226,7 +226,7 @@ public partial class IntermediarioBuilderTests
     {
         var email = new Email("intermediario@teste.com.br");
 
-        Intermediario intermediario = IntermediarioBuilder.New(new Cpf(cpfNumber), false)
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, false)
             .SetEmail(email)
             .Build();
 
@@ -240,7 +240,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void New_WithCpfAndEmailInDomainObjectsMode_AllPropertiesSet(long cpfNumber)
     {
-        var cpf = new Cpf(cpfNumber);
+        var cpf = (Cpf)cpfNumber;
         var email = new Email("intermediario@teste.com.br");
 
         Intermediario intermediario = IntermediarioBuilder.New(cpf, true)
@@ -280,7 +280,7 @@ public partial class IntermediarioBuilderTests
     [Theory()]
     [ClassData(typeof(ValidCpfNumber))]
     public void IsValid_WithCpfBuilder_ReturnsTrue(long cpfNumber) =>
-        Assert.True(IntermediarioBuilder.New(new Cpf(cpfNumber), true).IsValid());
+        Assert.True(IntermediarioBuilder.New((Cpf)cpfNumber, true).IsValid());
 
     [Theory()]
     [ClassData(typeof(ValidCnpjNumber))]
@@ -291,7 +291,7 @@ public partial class IntermediarioBuilderTests
     [ClassData(typeof(ValidCpfNumber))]
     public void GetValidationErrors_WithCpfBuilder_ReturnsEmpty(long cpfNumber)
     {
-        var errors = IntermediarioBuilder.New(new Cpf(cpfNumber), true)
+        var errors = IntermediarioBuilder.New((Cpf)cpfNumber, true)
             .GetValidationErrors()
             .ToList();
 
