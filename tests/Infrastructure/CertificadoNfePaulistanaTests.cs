@@ -56,19 +56,13 @@ public class CertificadoNfePaulistanaTests
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public void Password_SetToEmptyOrWhitespace_BecomesNull(string value)
+    [InlineData("senha123")]
+    [InlineData(null)]
+    public void Password_SetToValidValue_RetainsValue(string? value)
     {
         var config = new Certificado { Password = value };
 
-        Assert.Null(config.Password);
-    }
-
-    [Fact]
-    public void Password_SetToValidValue_RetainsValue()
-    {
-        var config = new Certificado { Password = "senha123" };
-
-        Assert.Equal("senha123", config.Password);
+        Assert.Equal(value, config.Password);
     }
 
     // ============================================

@@ -33,14 +33,17 @@ public class EnderecoExteriorTests
     }
 
     [Fact]
-    public void EnderecoExterior_Constructor_AllNull_AllowsNullProperties()
+    public void EnderecoExterior_Constructor_AnyNullParameter_ThrowsArgumentNullException()
     {
-        var endereco = new EnderecoExterior(null!, null!, null!, null!);
+        var pais = new CodigoPaisISO("US");
+        var cep = new CodigoEndPostal("12345");
+        var cidade = new NomeCidade("New York");
+        var estado = new EstadoProvinciaRegiao("NY");
 
-        Assert.Null(endereco.CodigoPais);
-        Assert.Null(endereco.CodigoEndereco);
-        Assert.Null(endereco.NomeCidade);
-        Assert.Null(endereco.EstadoProvinciaRegiao);
+        _ = Assert.Throws<ArgumentNullException>(() => _ = new EnderecoExterior(null!, cep, cidade, estado));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = new EnderecoExterior(pais, null!, cidade, estado));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = new EnderecoExterior(pais, cep, null!, estado));
+        _ = Assert.Throws<ArgumentNullException>(() => _ = new EnderecoExterior(pais, cep, cidade, null!));
     }
 
     [Fact]

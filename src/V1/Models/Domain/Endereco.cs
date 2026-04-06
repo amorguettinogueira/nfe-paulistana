@@ -10,7 +10,7 @@ namespace Nfe.Paulistana.V1.Models.Domain;
 /// </summary>
 /// <remarks>
 /// Fonte: <c>TiposNFe_v01.xsd</c> — Tipo <c>tpEndereco</c>, linha 484.
-/// Construa instâncias via <see cref="Nfe.Paulistana.Builders.EnderecoBuilder"/>.
+/// Construa instâncias via <see cref="Builders.EnderecoBuilder"/>.
 /// </remarks>
 [XmlType(AnonymousType = true, Namespace = Constants.Uris.NfeTipos)]
 [Serializable]

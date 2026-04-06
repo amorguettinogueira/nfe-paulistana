@@ -4,7 +4,7 @@ using Nfe.Paulistana.V2.Models.DataTypes;
 namespace Nfe.Paulistana.V2.Builders;
 
 /// <summary>
-/// Segundo passo obrigatório da cadeia de construção do <see cref="Rps"/>.
+/// Segundo passo obrigatório da cadeia de construção do <see cref="Models.Domain.Rps"/>.
 /// Exposto após <see cref="IRpsSetNfe.SetNFe"/> e requer a chamada de <see cref="SetServico"/>
 /// antes de avançar para <see cref="IRpsSetIss"/>.
 /// </summary>

@@ -3,7 +3,7 @@ using Nfe.Paulistana.Models.DataTypes;
 namespace Nfe.Paulistana.V2.Builders;
 
 /// <summary>
-/// Terceiro passo obrigatório da cadeia de construção do <see cref="Rps"/>.
+/// Terceiro passo obrigatório da cadeia de construção do <see cref="Models.Domain.Rps"/>.
 /// Exposto após <see cref="IRpsSetServico.SetServico"/> e requer a chamada de <see cref="SetIss"/>
 /// antes de avançar para <see cref="IRpsSetIbsCbs"/>, que requer as informações do IBS/CBS
 /// antes de expor <see cref="IRpsSetOptionals"/> com campos opcionais e <see cref="IRpsSetOptionals.Build"/>.

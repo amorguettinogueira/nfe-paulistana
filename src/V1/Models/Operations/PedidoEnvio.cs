@@ -18,7 +18,7 @@ namespace Nfe.Paulistana.V1.Models.Operations;
 /// <para>
 /// Representa uma solicitação de envio de um único RPS à Prefeitura de São Paulo.
 /// Instâncias devem ser criadas exclusivamente via
-/// <see cref="Nfe.Paulistana.Builders.PedidoEnvioFactory"/>, que garante
+/// <see cref="Builders.PedidoEnvioFactory"/>, que garante
 /// que o RPS e o pedido estejam corretamente assinados antes do envio.
 /// </para>
 /// </remarks>

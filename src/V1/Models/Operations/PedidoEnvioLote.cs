@@ -19,7 +19,7 @@ namespace Nfe.Paulistana.V1.Models.Operations;
 /// <para>
 /// Representa uma solicitação de envio em lote contendo múltiplos RPS à Prefeitura de São Paulo.
 /// Instâncias devem ser criadas exclusivamente via
-/// <see cref="Nfe.Paulistana.Builders.PedidoEnvioLoteFactory"/>, que garante que todos
+/// <see cref="Builders.PedidoEnvioLoteFactory"/>, que garante que todos
 /// os RPS estejam individualmente assinados, as totalizações calculadas e o lote assinado.
 /// </para>
 /// </remarks>
