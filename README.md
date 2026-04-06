@@ -1,6 +1,6 @@
 # Nfe.Paulistana
 
-[![Build](https://img.shields.io/github/actions/workflow/status/amorguettinogueira/nfe.paulistana/ci.yml?branch=main&label=build)](https://github.com/amorguettinogueira/nfe.paulistana/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/amorguettinogueira/nfe-paulistana/ci.yml?branch=main&label=build)](https://github.com/amorguettinogueira/nfe-paulistana/actions)
 [![NuGet](https://img.shields.io/nuget/v/Nfe.Paulistana?label=nuget)](https://www.nuget.org/packages/Nfe.Paulistana)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Nfe.Paulistana)](https://www.nuget.org/packages/Nfe.Paulistana)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
