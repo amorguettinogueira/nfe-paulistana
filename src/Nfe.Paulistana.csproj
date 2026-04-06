@@ -1,0 +1,95 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Nota Fiscal Paulistana (NFS-e) SDK</Title>
+    <Description>Cliente .NET para integração com o webservice SOAP da NFS-e Paulistana (Nota Fiscal de Serviços Eletrônica da Prefeitura de São Paulo). Suporta as versões V1 e V2 da API, emissão e cancelamento de RPS, consulta de NF-e, e autenticação com certificado digital A1/A3. Inclui validação via schemas XSD e tipos de valor fortemente tipados para todos os campos fiscais.</Description>
+    <PackageIcon>Nfe.Paulistana.png</PackageIcon>
+    <ApplicationIcon>Nfe.Paulistana.ico</ApplicationIcon>
+    <Authors>Adriano Morguetti Nogueira</Authors>
+    <Copyright>Copyright (c) 2025 Adriano Morguetti Nogueira</Copyright>
+    <PackageProjectUrl>https://github.com/amorguettinogueira/nfe-paulistana</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/amorguettinogueira/nfe-paulistana</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>NFS-e nfse NFe RPS SOAP ISS SP webservice certificado-digital NotaFiscalMilhao Paulistana prefeitura fiscal SaoPaulo</PackageTags>
+    <NeutralLanguage>pt-BR</NeutralLanguage>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Schemas\V1\PedidoCancelamentoNFe_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoConsultaCNPJ_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoConsultaLote_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoConsultaNFe_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoConsultaNFePeriodo_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoEnvioLoteRPS_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoEnvioRPS_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\PedidoInformacoesLote_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\TiposNFe_v01.xsd" />
+    <EmbeddedResource Include="Schemas\V1\xmldsig-core-schema_v01.xsd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Schemas\V2\PedidoCancelamentoNFe_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoConsultaCNPJ_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoConsultaLote_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoConsultaNFe_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoConsultaNFePeriodo_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoEnvioLoteRPS_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoEnvioRPS_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\PedidoInformacoesLote_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\RetornoEnvioRPS_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\RetornoInformacoesLote_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\TiposNFe_v02.xsd" />
+    <EmbeddedResource Include="Schemas\V2\xmldsig-core-schema_v02.xsd" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.3" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Nfe.Paulistana.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Include="Nfe.Paulistana.ico" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\Nfe.Paulistana.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+
+</Project>

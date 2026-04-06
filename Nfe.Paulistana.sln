@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nfe.Paulistana", "src\Nfe.Paulistana.csproj", "{E7124EBF-D8F7-4E6C-8977-69B9D6746605}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nfe.Paulistana.Tests", "tests\Nfe.Paulistana.Tests.csproj", "{0123C0DD-9ECA-4027-9E97-D6CB42ABAE25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nfe.Paulistana.Integration.Sample", "samples\Nfe.Paulistana.Integration.Sample.csproj", "{D4D24E1F-D139-5526-5FE7-E26D1CB6D82A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23095941-C56B-44F2-9D6B-F9554B5E44A8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.github\copilot-instructions.md = .github\copilot-instructions.md
+		LICENSE = LICENSE
+		Nfe.Paulistana.ico = Nfe.Paulistana.ico
+		Nfe.Paulistana.png = Nfe.Paulistana.png
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7124EBF-D8F7-4E6C-8977-69B9D6746605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7124EBF-D8F7-4E6C-8977-69B9D6746605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7124EBF-D8F7-4E6C-8977-69B9D6746605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7124EBF-D8F7-4E6C-8977-69B9D6746605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0123C0DD-9ECA-4027-9E97-D6CB42ABAE25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0123C0DD-9ECA-4027-9E97-D6CB42ABAE25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0123C0DD-9ECA-4027-9E97-D6CB42ABAE25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0123C0DD-9ECA-4027-9E97-D6CB42ABAE25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4D24E1F-D139-5526-5FE7-E26D1CB6D82A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4D24E1F-D139-5526-5FE7-E26D1CB6D82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4D24E1F-D139-5526-5FE7-E26D1CB6D82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4D24E1F-D139-5526-5FE7-E26D1CB6D82A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF28D7B0-AFA8-4B57-8991-2689863DF435}
+	EndGlobalSection
+EndGlobal

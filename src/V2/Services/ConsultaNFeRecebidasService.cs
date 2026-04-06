@@ -1,0 +1,46 @@
+using Nfe.Paulistana.Extensions;
+using Nfe.Paulistana.Infrastructure;
+using Nfe.Paulistana.V2.Infrastructure.Envelope;
+using Nfe.Paulistana.V2.Models.Operations;
+using Nfe.Paulistana.V2.Models.Response;
+using Nfe.Paulistana.Xml;
+
+namespace Nfe.Paulistana.V2.Services;
+
+/// <summary>
+/// Serviço responsável por validar e enviar pedidos de consulta de NFS-e recebidas ao webservice
+/// da NF-e Paulistana v02.
+/// </summary>
+/// <param name="httpClient">
+/// Instância de <see cref="HttpClient"/> configurada pelo <see cref="IHttpClientFactory"/>,
+/// com <see cref="HttpClient.BaseAddress"/> e certificado mTLS já configurados.
+/// </param>
+internal sealed class ConsultaNFeRecebidasService(HttpClient httpClient) : IConsultaNFeRecebidasService
+{
+    private const string InvalidPayload = "Os dados do Pedido de Consulta de NFS-e Recebidas não foram validados com sucesso. Detalhes: {0}";
+    private const string EmptyResponse = "O webservice retornou uma resposta vazia ou inválida.";
+    private const string SoapActionConsultaNFeRecebidas = "http://www.prefeitura.sp.gov.br/nfe/ws/consultaNFeRecebidas";
+
+    private readonly SoapClient _soapClient = new(httpClient ??
+        throw new ArgumentNullException(nameof(httpClient)));
+
+    /// <inheritdoc/>
+    public async Task<RetornoConsulta> SendAsync(
+        PedidoConsultaNFePeriodo pedidoConsultaNFePeriodo,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(pedidoConsultaNFePeriodo);
+
+        if (!pedidoConsultaNFePeriodo.IsValidXsd(out string? error))
+        {
+            throw new InvalidOperationException(InvalidPayload.Format(error));
+        }
+
+        var envelope = new SoapEnvelope<ConsultaNFeRecebidasRequest>((ConsultaNFeRecebidasRequest)pedidoConsultaNFePeriodo);
+        string responseXml = await _soapClient.SendRequestAsync(envelope, SoapActionConsultaNFeRecebidas, cancellationToken).ConfigureAwait(false);
+        SoapEnvelope<ConsultaNFeRecebidasResponse> responseEnvelope = SoapClient.DeserializeEnvelope<ConsultaNFeRecebidasResponse>(responseXml);
+
+        return responseEnvelope.Body?.Request?.RetornoXml?.Payload
+            ?? throw new InvalidOperationException(EmptyResponse);
+    }
+}

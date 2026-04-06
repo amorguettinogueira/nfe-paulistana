@@ -1,0 +1,69 @@
+using Microsoft.Extensions.Logging;
+using Nfe.Paulistana.Integration.Sample.Configuration;
+using Nfe.Paulistana.Integration.Sample.Presentation.Console;
+using Nfe.Paulistana.Models.DataTypes;
+using Nfe.Paulistana.V1.Builders;
+using Nfe.Paulistana.V1.Models.DataTypes;
+using Nfe.Paulistana.V1.Services;
+
+namespace Nfe.Paulistana.Integration.Sample.Actions;
+
+/// <summary>
+/// Consulta um lote RPS processado via serviço SOAP <c>ConsultaLote</c> V01
+/// (<see cref="Nfe.Paulistana.V1.Services.IConsultaLoteService"/>).
+/// <para><b>Configuração necessária (<see cref="Configuration.AppSettings"/>):</b>
+/// <c>MeuCnpj</c>, <c>ConsultaLoteV1:NumeroLote</c>.</para>
+/// <para><b>Efeitos:</b> chamada de rede SOAP com mTLS; exibe as NF-es do lote
+/// via <see cref="Presentation.Console.ConsolePrinter.PrintNfes"/>.
+/// Idempotente — somente leitura no servidor da Prefeitura.</para>
+/// </summary>
+internal sealed class QueryBatchV1Action(PedidoConsultaLoteFactory factory,
+                                         IConsultaLoteService service,
+                                         AppSettings settings,
+                                         ILogger<QueryBatchV1Action> logger) : IIntegrationAction
+{
+    public int MenuOrder => ActionCatalog.QueryBatchV1.Order;
+    public string Description => ActionCatalog.QueryBatchV1.Description;
+
+    public async Task RunAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            ConsolePresenter.Info("Parâmetros de entrada:");
+            ConsolePresenter.Info($"  Meu CNPJ: {settings.MeuCnpj}");
+            ConsolePresenter.Info($"  Número do Lote: {settings.ConsultaLoteV1.NumeroLote}");
+
+            var pedidoConsulta = factory.NewCnpj(
+                cnpj: (Cnpj)settings.MeuCnpj,
+                numeroLote: (Numero)settings.ConsultaLoteV1.NumeroLote);
+
+            var retorno = await service.SendAsync(pedidoConsulta, cancellationToken: cancellationToken);
+
+            ConsolePresenter.Outcome($"\nSucesso: {retorno.Cabecalho?.Sucesso}", retorno.Cabecalho?.Sucesso ?? false);
+
+            if (retorno.Erro?.Length > 0)
+            {
+                ConsolePresenter.Error("Erros:");
+                foreach (var erro in retorno.Erro)
+                {
+                    ConsolePresenter.Error($"  [{erro.Codigo}] {erro.Descricao}");
+                }
+            }
+
+            if (retorno.Alerta?.Length > 0)
+            {
+                ConsolePresenter.Warning("Alertas:");
+                foreach (var alerta in retorno.Alerta)
+                {
+                    ConsolePresenter.Warning($"  [{alerta.Codigo}] {alerta.Descricao}");
+                }
+            }
+
+            ConsolePrinter.PrintNfes(retorno.Nfes);
+        }
+        catch (Exception ex)
+        {
+            ConsolePrinter.PrintException(ex, logger, "Erro em ConsultaLoteV1Action");
+        }
+    }
+}

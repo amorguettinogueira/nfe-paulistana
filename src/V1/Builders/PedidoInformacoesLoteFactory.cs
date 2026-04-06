@@ -1,0 +1,81 @@
+using Nfe.Paulistana.Infrastructure;
+using Nfe.Paulistana.Models.DataTypes;
+using Nfe.Paulistana.Options;
+using Nfe.Paulistana.V1.Models.DataTypes;
+using Nfe.Paulistana.V1.Models.Domain;
+using Nfe.Paulistana.V1.Models.Operations;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Nfe.Paulistana.V1.Builders;
+
+/// <summary>
+/// Fábrica para construir objetos <see cref="PedidoInformacoesLote"/> com geração automática
+/// de assinatura digital.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Fornece uma API one-shot para criar objetos <see cref="PedidoInformacoesLote"/> totalmente assinados,
+/// gerenciando automaticamente certificados e assinatura do pedido.
+/// </para>
+/// <para>
+/// <strong>Design Arquitetural:</strong> Factory Pattern — métodos retornam objetos completos,
+/// não builders intermediários. Assinatura é garantida como invariante de todos os objetos retornados.
+/// </para>
+/// </remarks>
+/// <param name="certificate">Configuração do certificado digital utilizado para assinar os pedidos.</param>
+public sealed class PedidoInformacoesLoteFactory(Certificado certificate)
+{
+    private readonly Certificado _certificate = certificate
+        ?? throw new ArgumentNullException(nameof(certificate), "Configuração de certificado inválida.");
+
+    private readonly XmlFileSignatureGenerator<PedidoInformacoesLote> _signatureGenerator = new();
+
+    /// <summary>
+    /// Cria um <see cref="PedidoInformacoesLote"/> totalmente assinado a partir de um CPF remetente.
+    /// </summary>
+    /// <param name="cpf">CPF do remetente autorizado a transmitir a mensagem XML.</param>
+    /// <param name="inscricaoPrestador">Inscrição municipal do prestador que gerou o lote.</param>
+    /// <param name="numeroLote">Número do lote a consultar. Quando nulo, retorna o último lote gerador de NFS-e.</param>
+    /// <returns>Objeto <see cref="PedidoInformacoesLote"/> completamente assinado e pronto para envio.</returns>
+    /// <exception cref="ArgumentNullException">Lançado quando <paramref name="cpf"/> ou <paramref name="inscricaoPrestador"/> é nulo.</exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">Lançado quando o carregamento do certificado ou a assinatura falhar.</exception>
+    public PedidoInformacoesLote NewCpf(Cpf cpf, InscricaoMunicipal inscricaoPrestador, Numero? numeroLote = null)
+    {
+        ArgumentNullException.ThrowIfNull(cpf);
+        ArgumentNullException.ThrowIfNull(inscricaoPrestador);
+        return ConstructWith((Cabecalho)cpf, inscricaoPrestador, numeroLote);
+    }
+
+    /// <summary>
+    /// Cria um <see cref="PedidoInformacoesLote"/> totalmente assinado a partir de um CNPJ remetente.
+    /// </summary>
+    /// <param name="cnpj">CNPJ do remetente autorizado a transmitir a mensagem XML.</param>
+    /// <param name="inscricaoPrestador">Inscrição municipal do prestador que gerou o lote.</param>
+    /// <param name="numeroLote">Número do lote a consultar. Quando nulo, retorna o último lote gerador de NFS-e.</param>
+    /// <returns>Objeto <see cref="PedidoInformacoesLote"/> completamente assinado e pronto para envio.</returns>
+    /// <exception cref="ArgumentNullException">Lançado quando <paramref name="cnpj"/> ou <paramref name="inscricaoPrestador"/> é nulo.</exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">Lançado quando o carregamento do certificado ou a assinatura falhar.</exception>
+    public PedidoInformacoesLote NewCnpj(Cnpj cnpj, InscricaoMunicipal inscricaoPrestador, Numero? numeroLote = null)
+    {
+        ArgumentNullException.ThrowIfNull(cnpj);
+        ArgumentNullException.ThrowIfNull(inscricaoPrestador);
+        return ConstructWith((Cabecalho)cnpj, inscricaoPrestador, numeroLote);
+    }
+
+    private PedidoInformacoesLote ConstructWith(Cabecalho cabecalho, InscricaoMunicipal inscricaoPrestador, Numero? numeroLote)
+    {
+        var pedido = new PedidoInformacoesLote
+        {
+            Cabecalho = new CabecalhoInformacoesLote(cabecalho.CpfOrCnpj!)
+            {
+                NumeroLote = numeroLote,
+                InscricaoPrestador = inscricaoPrestador,
+            },
+        };
+
+        using X509Certificate2 cert = _certificate.Build();
+        _signatureGenerator.Sign(pedido, cert);
+
+        return pedido;
+    }
+}
