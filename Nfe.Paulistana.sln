@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		CLA.md = CLA.md
 		.github\copilot-instructions.md = .github\copilot-instructions.md
 		Directory.Build.props = Directory.Build.props
 		docfx.json = docfx.json
@@ -32,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{66320409-64EC-F7C5-3DEF-65E7510DAAD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nfe.Paulistana.Benchmarks", "benchmarks\Nfe.Paulistana.Benchmarks\Nfe.Paulistana.Benchmarks.csproj", "{3477C2C8-976B-4686-BB29-2D401441D8B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nfe.Paulistana.Benchmarks", "benchmarks\Nfe.Paulistana.Benchmarks.csproj", "{3477C2C8-976B-4686-BB29-2D401441D8B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{1218DFD4-7BFF-4741-A0C9-DC41DBB63F8A}"
 	ProjectSection(SolutionItems) = preProject
