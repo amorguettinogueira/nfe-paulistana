@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.x
@@ -30,7 +30,7 @@ jobs:
             10.x
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: csharp
           # Executa apenas as queries de path traversal e XXE (CWE-022 e CWE-611).
@@ -50,6 +50,6 @@ jobs:
         run: dotnet build src/Nfe.Paulistana.csproj --no-incremental -c Release
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: security-baseline
