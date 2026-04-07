@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Nfe.Paulistana.Benchmarks</AssemblyName>
+    <RootNamespace>Nfe.Paulistana.Benchmarks</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- BenchmarkDotNet exige Release; esta flag lembra o desenvolvedor. -->
+    <Configurations>Release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nfe.Paulistana.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+  </ItemGroup>
+
+</Project>

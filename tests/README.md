@@ -25,9 +25,8 @@ No Visual Studio: **Test Explorer → Run All**.
 
 | Métrica | Valor |
 |---|---|
-| Total de testes | 1590 |
-| Framework | xUnit 2.9+ / .NET 8 |
-| Biblioteca de mock | NSubstitute |
+| Total de testes | 1820 |
+| Framework | xUnit 2.9.3 / .NET 8, 9, 10 |
 | Assertions | xUnit `Assert.*` exclusivamente |
 
 > ⚠️ **FluentAssertions não é utilizado neste projeto.** A partir da versão 8.x a biblioteca adotou licença comercial Xceed, incompatível com uso comercial. Use `Assert.*` do xUnit em todas as contribuições.
@@ -40,27 +39,31 @@ A estrutura de pastas dos testes espelha a do projeto `src/`, facilitando a nave
 
 ```
 tests/
-├── Diagnostics/           # SoapDiagnosticsHandlerTests
-├── Exceptions/            # NfeRequestExceptionTests
-├── Extensions/            # ServiceCollectionExtensionsTests, StringExtensionsTests
-├── Helpers/               # Dados de teste compartilhados (CPFs e CNPJs válidos)
-├── Infrastructure/        # CertificadoNfePaulistanaTests
+├── Diagnostics/             # SoapDiagnosticsHandlerTests
+├── Exceptions/              # NfeRequestExceptionTests
+├── Extensions/              # ServiceCollectionExtensionsTests, StringExtensionsTests
+├── Helpers/                 # Dados de teste compartilhados (CPFs e CNPJs válidos)
+├── Infrastructure/          # CertificadoNfePaulistanaTests, ElementSignatureGeneratorBaseTests, MensagemXmlTests
 ├── Models/
-│   ├── DataTypes/         # Testes de Value Objects compartilhados
-│   └── Validators/        # TributacaoDataEmissaoValidatorTests
-├── Xml/                   # SchemaProviderTests, ValidationHelperTests
+│   ├── DataTypes/           # Testes de Value Objects compartilhados
+│   └── Validators/          # TributacaoDataEmissaoValidatorTests
+├── Options/                 # CertificadoTests (opções de configuração)
+├── Xml/                     # SchemaProviderTests, ValidationHelperTests
 ├── V1/
-│   ├── Builders/          # RpsBuilderTests, TomadorBuilderTests, etc.
-│   ├── Helpers/           # CNPJs válidos específicos de V1
-│   ├── Models/Domain/     # Testes de entidades de domínio V1
-│   ├── Models/DataTypes/  # Testes de Value Objects V1
-│   └── Services/          # Testes de serviço V1 (com HttpClient mockado)
+│   ├── Builders/            # RpsBuilderTests, TomadorBuilderTests, etc.
+│   ├── Helpers/             # CNPJs válidos específicos de V1
+│   ├── Infrastructure/      # RpsSignatureGeneratorTests
+│   ├── Models/Domain/       # Testes de entidades de domínio V1
+│   ├── Models/DataTypes/    # Testes de Value Objects V1
+│   └── Services/            # Testes de serviço V1 (com HttpClient mockado)
 └── V2/
-    ├── Builders/          # RpsBuilderTests, EventoBuilderTests, etc.
-    ├── Helpers/           # CNPJs válidos específicos de V2
-    ├── Models/Domain/     # Testes de entidades de domínio V2
-    ├── Models/DataTypes/  # Testes de Value Objects V2
-    └── Services/          # Testes de serviço V2 (com HttpClient mockado)
+    ├── Builders/            # RpsBuilderTests, EventoBuilderTests, etc.
+    ├── Helpers/             # CNPJs válidos específicos de V2
+    ├── Infrastructure/      # CancelamentoSignatureGeneratorTests, RpsSignatureGeneratorTests
+    │   └── Envelope/        # EnvioLoteRpsRequest/ResponseTests, TesteEnvioLoteRpsRequest/ResponseTests
+    ├── Models/Domain/       # Testes de entidades de domínio V2
+    ├── Models/DataTypes/    # Testes de Value Objects V2
+    └── Services/            # Testes de serviço V2 (com HttpClient mockado)
 ```
 
 ---
@@ -124,8 +127,10 @@ public void Constructor_InvalidValue_ShouldThrowArgumentException(string? value)
 | **Value Objects** | Happy path, todos os casos de borda (null, vazio, tamanho, regex, dígito verificador), serialização/desserialização XML |
 | **Domain** | Construção, validação de invariantes, operadores implícitos/explícitos |
 | **Builders** | Fluxo fluente completo, combinações obrigatórias vs. opcionais |
-| **Services** | `SendAsync` com `HttpClient` mockado via NSubstitute — resposta de sucesso, erro HTTP, exceção de negócio |
-| **Infrastructure** | Carregamento de certificado, geração de assinatura XML |
+| **Services** | `SendAsync` com `HttpClient` mockado via `FakeHttpMessageHandler` — resposta de sucesso, erro HTTP, exceção de negócio |
+| **Infrastructure** | Carregamento de certificado, geração de assinatura XML, serialização de mensagens SOAP |
+| **Infrastructure V1/V2** | Geração de assinatura de RPS e cancelamento, serialização/desserialização de envelopes SOAP |
+| **Options** | Validação de opções de configuração (`Certificado`) |
 | **Xml** | Carregamento de schemas XSD, validação de documentos válidos e inválidos |
 | **Diagnostics** | Callback de diagnóstico — isolamento de falha no callback, métricas de tempo |
 | **Extensions** | Registro correto de dependências no container de DI |

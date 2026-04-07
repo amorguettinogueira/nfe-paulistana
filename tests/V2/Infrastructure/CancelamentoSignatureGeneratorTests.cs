@@ -1,6 +1,5 @@
 using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.V2.Infrastructure;
-using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
