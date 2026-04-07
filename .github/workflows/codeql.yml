@@ -1,0 +1,55 @@
+name: CodeQL Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze (C#)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.x
+            9.x
+            10.x
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          # Executa apenas as queries de path traversal e XXE (CWE-022 e CWE-611).
+          # Criptografia fraca (SHA-1) é omitida intencionalmente: algoritmo imposto
+          # pela prefeitura de São Paulo e não substituível pela biblioteca.
+          queries: +security-extended
+          config: |
+            query-filters:
+              - exclude:
+                  tags contain: weak-cryptographic-algorithm
+              - exclude:
+                  tags contain: sql-injection
+              - exclude:
+                  tags contain: xss
+
+      - name: Build
+        run: dotnet build src/Nfe.Paulistana.csproj --no-incremental -c Release
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: security-baseline
