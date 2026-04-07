@@ -20,12 +20,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0   # Obrigatório: MinVer precisa do histórico completo para derivar a versão
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.x
@@ -42,7 +42,7 @@ jobs:
         run: dotnet test --no-build -c Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: coverage
@@ -52,7 +52,7 @@ jobs:
         run: dotnet pack src/Nfe.Paulistana.csproj --no-build -c Release -o dist
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nupkg
           path: dist/*.nupkg
@@ -66,13 +66,13 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: nupkg
           path: dist
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
 
