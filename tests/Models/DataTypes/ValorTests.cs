@@ -244,4 +244,48 @@ public class ValorTests
         var desserializado = DesserializarDeXml(xml);
         Assert.Equal(decimal.Zero, Valor.FromValor(desserializado));
     }
+
+    // ============================================
+    // FromDouble
+    // ============================================
+
+    [Fact]
+    public void FromDouble_WithValidValue_ProducesSameResultAsFromDecimal() =>
+        Assert.Equal(Valor.FromDecimal(100.50m).ToString(), Valor.FromDouble(100.50).ToString());
+
+    [Fact]
+    public void FromDouble_WithZero_SerializesAsZero() =>
+        Assert.Equal("0", Valor.FromDouble(0.0).ToString());
+
+    [Fact]
+    public void FromDouble_WithNegativeValue_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Valor.FromDouble(-1.0));
+
+    [Fact]
+    public void FromDouble_WithValueExceedingMax_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Valor.FromDouble(2_000_000_000_000_000.0));
+
+    [Fact]
+    public void FromDouble_WithNaN_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Valor.FromDouble(double.NaN));
+
+    [Fact]
+    public void FromDouble_WithPositiveInfinity_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Valor.FromDouble(double.PositiveInfinity));
+
+    [Fact]
+    public void FromDouble_WithNegativeInfinity_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Valor.FromDouble(double.NegativeInfinity));
+
+    [Fact]
+    public void ExplicitCastDouble_ValidValue_ProducesSameResultAsFromDouble()
+    {
+        var via = Valor.FromDouble(250.75);
+        var cast = (Valor)250.75;
+        Assert.Equal(via.ToString(), cast.ToString());
+    }
+
+    [Fact]
+    public void ExplicitCastDouble_WithNegativeValue_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => { var _ = (Valor)(-1.0); });
 }

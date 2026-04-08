@@ -53,4 +53,14 @@ public sealed class Uf : ConstrainedString
     /// </summary>
     /// <param name="value">Sigla da UF.</param>
     public static explicit operator Uf(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Uf"/>.
+    /// </summary>
+    /// <param name="value">Sigla da UF, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="Uf"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> não tiver exatamente 2 caracteres.</exception>
+    public static Uf? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new Uf(v));
 }

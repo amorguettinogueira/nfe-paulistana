@@ -342,7 +342,7 @@ public class RpsBuilderTests
         Rps rps = CadeiaObrigatoria(Serie).SetTomador(TomadorPadrao).Build();
 
         Assert.NotNull(rps.ValorDeducoes);
-        Assert.Equal(((Valor)0).ToString(), rps.ValorDeducoes.ToString());
+        Assert.Equal(((Valor)0m).ToString(), rps.ValorDeducoes.ToString());
     }
 
     [Fact]

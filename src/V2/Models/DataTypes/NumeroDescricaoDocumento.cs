@@ -48,4 +48,14 @@ public sealed class NumeroDescricaoDocumento : ConstrainedString
     /// </summary>
     /// <param name="value">Número e descrição do documento.</param>
     public static explicit operator NumeroDescricaoDocumento(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="NumeroDescricaoDocumento"/>.
+    /// </summary>
+    /// <param name="value">Número e descrição do documento, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="NumeroDescricaoDocumento"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 255 caracteres.</exception>
+    public static NumeroDescricaoDocumento? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new NumeroDescricaoDocumento(v));
 }

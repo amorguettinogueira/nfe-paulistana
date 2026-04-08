@@ -43,6 +43,6 @@ public class RpsTests
             .SetTomador(tomador)
             .Build();
 
-        Assert.Equal(((Valor)0).ToString(), rps.ValorDeducoes?.ToString());
+        Assert.Equal(((Valor)0m).ToString(), rps.ValorDeducoes?.ToString());
     }
 }

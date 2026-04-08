@@ -169,4 +169,28 @@ public sealed class NomeCidadeTests
         Assert.Equal(value, deserialized.ToString());
         Assert.Equal(nomeCidade, deserialized);
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(NomeCidade.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(NomeCidade.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(NomeCidade.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Campinas", NomeCidade.ParseIfPresent("Campinas")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => NomeCidade.ParseIfPresent(new string('A', 61)));
 }

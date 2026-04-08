@@ -319,6 +319,8 @@ public class InformacoesLoteService(
 }
 ```
 
+> Para exemplos end-to-end executáveis de todas as operações — envio de RPS (incluindo campos V2 como IBS/CBS), cancelamento e consultas — explore o [projeto de amostra](samples/README.md) incluído neste repositório.
+
 ---
 
 ## Tratamento de erros
@@ -349,7 +351,7 @@ if (retorno.Cabecalho?.Sucesso == false)
 
 A biblioteca segue **Clean Architecture** com separação explícita entre domínio, aplicação e infraestrutura. Os pontos de destaque:
 
-- **Value Objects fortemente tipados** — cada campo fiscal possui seu próprio tipo (`InscricaoMunicipal`, `Cnpj`, `CodigoNBS`, etc.) com validação de invariantes no construtor. Erros de tipo são capturados em tempo de compilação.
+- **Value Objects fortemente tipados** — cada campo fiscal possui seu próprio tipo (`InscricaoMunicipal`, `Cnpj`, `CodigoNBS`, etc.) com validação de invariantes no construtor. Erros de tipo são capturados em tempo de compilação. Para campos opcionais, todos os tipos de texto expõem `ParseIfPresent(string? value)`: retorna `null` para entradas ausentes e lança `ArgumentException` para valores presentes mas inválidos.
 - **Suporte dual V1/V2** — as duas versões do webservice da Prefeitura coexistem no mesmo pacote com namespaces isolados (`Nfe.Paulistana.V1` / `Nfe.Paulistana.V2`), permitindo migração gradual.
 - **Assinatura digital embutida** — o pipeline de assinatura XML (xmldsig) é transparente ao consumidor; a biblioteca assina automaticamente RPS e pedidos de cancelamento usando o certificado configurado.
 - **Validação XSD embarcada** — todos os schemas `.xsd` são recursos embarcados (`EmbeddedResource`); a validação ocorre antes do envio, sem dependência de arquivos externos.

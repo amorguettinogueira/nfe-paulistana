@@ -38,4 +38,28 @@ public class ComplementoTests
     [Fact]
     public void Complemento_Equals_SameValue_ReturnsTrue() =>
         Assert.Equal(new Complemento("Bloco A"), new Complemento("Bloco A"));
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(Complemento.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(Complemento.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(Complemento.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Apto 42", Complemento.ParseIfPresent("Apto 42")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Complemento.ParseIfPresent(new string('B', 31)));
 }

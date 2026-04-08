@@ -145,6 +145,16 @@ Os campos com prefixo `*` existem tanto para `EnvioRpsTesteV1` quanto para `Envi
 | `*:Aliquota` | decimal | Alíquota do ISS (ex.: `0.0796` para 7,96%). |
 | `*:ValorServicos` | decimal | Valor total dos serviços em reais (ex.: `350.00`). |
 
+#### Campos opcionais de endereço do tomador (V1 e V2)
+
+Quando pelo menos um destes campos for informado, o endereço do tomador é incluído no RPS. Campos omitidos ou em branco são ignorados — o XSD aceita o tomador sem endereço.
+
+| Chave | Tipo | Descrição |
+|---|---|---|
+| `*:UfTomador` | string | UF do endereço do tomador (ex.: `"SP"`). Deve ser uma sigla de estado válida. |
+| `*:CidadeTomador` | string | Código IBGE do município do endereço do tomador como string (ex.: `"3550308"` para São Paulo). Consulte a [tabela do IBGE](https://www.ibge.gov.br/explica/codigos-dos-municipios.php). |
+| `*:BairroTomador` | string | Bairro do endereço do tomador (texto livre). |
+
 #### Campos exclusivos do V2
 
 | Chave | Tipo | Descrição |

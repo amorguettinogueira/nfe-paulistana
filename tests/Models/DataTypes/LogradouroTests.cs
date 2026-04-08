@@ -42,4 +42,28 @@ public class LogradouroTests
     [Fact]
     public void Logradouro_GetHashCode_SameValue_ReturnsEqualHash() =>
         Assert.Equal(new Logradouro("Av. Paulista").GetHashCode(), new Logradouro("Av. Paulista").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(Logradouro.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(Logradouro.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(Logradouro.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Rua das Flores", Logradouro.ParseIfPresent("Rua das Flores")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Logradouro.ParseIfPresent(new string('L', 51)));
 }

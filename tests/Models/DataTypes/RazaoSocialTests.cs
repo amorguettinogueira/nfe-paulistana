@@ -46,4 +46,28 @@ public class RazaoSocialTests
     [Fact]
     public void RazaoSocial_GetHashCode_SameValue_ReturnsEqualHash() =>
         Assert.Equal(new RazaoSocial("Acme Corp.").GetHashCode(), new RazaoSocial("Acme Corp.").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(RazaoSocial.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(RazaoSocial.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(RazaoSocial.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Empresa Exemplo Ltda.", RazaoSocial.ParseIfPresent("Empresa Exemplo Ltda.")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => RazaoSocial.ParseIfPresent(new string('R', 76)));
 }

@@ -183,4 +183,48 @@ public class AliquotaTests
         var desserializado = DesserializarDeXml(xml);
         Assert.Null(desserializado!.ToString());
     }
+
+    // ============================================
+    // FromDouble
+    // ============================================
+
+    [Fact]
+    public void FromDouble_WithValidValue_ProducesSameResultAsFromDecimal() =>
+        Assert.Equal(Aliquota.FromDecimal(0.05m).ToString(), Aliquota.FromDouble(0.05).ToString());
+
+    [Fact]
+    public void FromDouble_WithZero_SerializesAsZero() =>
+        Assert.Equal("0", Aliquota.FromDouble(0.0).ToString());
+
+    [Fact]
+    public void FromDouble_WithNegativeValue_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Aliquota.FromDouble(-0.01));
+
+    [Fact]
+    public void FromDouble_WithValueExceedingMax_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Aliquota.FromDouble(10.0));
+
+    [Fact]
+    public void FromDouble_WithNaN_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Aliquota.FromDouble(double.NaN));
+
+    [Fact]
+    public void FromDouble_WithPositiveInfinity_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Aliquota.FromDouble(double.PositiveInfinity));
+
+    [Fact]
+    public void FromDouble_WithNegativeInfinity_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Aliquota.FromDouble(double.NegativeInfinity));
+
+    [Fact]
+    public void ExplicitCastDouble_ValidValue_ProducesSameResultAsFromDouble()
+    {
+        var via = Aliquota.FromDouble(0.03);
+        var cast = (Aliquota)0.03;
+        Assert.Equal(via.ToString(), cast.ToString());
+    }
+
+    [Fact]
+    public void ExplicitCastDouble_WithNegativeValue_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => { var _ = (Aliquota)(-0.01); });
 }

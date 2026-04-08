@@ -48,4 +48,14 @@ public sealed class TipoChaveDfe : ConstrainedString
     /// </summary>
     /// <param name="value">Descrição da DF-e.</param>
     public static explicit operator TipoChaveDfe(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="TipoChaveDfe"/>.
+    /// </summary>
+    /// <param name="value">Descrição da DF-e, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="TipoChaveDfe"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 255 caracteres.</exception>
+    public static TipoChaveDfe? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new TipoChaveDfe(v));
 }

@@ -68,4 +68,28 @@ public sealed class NumeroDescricaoDocumentoTests
         Action act = () => typeof(NumeroDescricaoDocumento).GetMethod("OnXmlDeserialized", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(doc, null);
         Assert.Throws<TargetInvocationException>(act);
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(NumeroDescricaoDocumento.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(NumeroDescricaoDocumento.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(NumeroDescricaoDocumento.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Documento válido", NumeroDescricaoDocumento.ParseIfPresent("Documento válido")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => NumeroDescricaoDocumento.ParseIfPresent(new string('A', 256)));
 }

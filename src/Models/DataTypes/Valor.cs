@@ -1,4 +1,3 @@
-
 namespace Nfe.Paulistana.Models.DataTypes;
 
 /// <summary>
@@ -54,4 +53,15 @@ public sealed class Valor : ConstrainedDecimal
 
     /// <inheritdoc cref="FromValor"/>
     public static implicit operator decimal(Valor? value) => FromValor(value);
+
+    /// <summary>Cria um <see cref="Valor"/> a partir de um valor <see cref="double"/>.</summary>
+    /// <remarks>O valor é convertido para <see cref="decimal"/> via cast direto; erros de representação em ponto flutuante binário são preservados.</remarks>
+    /// <param name="value">Valor em R$.</param>
+    /// <returns>Nova instância de <see cref="Valor"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou exceder o valor máximo.</exception>
+    /// <exception cref="OverflowException">Se <paramref name="value"/> for <see cref="double.NaN"/>, <see cref="double.PositiveInfinity"/> ou <see cref="double.NegativeInfinity"/>.</exception>
+    public static Valor FromDouble(double value) => new((decimal)value);
+
+    /// <inheritdoc cref="FromDouble"/>
+    public static explicit operator Valor(double value) => FromDouble(value);
 }

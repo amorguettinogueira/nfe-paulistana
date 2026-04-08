@@ -72,6 +72,31 @@ Cada ação (implementação de `IIntegrationAction`) demonstra o uso de um serv
 | Download WSDL | `DownloadWsdlAction` |
 | Envio RPS (teste) | `SendRpsTestV1Action` / `SendRpsTestV2Action` |
 
+## Value Objects e campos opcionais
+
+As ações constroem pedidos usando os **Value Objects** da biblioteca. Campos obrigatórios são convertidos via cast explícito:
+
+```csharp
+tomador = TomadorBuilder
+    .NewCnpj((Cnpj)s.CnpjTomador, (RazaoSocial)s.RazaoSocialTomador)
+    .Build();
+```
+
+Para campos **opcionais**, todos os Value Objects de texto expõem `ParseIfPresent(string? value)`: retorna `null` quando a entrada está ausente ou vazia, e lança `ArgumentException` para valores presentes mas inválidos — garantindo que campos não configurados nunca produzem objetos em estado inválido:
+
+```csharp
+Endereco endereco = EnderecoBuilder.New(
+        uf:     Uf.ParseIfPresent(s.UfTomador),         // null se não configurado
+        cidade: string.IsNullOrEmpty(s.CidadeTomador) ? null : (CodigoIbge)s.CidadeTomador,
+        bairro: Bairro.ParseIfPresent(s.BairroTomador), // null se não configurado
+        ...)
+    .Build();
+```
+
+> `ParseIfPresent` está disponível em todos os Value Objects que herdam de `ConstrainedString` — `Uf`, `Bairro`, `Logradouro`, `RazaoSocial`, `Discriminacao` e demais. A semântica é sempre: `null` quando ausente, `ArgumentException` quando presente mas inválido.
+
+As ações `SendRpsTestV1Action` e `SendRpsTestV2Action` aplicam esse padrão nos três campos opcionais de endereço do tomador: **`UfTomador`**, **`CidadeTomador`** e **`BairroTomador`**.
+
 ## Estrutura de pastas
 
 | Pasta | Responsabilidade |

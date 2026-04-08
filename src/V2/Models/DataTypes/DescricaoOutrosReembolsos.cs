@@ -48,4 +48,14 @@ public sealed class DescricaoOutrosReembolsos : ConstrainedString
     /// </summary>
     /// <param name="value">Descrição do reembolso ou ressarcimento.</param>
     public static explicit operator DescricaoOutrosReembolsos(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="DescricaoOutrosReembolsos"/>.
+    /// </summary>
+    /// <param name="value">Descrição do reembolso ou ressarcimento, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="DescricaoOutrosReembolsos"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 150 caracteres.</exception>
+    public static DescricaoOutrosReembolsos? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new DescricaoOutrosReembolsos(v));
 }

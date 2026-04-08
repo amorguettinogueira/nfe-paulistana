@@ -62,4 +62,28 @@ public sealed class ChaveDocumentoFiscalTests
         Assert.NotNull(chave);
         Assert.Equal(value, chave.ToString());
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(ChaveDocumentoFiscal.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(ChaveDocumentoFiscal.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(ChaveDocumentoFiscal.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("12345", ChaveDocumentoFiscal.ParseIfPresent("12345")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => ChaveDocumentoFiscal.ParseIfPresent(new string('A', 51)));
 }

@@ -47,4 +47,14 @@ public sealed class Complemento : ConstrainedString
     /// </summary>
     /// <param name="value">Complemento do endereço.</param>
     public static explicit operator Complemento(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Complemento"/>.
+    /// </summary>
+    /// <param name="value">Complemento do endereço, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Complemento"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 30 caracteres.</exception>
+    public static Complemento? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new Complemento(v));
 }

@@ -48,4 +48,14 @@ public sealed class ChaveDocumentoFiscal : ConstrainedString
     /// </summary>
     /// <param name="value">Chave do Documento Fiscal eletrônico.</param>
     public static explicit operator ChaveDocumentoFiscal(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="ChaveDocumentoFiscal"/>.
+    /// </summary>
+    /// <param name="value">Chave do Documento Fiscal eletrônico, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="ChaveDocumentoFiscal"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 50 caracteres.</exception>
+    public static ChaveDocumentoFiscal? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new ChaveDocumentoFiscal(v));
 }

@@ -48,4 +48,14 @@ public sealed class NomeCidade : ConstrainedString
     /// </summary>
     /// <param name="value">Nome da Cidade.</param>
     public static explicit operator NomeCidade(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="NomeCidade"/>.
+    /// </summary>
+    /// <param name="value">Nome da Cidade, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="NomeCidade"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 60 caracteres.</exception>
+    public static NomeCidade? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new NomeCidade(v));
 }

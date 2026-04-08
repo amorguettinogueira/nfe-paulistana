@@ -1,0 +1,59 @@
+using Nfe.Paulistana.Models.DataTypes;
+using Nfe.Paulistana.Tests.Helpers;
+using Nfe.Paulistana.V1.Models.DataTypes;
+using Nfe.Paulistana.V1.Models.Domain;
+
+namespace Nfe.Paulistana.Tests.V1.Models.Domain;
+
+/// <summary>
+/// Testes unitários para <see cref="CabecalhoConsultaLote"/> (V1).
+/// </summary>
+public class CabecalhoConsultaLoteTests
+{
+    [Fact]
+    public void DefaultConstructor_PropriedadesNulas()
+    {
+        var cab = new CabecalhoConsultaLote();
+
+        Assert.Null(cab.CpfOrCnpj);
+        Assert.Null(cab.NumeroLote);
+        Assert.Equal(1, cab.Versao);
+    }
+
+    [Theory]
+    [ClassData(typeof(ValidCpfNumber))]
+    public void Constructor_ComCpfOrCnpj_DefinePropriedade(long cpfNumber)
+    {
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cab = new CabecalhoConsultaLote(cpfOrCnpj);
+
+        Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
+        Assert.Null(cab.NumeroLote);
+    }
+
+    [Fact]
+    public void NumeroLote_QuandoDefinido_RetornaMesmaReferencia()
+    {
+        var numero = new Numero(12345);
+        var cab = new CabecalhoConsultaLote { NumeroLote = numero };
+
+        Assert.Equal(numero, cab.NumeroLote);
+    }
+
+    [Fact]
+    public void HerdaDeCabecalho() =>
+        Assert.True(typeof(CabecalhoConsultaLote).IsSubclassOf(typeof(Cabecalho)));
+
+    [Theory]
+    [ClassData(typeof(ValidCpfNumber))]
+    public void Constructor_ComCpfENumeroLote_DefineAmbasPropriedades(long cpfNumber)
+    {
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var numero = new Numero(99);
+
+        var cab = new CabecalhoConsultaLote(cpfOrCnpj) { NumeroLote = numero };
+
+        Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
+        Assert.Equal(numero, cab.NumeroLote);
+    }
+}

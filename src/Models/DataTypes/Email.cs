@@ -55,4 +55,14 @@ public sealed class Email : ConstrainedString
     /// </summary>
     /// <param name="value">Endereço de e-mail.</param>
     public static explicit operator Email(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Email"/>.
+    /// </summary>
+    /// <param name="value">Endereço de e-mail, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Email"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> não for um e-mail válido ou exceder 75 caracteres.</exception>
+    public static Email? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new Email(v));
 }

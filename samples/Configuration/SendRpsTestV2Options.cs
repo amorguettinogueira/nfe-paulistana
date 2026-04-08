@@ -147,4 +147,28 @@ internal sealed class SendRpsTestV2Options
     [Required(ErrorMessage = $"{nameof(AppSettings.EnvioRpsTesteV2)}.{nameof(ClassificacaoTributaria)} é obrigatório.")]
     [RegularExpression("[0-9]{6}", ErrorMessage = $"{nameof(AppSettings.EnvioRpsTesteV2)}.{nameof(ClassificacaoTributaria)} deve ter 6 dígitos.")]
     public string ClassificacaoTributaria { get; init; } = string.Empty;
+
+    /// <summary>
+    /// UF do endereço do tomador de serviços. Opcional.
+    /// Quando informado em conjunto com <see cref="CidadeTomador"/> ou <see cref="BairroTomador"/>,
+    /// um <c>Endereco</c> é associado ao tomador. Sigla de estado válida (ex.: <c>SP</c>).
+    /// Chave User Secrets: <c>EnvioRpsTesteV2:UfTomador</c>.
+    /// </summary>
+    public string UfTomador { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Código IBGE do município do endereço do tomador de serviços. Opcional.
+    /// Quando informado em conjunto com <see cref="UfTomador"/> ou <see cref="BairroTomador"/>,
+    /// um <c>Endereco</c> é associado ao tomador.
+    /// Chave User Secrets: <c>EnvioRpsTesteV2:CidadeTomador</c>.
+    /// </summary>
+    public string CidadeTomador { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Bairro do endereço do tomador de serviços. Opcional.
+    /// Quando informado em conjunto com <see cref="UfTomador"/> ou <see cref="CidadeTomador"/>,
+    /// um <c>Endereco</c> é associado ao tomador.
+    /// Chave User Secrets: <c>EnvioRpsTesteV2:BairroTomador</c>.
+    /// </summary>
+    public string BairroTomador { get; init; } = string.Empty;
 }

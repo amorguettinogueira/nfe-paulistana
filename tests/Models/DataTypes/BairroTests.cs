@@ -59,4 +59,28 @@ public class BairroTests
     [Fact]
     public void Bairro_GetHashCode_SameValue_ReturnsEqualHash() =>
         Assert.Equal(new Bairro("Centro").GetHashCode(), new Bairro("Centro").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(Bairro.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(Bairro.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(Bairro.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Centro", Bairro.ParseIfPresent("Centro")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Bairro.ParseIfPresent(new string('A', 31)));
 }

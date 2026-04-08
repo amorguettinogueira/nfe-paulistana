@@ -48,4 +48,14 @@ public sealed class EstadoProvinciaRegiao : ConstrainedString
     /// </summary>
     /// <param name="value">Estado, província ou região.</param>
     public static explicit operator EstadoProvinciaRegiao(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="EstadoProvinciaRegiao"/>.
+    /// </summary>
+    /// <param name="value">Estado, província ou região, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="EstadoProvinciaRegiao"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 60 caracteres.</exception>
+    public static EstadoProvinciaRegiao? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new EstadoProvinciaRegiao(v));
 }
