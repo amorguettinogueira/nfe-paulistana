@@ -48,4 +48,14 @@ public sealed class CodigoEndPostal : ConstrainedString
     /// </summary>
     /// <param name="value">Código de endereçamento postal.</param>
     public static explicit operator CodigoEndPostal(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="CodigoEndPostal"/>.
+    /// </summary>
+    /// <param name="value">Código de endereçamento postal, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="CodigoEndPostal"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 11 caracteres.</exception>
+    public static CodigoEndPostal? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new CodigoEndPostal(v));
 }

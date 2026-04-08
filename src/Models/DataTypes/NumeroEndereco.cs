@@ -47,4 +47,14 @@ public sealed class NumeroEndereco : ConstrainedString
     /// </summary>
     /// <param name="value">Número do endereço.</param>
     public static explicit operator NumeroEndereco(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="NumeroEndereco"/>.
+    /// </summary>
+    /// <param name="value">Número do endereço, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="NumeroEndereco"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 10 caracteres.</exception>
+    public static NumeroEndereco? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new NumeroEndereco(v));
 }

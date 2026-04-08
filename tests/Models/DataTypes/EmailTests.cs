@@ -105,4 +105,36 @@ public class EmailTests
     {
         Assert.Equal(new Email("a@b.com").GetHashCode(), new Email("a@b.com").GetHashCode());
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(Email.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(Email.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(Email.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("nfe@sp.gov.br", Email.ParseIfPresent("nfe@sp.gov.br")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_InvalidEmailFormatInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Email.ParseIfPresent("nao-e-email"));
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException()
+    {
+        string local = new('a', 64);
+        string email = $"{local}@bcde.com.br"; // 76 chars
+        Assert.Throws<ArgumentException>(() => Email.ParseIfPresent(email));
+    }
 }

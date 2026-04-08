@@ -35,4 +35,28 @@ public class TipoLogradouroTests
     [Fact]
     public void TipoLogradouro_GetHashCode_SameValue_ReturnsEqualHash() =>
         Assert.Equal(new TipoLogradouro("Av.").GetHashCode(), new TipoLogradouro("Av.").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(TipoLogradouro.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(TipoLogradouro.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(TipoLogradouro.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Rua", TipoLogradouro.ParseIfPresent("Rua")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => TipoLogradouro.ParseIfPresent("Rua2"));
 }

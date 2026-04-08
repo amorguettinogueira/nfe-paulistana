@@ -1,4 +1,3 @@
-
 namespace Nfe.Paulistana.Models.DataTypes;
 
 /// <summary>
@@ -44,4 +43,15 @@ public sealed class Aliquota : ConstrainedDecimal
 
     /// <inheritdoc cref="FromDecimal"/>
     public static explicit operator Aliquota(decimal value) => FromDecimal(value);
+
+    /// <summary>Cria um <see cref="Aliquota"/> a partir de um valor <see cref="double"/>.</summary>
+    /// <remarks>O valor é convertido para <see cref="decimal"/> via cast direto; erros de representação em ponto flutuante binário são preservados.</remarks>
+    /// <param name="value">Alíquota como fração decimal (ex: <c>0.05</c> para 5%).</param>
+    /// <returns>Nova instância de <see cref="Aliquota"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>9.9999</c>.</exception>
+    /// <exception cref="OverflowException">Se <paramref name="value"/> for <see cref="double.NaN"/>, <see cref="double.PositiveInfinity"/> ou <see cref="double.NegativeInfinity"/>.</exception>
+    public static Aliquota FromDouble(double value) => new((decimal)value);
+
+    /// <inheritdoc cref="FromDouble"/>
+    public static explicit operator Aliquota(double value) => FromDouble(value);
 }

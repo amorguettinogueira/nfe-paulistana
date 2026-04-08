@@ -57,4 +57,28 @@ public sealed class DescricaoOutrosReembolsosTests
         var desc = (DescricaoOutrosReembolsos)value;
         Assert.Equal(value, desc.ToString());
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(DescricaoOutrosReembolsos.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(DescricaoOutrosReembolsos.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(DescricaoOutrosReembolsos.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Reembolso", DescricaoOutrosReembolsos.ParseIfPresent("Reembolso")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => DescricaoOutrosReembolsos.ParseIfPresent(new string('A', 151)));
 }

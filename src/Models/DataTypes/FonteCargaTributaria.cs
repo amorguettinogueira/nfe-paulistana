@@ -47,4 +47,14 @@ public sealed class FonteCargaTributaria : ConstrainedString
     /// </summary>
     /// <param name="value">Fonte da carga tributária.</param>
     public static explicit operator FonteCargaTributaria(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="FonteCargaTributaria"/>.
+    /// </summary>
+    /// <param name="value">Fonte da carga tributária, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="FonteCargaTributaria"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 10 caracteres.</exception>
+    public static FonteCargaTributaria? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new FonteCargaTributaria(v));
 }

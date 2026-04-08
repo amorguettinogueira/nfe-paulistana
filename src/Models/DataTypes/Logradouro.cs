@@ -47,4 +47,14 @@ public sealed class Logradouro : ConstrainedString
     /// </summary>
     /// <param name="value">Nome do logradouro.</param>
     public static explicit operator Logradouro(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Logradouro"/>.
+    /// </summary>
+    /// <param name="value">Nome do logradouro, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Logradouro"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 50 caracteres.</exception>
+    public static Logradouro? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new Logradouro(v));
 }

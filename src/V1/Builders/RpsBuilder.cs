@@ -420,7 +420,7 @@ public sealed class RpsBuilder :
                 throw new ArgumentException(InvalidArgument.Format("Valor dos serviços em R$"));
 
         // Deduções são opcionais: quando não informadas, o XSD exige o valor zero
-        Valor valorDeducoes = this.valorDeducoes ?? (Valor)0;
+        Valor valorDeducoes = this.valorDeducoes ?? (Valor)0m;
 
         CodigoServico codigoServico = this.codigoServico ??
                 throw new ArgumentException(InvalidArgument.Format("Código do serviço prestado"));

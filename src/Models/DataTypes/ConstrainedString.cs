@@ -128,4 +128,19 @@ public abstract class ConstrainedString : XmlSerializableDataType
             throw new SerializationException(ex.Message, ex);
         }
     }
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, invoca <paramref name="factory"/> para construir a instância.
+    /// </summary>
+    /// <remarks>
+    /// Use este método nas subclasses para expor um <c>ParseIfPresent</c> público com tipagem forte.
+    /// </remarks>
+    /// <typeparam name="T">Tipo derivado de <see cref="ConstrainedString"/>.</typeparam>
+    /// <param name="value">String de entrada, possivelmente nula ou vazia.</param>
+    /// <param name="factory">Fábrica que cria a instância a partir de uma string não vazia.</param>
+    /// <returns>Instância de <typeparamref name="T"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Propagada pela <paramref name="factory"/> se o valor não satisfizer as regras do tipo.</exception>
+    protected static T? ParseIfPresent<T>(string? value, Func<string, T> factory) where T : ConstrainedString =>
+        string.IsNullOrWhiteSpace(value) ? null : factory(value);
 }

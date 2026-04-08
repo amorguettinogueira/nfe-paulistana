@@ -48,4 +48,14 @@ public sealed class RazaoSocial : ConstrainedString
     /// </summary>
     /// <param name="value">Razão social ou nome.</param>
     public static explicit operator RazaoSocial(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="RazaoSocial"/>.
+    /// </summary>
+    /// <param name="value">Razão social ou nome, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="RazaoSocial"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 75 caracteres.</exception>
+    public static RazaoSocial? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new RazaoSocial(v));
 }

@@ -5,6 +5,7 @@ using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Models.Enums;
 using Nfe.Paulistana.V2.Builders;
 using Nfe.Paulistana.V2.Models.DataTypes;
+using Nfe.Paulistana.V2.Models.Domain;
 using Nfe.Paulistana.V2.Services;
 
 namespace Nfe.Paulistana.Integration.Sample.Actions;
@@ -74,9 +75,32 @@ internal sealed class SendRpsTestV2Action(PedidoEnvioLoteFactory factory,
             ConsolePresenter.Info($"  Código Operação: {s.CodigoOperacao}");
             ConsolePresenter.Info($"  Classificação Tributária: {s.ClassificacaoTributaria}");
 
-            var tomador = TomadorBuilder
-                .NewCnpj((Cnpj)s.CnpjTomador, (RazaoSocial)s.RazaoSocialTomador)
-                .Build();
+            Tomador? tomador = null;
+
+            if (!string.IsNullOrEmpty(s.UfTomador) || !string.IsNullOrEmpty(s.CidadeTomador) || !string.IsNullOrEmpty(s.BairroTomador))
+            {
+                Endereco enderecoTomador =
+                    EnderecoBuilder.New(
+                        uf: Uf.ParseIfPresent(s.UfTomador),
+                        cidade: string.IsNullOrEmpty(s.CidadeTomador) ? null : (CodigoIbge)s.CidadeTomador,
+                        bairro: Bairro.ParseIfPresent(s.BairroTomador),
+                        cep: null,
+                        logradouro: null,
+                        numero: null,
+                        complemento: null)
+                    .Build();
+
+                tomador = TomadorBuilder
+                    .NewCnpj((Cnpj)s.CnpjTomador, (RazaoSocial)s.RazaoSocialTomador)
+                    .SetEndereco(enderecoTomador)
+                    .Build();
+            }
+            else
+            {
+                tomador = TomadorBuilder
+                    .NewCnpj((Cnpj)s.CnpjTomador, (RazaoSocial)s.RazaoSocialTomador)
+                    .Build();
+            }
 
             var ibsCbs = InformacoesIbsCbsBuilder.New()
                 .SetUsoOuConsumoPessoal((NaoSim)false)

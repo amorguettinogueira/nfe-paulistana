@@ -94,4 +94,30 @@ public class UfTests
     {
         Assert.Equal(new Uf("SP").GetHashCode(), new Uf("SP").GetHashCode());
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(Uf.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(Uf.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(Uf.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("SP", Uf.ParseIfPresent("SP")!.ToString());
+
+    [Theory]
+    [InlineData("S")]
+    [InlineData("SPA")]
+    public void ParseIfPresent_InvalidLengthInput_ThrowsArgumentException(string invalid) =>
+        Assert.Throws<ArgumentException>(() => Uf.ParseIfPresent(invalid));
 }

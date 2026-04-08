@@ -35,4 +35,28 @@ public class SerieRpsTests
     [Fact]
     public void SerieRps_Equals_DifferentValue_ReturnsFalse() =>
         Assert.NotEqual(new SerieRps("AA"), new SerieRps("BB"));
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(SerieRps.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(SerieRps.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(SerieRps.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("RPS", SerieRps.ParseIfPresent("RPS")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => SerieRps.ParseIfPresent("BBBBBB"));
 }

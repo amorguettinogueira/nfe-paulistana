@@ -85,4 +85,28 @@ public sealed class EstadoProvinciaRegiaoTests
         // Assert
         Assert.Equal(60, maxLength);
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(EstadoProvinciaRegiao.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(EstadoProvinciaRegiao.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(EstadoProvinciaRegiao.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("São Paulo", EstadoProvinciaRegiao.ParseIfPresent("São Paulo")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => EstadoProvinciaRegiao.ParseIfPresent(new string('A', 61)));
 }

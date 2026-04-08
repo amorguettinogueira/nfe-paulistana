@@ -48,4 +48,14 @@ public sealed class NomeEvento : ConstrainedString
     /// </summary>
     /// <param name="value">Nome do evento.</param>
     public static explicit operator NomeEvento(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="NomeEvento"/>.
+    /// </summary>
+    /// <param name="value">Nome do evento, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="NomeEvento"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 255 caracteres.</exception>
+    public static NomeEvento? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new NomeEvento(v));
 }

@@ -66,4 +66,32 @@ public class DiscriminacaoTests
     [Fact]
     public void Discriminacao_Equals_DifferentValue_ReturnsFalse() =>
         Assert.NotEqual(new Discriminacao("Serviço X"), new Discriminacao("Serviço Y"));
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(Discriminacao.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(Discriminacao.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(Discriminacao.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("Desenvolvimento de software.", Discriminacao.ParseIfPresent("Desenvolvimento de software.")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ValidInputWithLineBreaks_NormalizesToPipe() =>
+        Assert.Equal("Linha1|Linha2", Discriminacao.ParseIfPresent("Linha1\nLinha2")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Discriminacao.ParseIfPresent(new string('D', 2001)));
 }

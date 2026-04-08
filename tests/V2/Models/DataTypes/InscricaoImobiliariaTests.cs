@@ -83,4 +83,28 @@ public sealed class InscricaoImobiliariaTests
         // Assert
         Assert.Equal(30, maxLength);
     }
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(InscricaoImobiliaria.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(InscricaoImobiliaria.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(InscricaoImobiliaria.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("InscricaoValida", InscricaoImobiliaria.ParseIfPresent("InscricaoValida")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => InscricaoImobiliaria.ParseIfPresent(new string('A', 31)));
 }

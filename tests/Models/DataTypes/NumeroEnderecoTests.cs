@@ -38,4 +38,28 @@ public class NumeroEnderecoTests
     [Fact]
     public void NumeroEndereco_Equals_SameValue_ReturnsTrue() =>
         Assert.Equal(new NumeroEndereco("100"), new NumeroEndereco("100"));
+
+    // ============================================
+    // ParseIfPresent
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_NullInput_ReturnsNull() =>
+        Assert.Null(NumeroEndereco.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_EmptyStringInput_ReturnsNull() =>
+        Assert.Null(NumeroEndereco.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_WhitespaceOnlyInput_ReturnsNull() =>
+        Assert.Null(NumeroEndereco.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ValidInput_ReturnsInstance() =>
+        Assert.Equal("1500", NumeroEndereco.ParseIfPresent("1500")!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => NumeroEndereco.ParseIfPresent(new string('9', 11)));
 }

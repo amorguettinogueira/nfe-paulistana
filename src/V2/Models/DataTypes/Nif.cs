@@ -48,4 +48,14 @@ public sealed class Nif : ConstrainedString
     /// </summary>
     /// <param name="value">Nome da Cidade.</param>
     public static explicit operator Nif(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Nif"/>.
+    /// </summary>
+    /// <param name="value">NIF, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Nif"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 40 caracteres.</exception>
+    public static Nif? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new Nif(v));
 }

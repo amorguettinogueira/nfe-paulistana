@@ -95,4 +95,28 @@ internal sealed class SendRpsTestV1Options
     /// Padrão: <c>false</c>. Chave User Secrets: <c>EnvioRpsTesteV1:IssRetido</c>.
     /// </summary>
     public bool IssRetido { get; init; }
+
+    /// <summary>
+    /// UF do endereço do tomador de serviços. Opcional.
+    /// Quando informado em conjunto com <see cref="CidadeTomador"/> ou <see cref="BairroTomador"/>,
+    /// um <c>Endereco</c> é associado ao tomador. Sigla de estado válida (ex.: <c>SP</c>).
+    /// Chave User Secrets: <c>EnvioRpsTesteV1:UfTomador</c>.
+    /// </summary>
+    public string UfTomador { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Código IBGE do município do endereço do tomador de serviços. Opcional.
+    /// Quando informado em conjunto com <see cref="UfTomador"/> ou <see cref="BairroTomador"/>,
+    /// um <c>Endereco</c> é associado ao tomador.
+    /// Chave User Secrets: <c>EnvioRpsTesteV1:CidadeTomador</c>.
+    /// </summary>
+    public string CidadeTomador { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Bairro do endereço do tomador de serviços. Opcional.
+    /// Quando informado em conjunto com <see cref="UfTomador"/> ou <see cref="CidadeTomador"/>,
+    /// um <c>Endereco</c> é associado ao tomador.
+    /// Chave User Secrets: <c>EnvioRpsTesteV1:BairroTomador</c>.
+    /// </summary>
+    public string BairroTomador { get; init; } = string.Empty;
 }

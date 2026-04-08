@@ -48,4 +48,14 @@ public sealed class InscricaoImobiliaria : ConstrainedString
     /// </summary>
     /// <param name="value">Inscrição Imobiliária.</param>
     public static explicit operator InscricaoImobiliaria(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="InscricaoImobiliaria"/>.
+    /// </summary>
+    /// <param name="value">Inscrição Imobiliária, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="InscricaoImobiliaria"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 30 caracteres.</exception>
+    public static InscricaoImobiliaria? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new InscricaoImobiliaria(v));
 }

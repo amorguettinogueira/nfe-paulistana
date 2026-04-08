@@ -47,4 +47,14 @@ public sealed class SerieRps : ConstrainedString
     /// </summary>
     /// <param name="value">Série do RPS.</param>
     public static explicit operator SerieRps(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="SerieRps"/>.
+    /// </summary>
+    /// <param name="value">Série do RPS, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="SerieRps"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 5 caracteres.</exception>
+    public static SerieRps? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new SerieRps(v));
 }

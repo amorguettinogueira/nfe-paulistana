@@ -589,7 +589,7 @@ public sealed class RpsBuilder :
                 throw new ArgumentException(InvalidArgument.Format("Tipo de tributação da NF-e"));
 
         // Deduções são opcionais: quando não informadas, o XSD exige o valor zero
-        Valor valorDeducoes = this.valorDeducoes ?? (Valor)0;
+        Valor valorDeducoes = this.valorDeducoes ?? (Valor)0m;
 
         CodigoServico codigoServico = this.codigoServico ??
                 throw new ArgumentException(InvalidArgument.Format("Código do serviço prestado"));
@@ -616,12 +616,12 @@ public sealed class RpsBuilder :
                 throw new ArgumentException(InvalidArgument.Format("Indicador de pagamento parcelado antecipado"));
 
         // Tributos são opcionais no builder: quando não informados, o XSD exige o valor zero
-        Valor valorPis = this.valorPis ?? (Valor)0;
-        Valor valorCofins = this.valorCofins ?? (Valor)0;
-        Valor valorInss = this.valorInss ?? (Valor)0;
-        Valor valorIr = this.valorIr ?? (Valor)0;
-        Valor valorCsll = this.valorCsll ?? (Valor)0;
-        Valor valorIpi = this.valorIpi ?? (Valor)0;
+        Valor valorPis = this.valorPis ?? (Valor)0m;
+        Valor valorCofins = this.valorCofins ?? (Valor)0m;
+        Valor valorInss = this.valorInss ?? (Valor)0m;
+        Valor valorIr = this.valorIr ?? (Valor)0m;
+        Valor valorCsll = this.valorCsll ?? (Valor)0m;
+        Valor valorIpi = this.valorIpi ?? (Valor)0m;
 
         // Validação de exclusividade mútua
         if (valorInicialCobrado is not null && valorFinalCobrado is not null)

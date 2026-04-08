@@ -60,4 +60,14 @@ public sealed class Discriminacao : ConstrainedString
     /// </summary>
     /// <param name="value">Descrição do serviço.</param>
     public static explicit operator Discriminacao(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Discriminacao"/>.
+    /// </summary>
+    /// <param name="value">Descrição do serviço, possivelmente nula ou vazia.</param>
+    /// <returns>Nova instância de <see cref="Discriminacao"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 2.000 caracteres.</exception>
+    public static Discriminacao? ParseIfPresent(string? value) =>
+        ParseIfPresent(value, v => new Discriminacao(v));
 }
