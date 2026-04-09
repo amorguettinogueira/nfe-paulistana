@@ -57,5 +57,5 @@ public sealed class DescricaoOutrosReembolsos : ConstrainedString
     /// <returns>Nova instância de <see cref="DescricaoOutrosReembolsos"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 150 caracteres.</exception>
     public static DescricaoOutrosReembolsos? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new DescricaoOutrosReembolsos(v));
+        ParseIfPresent(value, FromString);
 }

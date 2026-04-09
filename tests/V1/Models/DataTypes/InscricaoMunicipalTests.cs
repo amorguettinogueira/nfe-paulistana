@@ -106,4 +106,56 @@ public class InscricaoMunicipalTests
     {
         Assert.NotEqual(new InscricaoMunicipal(39_616_924), new InscricaoMunicipal(12_345_678));
     }
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new InscricaoMunicipal(39_616_924).Equals(null));
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new InscricaoMunicipal(39_616_924).GetHashCode(), new InscricaoMunicipal(39_616_924).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new InscricaoMunicipal(39_616_924).GetHashCode(), new InscricaoMunicipal(12_345_678).GetHashCode());
+
+    [Fact]
+    public void ExplicitCast_FromString_ProducesSameResultAsFromString() =>
+        Assert.Equal(InscricaoMunicipal.FromString("39616924").ToString(), ((InscricaoMunicipal)"39616924").ToString());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(InscricaoMunicipal.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(InscricaoMunicipal.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsInscricaoMunicipal() =>
+        Assert.Equal(new InscricaoMunicipal(39_616_924), InscricaoMunicipal.ParseIfPresent("39616924"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => InscricaoMunicipal.ParseIfPresent("ABC-IM"));
+
+    // ============================================
+    // ParseIfPresent(int?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullInt_ReturnsNull() =>
+        Assert.Null(InscricaoMunicipal.ParseIfPresent((int?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidInt_ReturnsInscricaoMunicipal() =>
+        Assert.Equal(new InscricaoMunicipal(39_616_924), InscricaoMunicipal.ParseIfPresent((int?)39_616_924));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidInt_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => InscricaoMunicipal.ParseIfPresent((int?)0));
 }

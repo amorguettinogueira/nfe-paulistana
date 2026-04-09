@@ -29,7 +29,7 @@ public sealed class InformacoesIbsCbsBuilder
     private NaoSim? _usoOuConsumoPessoal;
     private DestinatarioServicos _destinatarioServicos = DestinatarioServicos.ProprioTomador;
     private Valores? _valores;
-    private CodigoOperacaoFornecimento? _codigoOperacaoFornecimento;
+    private CodigoOperacao? _codigoOperacaoFornecimento;
     private TipoOperacao? _tipoOperacao;
     private GrupoNfeReferenciada? _grupoNFSe;
     private TipoEnteGovernamental? _enteGovernamental;
@@ -87,7 +87,7 @@ public sealed class InformacoesIbsCbsBuilder
         return this;
     }
 
-    public InformacoesIbsCbsBuilder SetCodigoOperacaoFornecimento(CodigoOperacaoFornecimento codigo)
+    public InformacoesIbsCbsBuilder SetCodigoOperacaoFornecimento(CodigoOperacao codigo)
     {
         _codigoOperacaoFornecimento = codigo ?? throw new ArgumentNullException(nameof(codigo));
         return this;

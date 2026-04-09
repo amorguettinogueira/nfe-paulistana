@@ -77,4 +77,61 @@ public class QuantidadeTests
     [Fact]
     public void Equals_DifferentValue_ReturnsFalse() =>
         Assert.NotEqual(new Quantidade(10), new Quantidade(20));
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new Quantidade(10).Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        var quantidade = new Quantidade(10);
+        var numero = new Numero(10);
+
+        Assert.False(quantidade.Equals(numero));
+    }
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new Quantidade(10).GetHashCode(), new Quantidade(10).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new Quantidade(10).GetHashCode(), new Quantidade(20).GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(Quantidade.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(Quantidade.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsQuantidade() =>
+        Assert.Equal(new Quantidade(50), Quantidade.ParseIfPresent("50"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Quantidade.ParseIfPresent("QTD-X"));
+
+    // ============================================
+    // ParseIfPresent(long?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullLong_ReturnsNull() =>
+        Assert.Null(Quantidade.ParseIfPresent((long?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidLong_ReturnsQuantidade() =>
+        Assert.Equal(new Quantidade(50), Quantidade.ParseIfPresent((long?)50L));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidLong_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Quantidade.ParseIfPresent((long?)0L));
 }

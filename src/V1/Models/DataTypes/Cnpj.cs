@@ -94,4 +94,24 @@ public sealed class Cnpj : ModulusElevenValidatedNumber
     /// </summary>
     [OnDeserialized]
     private void OnDeserialized(StreamingContext context) => ValidateAfterDeserialization();
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Cnpj"/>.
+    /// </summary>
+    /// <param name="value">CNPJ como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Cnpj"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static Cnpj? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Cnpj"/>.
+    /// </summary>
+    /// <param name="value">CNPJ como inteiro long, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Cnpj"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> estiver fora do intervalo válido.</exception>
+    public static Cnpj? ParseIfPresent(long? value) =>
+        value == null ? null : FromInt64(value.Value);
 }

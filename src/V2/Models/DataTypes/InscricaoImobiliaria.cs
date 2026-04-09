@@ -57,5 +57,5 @@ public sealed class InscricaoImobiliaria : ConstrainedString
     /// <returns>Nova instância de <see cref="InscricaoImobiliaria"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 30 caracteres.</exception>
     public static InscricaoImobiliaria? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new InscricaoImobiliaria(v));
+        ParseIfPresent(value, FromString);
 }

@@ -69,4 +69,14 @@ public sealed partial class CodigoNCM : XmlSerializableDataType
             throw new SerializationException(FormatoInvalido.Format(Value));
         }
     }
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="CodigoNCM"/>.
+    /// </summary>
+    /// <param name="value">Código NCM como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="CodigoNCM"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static CodigoNCM? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
 }

@@ -62,5 +62,5 @@ public sealed class Uf : ConstrainedString
     /// <returns>Nova instância de <see cref="Uf"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> não tiver exatamente 2 caracteres.</exception>
     public static Uf? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new Uf(v));
+        ParseIfPresent(value, FromString);
 }

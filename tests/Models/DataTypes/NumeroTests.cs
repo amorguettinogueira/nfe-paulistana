@@ -77,4 +77,61 @@ public class NumeroTests
     [Fact]
     public void Equals_DifferentValue_ReturnsFalse() =>
         Assert.NotEqual(new Numero(4105), new Numero(9999));
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new Numero(4105).Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        var numero = new Numero(10);
+        var quantidade = new Quantidade(10);
+
+        Assert.False(numero.Equals(quantidade));
+    }
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new Numero(4105).GetHashCode(), new Numero(4105).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new Numero(4105).GetHashCode(), new Numero(9999).GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(Numero.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(Numero.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsNumero() =>
+        Assert.Equal(new Numero(4105), Numero.ParseIfPresent("4105"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Numero.ParseIfPresent("NUM-X"));
+
+    // ============================================
+    // ParseIfPresent(long?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullLong_ReturnsNull() =>
+        Assert.Null(Numero.ParseIfPresent((long?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidLong_ReturnsNumero() =>
+        Assert.Equal(new Numero(4105), Numero.ParseIfPresent((long?)4105L));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidLong_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Numero.ParseIfPresent((long?)0L));
 }

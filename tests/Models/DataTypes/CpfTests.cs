@@ -278,4 +278,34 @@ public class CpfTests
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    // ============================================
+    // Sealed / Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Cpf_IsSealed() =>
+        Assert.True(typeof(Cpf).IsSealed);
+
+    [Theory]
+    [ClassData(typeof(ValidCpfNumbers))]
+    public void Cpf_Equals_SameValue_ReturnsTrue(long value) =>
+        Assert.Equal(new Cpf(value), new Cpf(value));
+
+    [Fact]
+    public void Cpf_Equals_DifferentValue_ReturnsFalse() =>
+        Assert.NotEqual(new Cpf(63596780047), new Cpf(86290818210));
+
+    [Fact]
+    public void Cpf_Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new Cpf(63596780047).Equals(null));
+
+    [Theory]
+    [ClassData(typeof(ValidCpfNumbers))]
+    public void Cpf_GetHashCode_SameValue_ReturnsSameHash(long value) =>
+        Assert.Equal(new Cpf(value).GetHashCode(), new Cpf(value).GetHashCode());
+
+    [Fact]
+    public void Cpf_GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new Cpf(63596780047).GetHashCode(), new Cpf(86290818210).GetHashCode());
 }

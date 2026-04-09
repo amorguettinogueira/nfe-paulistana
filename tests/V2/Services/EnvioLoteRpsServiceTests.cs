@@ -37,7 +37,7 @@ public sealed class EnvioLoteRpsServiceTests
     private static readonly InformacoesIbsCbs IbsCbsPadrao =
         InformacoesIbsCbsBuilder.New()
             .SetUsoOuConsumoPessoal(new NaoSim(false))
-            .SetCodigoOperacaoFornecimento(new CodigoOperacaoFornecimento("010101"))
+            .SetCodigoOperacaoFornecimento(new CodigoOperacao("010101"))
             .SetClassificacaoTributaria(new ClassificacaoTributaria("010101"))
             .Build();
 

@@ -150,7 +150,7 @@ public sealed class InformacoesIbsCbsBuilderTests
         // Arrange
         var builder = InformacoesIbsCbsBuilder.New();
         var usoOuConsumo = new NaoSim();
-        var codigo = new CodigoOperacaoFornecimento("010101"); // 6 dígitos
+        var codigo = new CodigoOperacao("010101"); // 6 dígitos
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() =>

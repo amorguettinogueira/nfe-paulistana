@@ -71,4 +71,24 @@ public sealed class CodigoServico : XmlSerializableDataType
 
     /// <inheritdoc cref="FromInt32"/>
     public static explicit operator CodigoServico(int value) => FromInt32(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="CodigoServico"/>.
+    /// </summary>
+    /// <param name="value">Código do serviço como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="CodigoServico"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static CodigoServico? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="CodigoServico"/>.
+    /// </summary>
+    /// <param name="value">Código do serviço como número inteiro, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="CodigoServico"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> estiver fora do intervalo válido.</exception>
+    public static CodigoServico? ParseIfPresent(int? value) =>
+        value == null ? null : FromInt32(value.Value);
 }

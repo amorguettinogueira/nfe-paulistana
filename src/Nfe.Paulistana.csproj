@@ -31,6 +31,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Models\DataTypes\Discriminacao.cs~RF10949037.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Schemas\V1\PedidoCancelamentoNFe_v01.xsd" />
     <EmbeddedResource Include="Schemas\V1\PedidoConsultaCNPJ_v01.xsd" />
     <EmbeddedResource Include="Schemas\V1\PedidoConsultaLote_v01.xsd" />

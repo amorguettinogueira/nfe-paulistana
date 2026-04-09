@@ -44,7 +44,7 @@ public class RpsTests
         var exigibilidade = new NaoSim(false);
         var pagamentoParcelado = new NaoSim(false);
         var nbs = new CodigoNBS("123456789");
-        var ibsCbs = new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, new NaoSim(false), DestinatarioServicos.ProprioTomador, new Valores(new TributosIbsCbs()), new CodigoOperacaoFornecimento("000001"));
+        var ibsCbs = new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, new NaoSim(false), DestinatarioServicos.ProprioTomador, new Valores(new TributosIbsCbs()), new CodigoOperacao("000001"));
 
         var rps = new Rps(chave, tipo, data, status, tributacao, valorDeducoes, codigoServico, aliquota, issRetido, discriminacao, valorPis, valorCofins, valorInss, valorIr, valorCsll, valorIpi, exigibilidade, pagamentoParcelado, nbs, ibsCbs);
 
@@ -74,7 +74,7 @@ public class RpsTests
         var exigibilidade = new NaoSim(false);
         var pagamentoParcelado = new NaoSim(false);
         var nbs = new CodigoNBS("123456789");
-        var ibsCbs = new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, new NaoSim(false), DestinatarioServicos.ProprioTomador, new Valores(new TributosIbsCbs()), new CodigoOperacaoFornecimento("000001"));
+        var ibsCbs = new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, new NaoSim(false), DestinatarioServicos.ProprioTomador, new Valores(new TributosIbsCbs()), new CodigoOperacao("000001"));
 
         _ = Assert.Throws<ArgumentNullException>(() => new Rps(null!, tipo, data, status, tributacao, valorDeducoes, codigoServico, aliquota, false, discriminacao, valorPis, valorCofins, valorInss, valorIr, valorCsll, valorIpi, exigibilidade, pagamentoParcelado, nbs, ibsCbs));
     }
@@ -92,7 +92,7 @@ public class RpsTests
         var codigoServico = new CodigoServico(7617);
         var nbs = new CodigoNBS("123456789");
         var aliquota = (Aliquota)0.05m;
-        var ibs = new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, new NaoSim(false), DestinatarioServicos.ProprioTomador, new Valores(new TributosIbsCbs()), new CodigoOperacaoFornecimento("000001"));
+        var ibs = new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, new NaoSim(false), DestinatarioServicos.ProprioTomador, new Valores(new TributosIbsCbs()), new CodigoOperacao("000001"));
 
         var tomador = TomadorBuilder.NewCpf(new Cpf(46381819618)).Build();
 

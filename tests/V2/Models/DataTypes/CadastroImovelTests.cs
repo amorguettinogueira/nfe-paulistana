@@ -1,6 +1,7 @@
 using Nfe.Paulistana.V2.Models.DataTypes;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.V2.Models.DataTypes;
 
@@ -82,6 +83,100 @@ public sealed class CadastroImovelTests
 
         // Assert
         var ex = Assert.Throws<TargetInvocationException>(act);
+        Assert.IsType<SerializationException>(ex.InnerException);
+    }
+
+    // ============================================
+    // Construtor padrão / sealed
+    // ============================================
+
+    [Fact]
+    public void DefaultConstructor_ToStringReturnsNull() =>
+        Assert.Null(new CadastroImovel().ToString());
+
+    [Fact]
+    public void IsSealed() =>
+        Assert.True(typeof(CadastroImovel).IsSealed);
+
+    // ============================================
+    // Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Equals_SameValue_ReturnsTrue() =>
+        Assert.Equal(new CadastroImovel("ABCDEFGH"), new CadastroImovel("ABCDEFGH"));
+
+    [Fact]
+    public void Equals_DifferentValue_ReturnsFalse() =>
+        Assert.NotEqual(new CadastroImovel("ABCDEFGH"), new CadastroImovel("12345678"));
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new CadastroImovel("ABCDEFGH").Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        var cadastro = new CadastroImovel("12345678");
+        var ncm = new CodigoNCM("12345678");
+
+        Assert.False(cadastro.Equals(ncm));
+    }
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new CadastroImovel("ABCDEFGH").GetHashCode(), new CadastroImovel("ABCDEFGH").GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new CadastroImovel("ABCDEFGH").GetHashCode(), new CadastroImovel("12345678").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(CadastroImovel.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(CadastroImovel.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsCadastroImovel() =>
+        Assert.Equal(new CadastroImovel("ABCDEFGH"), CadastroImovel.ParseIfPresent("ABCDEFGH"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => CadastroImovel.ParseIfPresent("1234-678"));
+
+    // ============================================
+    // XML round-trip
+    // ============================================
+
+    [Fact]
+    public void XmlRoundTrip_ValidValue_PreservesValue()
+    {
+        var original = new CadastroImovel("A1B2C3D4");
+        var serializer = new XmlSerializer(typeof(CadastroImovel));
+
+        using var sw = new StringWriter();
+        serializer.Serialize(sw, original);
+        using var sr = new StringReader(sw.ToString());
+        var deserialized = (CadastroImovel?)serializer.Deserialize(sr);
+
+        Assert.Equal("A1B2C3D4", deserialized?.ToString());
+    }
+
+    [Fact]
+    public void XmlDeserialization_InvalidValue_ThrowsSerializationException()
+    {
+        const string xml = """<?xml version="1.0" encoding="utf-16"?><CadastroImovel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">1234-678</CadastroImovel>""";
+        var serializer = new XmlSerializer(typeof(CadastroImovel));
+
+        using var sr = new StringReader(xml);
+        var ex = Assert.Throws<InvalidOperationException>(() => serializer.Deserialize(sr));
         Assert.IsType<SerializationException>(ex.InnerException);
     }
 }

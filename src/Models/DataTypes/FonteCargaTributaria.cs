@@ -56,5 +56,5 @@ public sealed class FonteCargaTributaria : ConstrainedString
     /// <returns>Nova instância de <see cref="FonteCargaTributaria"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 10 caracteres.</exception>
     public static FonteCargaTributaria? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new FonteCargaTributaria(v));
+        ParseIfPresent(value, FromString);
 }

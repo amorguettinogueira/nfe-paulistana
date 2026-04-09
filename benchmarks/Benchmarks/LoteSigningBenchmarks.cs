@@ -65,7 +65,7 @@ public class LoteSigningBenchmarks
         var v2Tomador = V2TomadorBuilder.NewCpf(_cpf).Build();
         var ibsCbs = V2IbsCbsBuilder.New()
             .SetUsoOuConsumoPessoal(new NaoSim(false))
-            .SetCodigoOperacaoFornecimento(new CodigoOperacaoFornecimento("010101"))
+            .SetCodigoOperacaoFornecimento(new CodigoOperacao("010101"))
             .SetClassificacaoTributaria(new ClassificacaoTributaria("010101"))
             .Build();
 

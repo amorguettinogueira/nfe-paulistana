@@ -101,6 +101,54 @@ public class InscricaoMunicipalTests
     public void Equals_ValorDiferente_RetornaFalse() =>
         Assert.NotEqual(new InscricaoMunicipal(39_616_924), new InscricaoMunicipal(12_345_678));
 
+    [Fact]
+    public void Equals_ObjetoNulo_RetornaFalse() =>
+        Assert.False(new InscricaoMunicipal(39_616_924).Equals(null));
+
+    [Fact]
+    public void GetHashCode_MesmoValor_RetornaMesmoHash() =>
+        Assert.Equal(new InscricaoMunicipal(39_616_924).GetHashCode(), new InscricaoMunicipal(39_616_924).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_ValorDiferente_RetornaHashDiferente() =>
+        Assert.NotEqual(new InscricaoMunicipal(39_616_924).GetHashCode(), new InscricaoMunicipal(12_345_678).GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_ComNulo_RetornaNull() =>
+        Assert.Null(InscricaoMunicipal.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_ComEspacoBranco_RetornaNull() =>
+        Assert.Null(InscricaoMunicipal.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_ComStringValida_RetornaInscricaoMunicipal() =>
+        Assert.Equal(new InscricaoMunicipal(39_616_924), InscricaoMunicipal.ParseIfPresent("39616924"));
+
+    [Fact]
+    public void ParseIfPresent_ComStringInvalida_LancaArgumentException() =>
+        Assert.Throws<ArgumentException>(() => InscricaoMunicipal.ParseIfPresent("ABC-IM"));
+
+    // ============================================
+    // ParseIfPresent(long?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_ComNuloLong_RetornaNull() =>
+        Assert.Null(InscricaoMunicipal.ParseIfPresent((long?)null));
+
+    [Fact]
+    public void ParseIfPresent_ComLongValido_RetornaInscricaoMunicipal() =>
+        Assert.Equal(new InscricaoMunicipal(39_616_924), InscricaoMunicipal.ParseIfPresent((long?)39_616_924L));
+
+    [Fact]
+    public void ParseIfPresent_ComLongInvalido_LancaArgumentException() =>
+        Assert.Throws<ArgumentException>(() => InscricaoMunicipal.ParseIfPresent((long?)0L));
+
     // ============================================
     // Serialização / desserialização XML
     // ============================================

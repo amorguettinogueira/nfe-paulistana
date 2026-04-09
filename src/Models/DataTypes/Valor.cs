@@ -64,4 +64,24 @@ public sealed class Valor : ConstrainedDecimal
 
     /// <inheritdoc cref="FromDouble"/>
     public static explicit operator Valor(double value) => FromDouble(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Valor"/>.
+    /// </summary>
+    /// <param name="value">Valor como número double, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Valor"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>999.999.999.999.999,99</c>.</exception>
+    public static Valor? ParseIfPresent(double? value) =>
+        ParseIfPresent(value, FromDouble);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Valor"/>.
+    /// </summary>
+    /// <param name="value">Valor como número decimal, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Valor"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>999.999.999.999.999,99</c>.</exception>
+    public static Valor? ParseIfPresent(decimal? value) =>
+        ParseIfPresent(value, FromDecimal);
 }

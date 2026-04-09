@@ -69,4 +69,14 @@ public sealed partial class ClassificacaoTributaria : XmlSerializableDataType
             throw new SerializationException(FormatoInvalido.Format(Value));
         }
     }
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="ClassificacaoTributaria"/>.
+    /// </summary>
+    /// <param name="value">Código de classificação tributária como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="ClassificacaoTributaria"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static ClassificacaoTributaria? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
 }

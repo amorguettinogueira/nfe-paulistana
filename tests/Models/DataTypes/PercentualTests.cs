@@ -1,4 +1,5 @@
 using Nfe.Paulistana.Models.DataTypes;
+using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.Models.DataTypes;
 
@@ -156,6 +157,23 @@ public class PercentualTests
     public void GetHashCode_SameValue_ReturnsSameHash() =>
         Assert.Equal(new Percentual(50m).GetHashCode(), new Percentual(50m).GetHashCode());
 
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new Percentual(50m).GetHashCode(), new Percentual(75m).GetHashCode());
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new Percentual(50m).Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        // Percentual(1m) e Aliquota(1m) serializam como "1", mas são tipos distintos
+        object percentual = new Percentual(1m);
+        object aliquota = new Aliquota(1m);
+        Assert.False(percentual.Equals(aliquota));
+    }
+
     // ============================================
     // Validação antes do base() — Value nunca é setado com dado inválido
     // ============================================
@@ -169,4 +187,152 @@ public class PercentualTests
         ArgumentException ex = Assert.Throws<ArgumentException>(() => new Percentual(101m));
         Assert.NotNull(ex.Message);
     }
+
+    // ============================================
+    // FromDouble
+    // ============================================
+
+    [Fact]
+    public void FromDouble_WithValidValue_ProducesSameResultAsFromDecimal() =>
+        Assert.Equal(new Percentual(75m).ToString(), Percentual.FromDouble(75.0).ToString());
+
+    [Fact]
+    public void FromDouble_WithZero_SerializesAsZero() =>
+        Assert.Equal("0", Percentual.FromDouble(0.0).ToString());
+
+    [Fact]
+    public void FromDouble_WithNegativeValue_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Percentual.FromDouble(-1.0));
+
+    [Fact]
+    public void FromDouble_WithValueAbove100_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Percentual.FromDouble(101.0));
+
+    [Fact]
+    public void FromDouble_WithNaN_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Percentual.FromDouble(double.NaN));
+
+    [Fact]
+    public void FromDouble_WithPositiveInfinity_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Percentual.FromDouble(double.PositiveInfinity));
+
+    [Fact]
+    public void FromDouble_WithNegativeInfinity_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Percentual.FromDouble(double.NegativeInfinity));
+
+    // ============================================
+    // Explicit cast — (Percentual)double
+    // ============================================
+
+    [Fact]
+    public void ExplicitCastDouble_ValidValue_ProducesSameResultAsFromDouble()
+    {
+        var via = Percentual.FromDouble(25.0);
+        var cast = (Percentual)25.0;
+        Assert.Equal(via.ToString(), cast.ToString());
+    }
+
+    [Fact]
+    public void ExplicitCastDouble_WithValueAbove100_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => { var _ = (Percentual)101.0; });
+
+    [Fact]
+    public void ExplicitCastDouble_WithNegativeValue_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => { var _ = (Percentual)(-1.0); });
+
+    // ============================================
+    // XML Serialização / Desserialização
+    // ============================================
+
+    private static string SerializarParaXml(Percentual percentual)
+    {
+        var serializer = new XmlSerializer(typeof(Percentual));
+        using var writer = new StringWriter();
+        serializer.Serialize(writer, percentual);
+        return writer.ToString();
+    }
+
+    private static Percentual? DesserializarDeXml(string xml)
+    {
+        var serializer = new XmlSerializer(typeof(Percentual));
+        using var reader = new StringReader(xml);
+        return (Percentual?)serializer.Deserialize(reader);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(50)]
+    [InlineData(100)]
+    [InlineData(33.3333)]
+    public void XmlSerialization_RoundTrip_PreservesValue(double rawValue)
+    {
+        var percentual = new Percentual((decimal)rawValue);
+        var xml = SerializarParaXml(percentual);
+        var desserializado = DesserializarDeXml(xml);
+        Assert.Equal(percentual.ToString(), desserializado!.ToString());
+    }
+
+    [Theory]
+    [InlineData("50")]
+    [InlineData("33.3333")]
+    [InlineData("0")]
+    [InlineData("100")]
+    public void XmlDeserialization_ValorValido_PreservaCadeia(string xmlValue)
+    {
+        var xml = $"""<?xml version="1.0" encoding="utf-16"?><Percentual xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">{xmlValue}</Percentual>""";
+        var desserializado = DesserializarDeXml(xml);
+        Assert.Equal(xmlValue, desserializado!.ToString());
+    }
+
+    [Fact]
+    public void XmlDeserialization_ElementoVazio_ToStringRetornaNull()
+    {
+        var xml = """<?xml version="1.0" encoding="utf-16"?><Percentual xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />""";
+        var desserializado = DesserializarDeXml(xml);
+        Assert.Null(desserializado!.ToString());
+    }
+
+    // ============================================
+    // ParseIfPresent — double?
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDouble_ReturnsNull() =>
+        Assert.Null(Percentual.ParseIfPresent((double?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDouble_ReturnsPercentual() =>
+        Assert.Equal("50", Percentual.ParseIfPresent((double?)50.0)!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_WithNegativeDouble_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Percentual.ParseIfPresent((double?)-1.0));
+
+    [Fact]
+    public void ParseIfPresent_WithValueAbove100Double_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Percentual.ParseIfPresent((double?)101.0));
+
+    [Fact]
+    public void ParseIfPresent_WithNaNDouble_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Percentual.ParseIfPresent((double?)double.NaN));
+
+    // ============================================
+    // ParseIfPresent — decimal?
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDecimal_ReturnsNull() =>
+        Assert.Null(Percentual.ParseIfPresent((decimal?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDecimal_ReturnsPercentual() =>
+        Assert.Equal("75", Percentual.ParseIfPresent((decimal?)75m)!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_WithNegativeDecimal_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Percentual.ParseIfPresent((decimal?)-1m));
+
+    [Fact]
+    public void ParseIfPresent_WithDecimalAbove100_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Percentual.ParseIfPresent((decimal?)100.0001m));
 }

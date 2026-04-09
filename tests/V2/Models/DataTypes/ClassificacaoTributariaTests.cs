@@ -1,6 +1,7 @@
 using Nfe.Paulistana.V2.Models.DataTypes;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.V2.Models.DataTypes;
 
@@ -81,6 +82,91 @@ public sealed class ClassificacaoTributariaTests
 
         // Assert
         var ex = Assert.Throws<TargetInvocationException>(act);
+        Assert.IsType<SerializationException>(ex.InnerException);
+    }
+
+    // ============================================
+    // Construtor padrão / sealed
+    // ============================================
+
+    [Fact]
+    public void DefaultConstructor_ToStringReturnsNull() =>
+        Assert.Null(new ClassificacaoTributaria().ToString());
+
+    [Fact]
+    public void IsSealed() =>
+        Assert.True(typeof(ClassificacaoTributaria).IsSealed);
+
+    // ============================================
+    // Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Equals_SameValue_ReturnsTrue() =>
+        Assert.Equal(new ClassificacaoTributaria("123456"), new ClassificacaoTributaria("123456"));
+
+    [Fact]
+    public void Equals_DifferentValue_ReturnsFalse() =>
+        Assert.NotEqual(new ClassificacaoTributaria("123456"), new ClassificacaoTributaria("999999"));
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new ClassificacaoTributaria("123456").Equals(null));
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new ClassificacaoTributaria("123456").GetHashCode(), new ClassificacaoTributaria("123456").GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new ClassificacaoTributaria("123456").GetHashCode(), new ClassificacaoTributaria("999999").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(ClassificacaoTributaria.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(ClassificacaoTributaria.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsInstance() =>
+        Assert.Equal(new ClassificacaoTributaria("123456"), ClassificacaoTributaria.ParseIfPresent("123456"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => ClassificacaoTributaria.ParseIfPresent("12A456"));
+
+    // ============================================
+    // XML round-trip
+    // ============================================
+
+    [Fact]
+    public void XmlRoundTrip_ValidValue_PreservesValue()
+    {
+        var original = new ClassificacaoTributaria("123456");
+        var serializer = new XmlSerializer(typeof(ClassificacaoTributaria));
+
+        using var sw = new StringWriter();
+        serializer.Serialize(sw, original);
+        using var sr = new StringReader(sw.ToString());
+        var deserialized = (ClassificacaoTributaria?)serializer.Deserialize(sr);
+
+        Assert.Equal("123456", deserialized?.ToString());
+    }
+
+    [Fact]
+    public void XmlDeserialization_InvalidValue_ThrowsSerializationException()
+    {
+        const string xml = """<?xml version="1.0" encoding="utf-16"?><ClassificacaoTributaria xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">12A456</ClassificacaoTributaria>""";
+        var serializer = new XmlSerializer(typeof(ClassificacaoTributaria));
+
+        using var sr = new StringReader(xml);
+        var ex = Assert.Throws<InvalidOperationException>(() => serializer.Deserialize(sr));
         Assert.IsType<SerializationException>(ex.InnerException);
     }
 }

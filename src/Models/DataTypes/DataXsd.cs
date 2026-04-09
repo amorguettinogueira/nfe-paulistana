@@ -93,4 +93,24 @@ public sealed class DataXsd : XmlSerializableDataType
 
     /// <inheritdoc cref="ToDateOnly"/>
     public static implicit operator DateOnly(DataXsd? value) => ToDateOnly(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="DataXsd"/>.
+    /// </summary>
+    /// <param name="value">Data como <see cref="DateTime"/>, possivelmente nula.</param>
+    /// <returns>Nova instância de <see cref="DataXsd"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static DataXsd? ParseIfPresent(DateTime? value) =>
+        value == null ? null : FromDateTime(value.Value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="DataXsd"/>.
+    /// </summary>
+    /// <param name="value">Data como <see cref="DateOnly"/>, possivelmente nula.</param>
+    /// <returns>Nova instância de <see cref="DataXsd"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> estiver fora do intervalo válido.</exception>
+    public static DataXsd? ParseIfPresent(DateOnly? value) =>
+        value == null ? null : FromDateOnly(value.Value);
 }

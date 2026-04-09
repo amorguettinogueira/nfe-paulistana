@@ -98,4 +98,56 @@ public class TributacaoNfeTests
     {
         Assert.Equal(new TributacaoNfe('T').GetHashCode(), new TributacaoNfe('T').GetHashCode());
     }
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash()
+    {
+        Assert.NotEqual(new TributacaoNfe('T').GetHashCode(), new TributacaoNfe('F').GetHashCode());
+    }
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse()
+    {
+        Assert.False(new TributacaoNfe('T').Equals(null));
+    }
+
+    // ============================================
+    // FromString
+    // ============================================
+
+    [Fact]
+    public void FromString_WithSingleValidLetter_StoresFirstChar()
+    {
+        Assert.Equal("T", TributacaoNfe.FromString("T").ToString());
+    }
+
+    [Fact]
+    public void FromString_WithMultipleChars_UsesFirstChar()
+    {
+        Assert.Equal("T", TributacaoNfe.FromString("TAF").ToString());
+    }
+
+    [Fact]
+    public void FromString_WithNull_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => TributacaoNfe.FromString(null!));
+    }
+
+    [Fact]
+    public void FromString_WithEmptyString_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => TributacaoNfe.FromString(string.Empty));
+    }
+
+    [Fact]
+    public void FromString_WithNonLetterFirstChar_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => TributacaoNfe.FromString("1XY"));
+    }
+
+    [Fact]
+    public void ExplicitCast_FromString_ProducesSameResultAsFromString()
+    {
+        Assert.Equal(TributacaoNfe.FromString("F").ToString(), ((TributacaoNfe)"F").ToString());
+    }
 }

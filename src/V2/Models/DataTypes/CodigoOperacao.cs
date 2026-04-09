@@ -13,7 +13,7 @@ namespace Nfe.Paulistana.V2.Models.DataTypes;
 /// Fonte: <c>TiposNFe_v02.xsd</c> — Tipo <c>tpCIndOp</c>: <c>[0-9]{6}</c>.
 /// </remarks>
 [Serializable]
-public sealed partial class CodigoOperacaoFornecimento : XmlSerializableDataType
+public sealed partial class CodigoOperacao : XmlSerializableDataType
 {
     private const string FormatoInvalido =
         "O código NBS informado \"{0}\" não atende ao formato exigido: exatamente 6 caracteres numéricos.";
@@ -26,7 +26,7 @@ public sealed partial class CodigoOperacaoFornecimento : XmlSerializableDataType
     /// Não deve ser usado pelo código normal.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public CodigoOperacaoFornecimento() { }
+    public CodigoOperacao() { }
 
     /// <summary>
     /// Inicializa o Value Object com o código da operação de fornecimento informado.
@@ -35,7 +35,7 @@ public sealed partial class CodigoOperacaoFornecimento : XmlSerializableDataType
     /// <exception cref="ArgumentException">
     /// Se <paramref name="value"/> for nulo, vazio ou não atender ao padrão <c>[0-9]{6}</c>.
     /// </exception>
-    public CodigoOperacaoFornecimento(string value)
+    public CodigoOperacao(string value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value);
 
@@ -47,14 +47,14 @@ public sealed partial class CodigoOperacaoFornecimento : XmlSerializableDataType
         Value = value;
     }
 
-    /// <summary>Cria uma instância de <see cref="CodigoOperacaoFornecimento"/> a partir de uma string.</summary>
+    /// <summary>Cria uma instância de <see cref="CodigoOperacao"/> a partir de uma string.</summary>
     /// <param name="value">Código da operação de fornecimento.</param>
-    /// <returns>Nova instância de <see cref="CodigoOperacaoFornecimento"/> validada.</returns>
+    /// <returns>Nova instância de <see cref="CodigoOperacao"/> validada.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
-    public static CodigoOperacaoFornecimento FromString(string value) => new(value);
+    public static CodigoOperacao FromString(string value) => new(value);
 
     /// <inheritdoc cref="FromString"/>
-    public static explicit operator CodigoOperacaoFornecimento(string value) => FromString(value);
+    public static explicit operator CodigoOperacao(string value) => FromString(value);
 
     /// <inheritdoc/>
     protected override void OnXmlDeserialized()

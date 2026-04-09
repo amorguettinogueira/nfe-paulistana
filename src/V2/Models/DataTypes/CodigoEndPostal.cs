@@ -57,5 +57,5 @@ public sealed class CodigoEndPostal : ConstrainedString
     /// <returns>Nova instância de <see cref="CodigoEndPostal"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 11 caracteres.</exception>
     public static CodigoEndPostal? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new CodigoEndPostal(v));
+        ParseIfPresent(value, FromString);
 }

@@ -46,7 +46,7 @@ public class EnvioRpsServiceTests
             new Valores(
                 new TributosIbsCbs(
                     new TributoIbsCbs(ClassificacaoTributariaPadrao, new TributoRegular(ClassificacaoTributariaPadrao)))),
-            (CodigoOperacaoFornecimento)"123456");
+            (CodigoOperacao)"123456");
 
     private static Rps CriarRps() =>
         RpsBuilder.New(
