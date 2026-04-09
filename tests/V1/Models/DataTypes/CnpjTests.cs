@@ -280,4 +280,34 @@ public class CnpjTests
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    // ============================================
+    // Sealed / Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Cnpj_IsSealed() =>
+        Assert.True(typeof(Cnpj).IsSealed);
+
+    [Theory]
+    [ClassData(typeof(ValidCnpjNumbers))]
+    public void Cnpj_Equals_SameValue_ReturnsTrue(long value) =>
+        Assert.Equal(new Cnpj(value), new Cnpj(value));
+
+    [Fact]
+    public void Cnpj_Equals_DifferentValue_ReturnsFalse() =>
+        Assert.NotEqual(new Cnpj(84067820000190), new Cnpj(33579346000145));
+
+    [Fact]
+    public void Cnpj_Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new Cnpj(84067820000190).Equals(null));
+
+    [Theory]
+    [ClassData(typeof(ValidCnpjNumbers))]
+    public void Cnpj_GetHashCode_SameValue_ReturnsSameHash(long value) =>
+        Assert.Equal(new Cnpj(value).GetHashCode(), new Cnpj(value).GetHashCode());
+
+    [Fact]
+    public void Cnpj_GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new Cnpj(84067820000190).GetHashCode(), new Cnpj(33579346000145).GetHashCode());
 }

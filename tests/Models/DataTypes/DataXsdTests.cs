@@ -258,4 +258,138 @@ public class DataXsdTests
 
         Assert.Equal(original, restored);
     }
+
+    // ============================================
+    // DataXsd(DateOnly) — Construtor com DateOnly
+    // ============================================
+
+    [Fact]
+    public void Constructor_WithDateOnly_StoresIsoFormattedDate()
+    {
+        var date = new DataXsd(new DateOnly(2024, 5, 10));
+
+        Assert.Equal("2024-05-10", date.ToString());
+    }
+
+    [Fact]
+    public void Constructor_WithDateOnly_ProducesSameResultAsConstructorWithDateTime()
+    {
+        var dateOnly = new DateOnly(2024, 8, 20);
+        var fromDateOnly = new DataXsd(dateOnly);
+        var fromDateTime = new DataXsd(new DateTime(2024, 8, 20));
+
+        Assert.Equal(fromDateTime.ToString(), fromDateOnly.ToString());
+    }
+
+    // ============================================
+    // FromDateOnly — Factory method
+    // ============================================
+
+    [Fact]
+    public void FromDateOnly_ProducesSameResultAsConstructor()
+    {
+        var input = new DateOnly(2024, 11, 3);
+
+        Assert.Equal(new DataXsd(input).ToString(), DataXsd.FromDateOnly(input).ToString());
+    }
+
+    // ============================================
+    // ToDateOnly — Conversão para DateOnly
+    // ============================================
+
+    [Fact]
+    public void ToDateOnly_WithDateTime_ProducesSameDateAsToDateTime()
+    {
+        var data = new DataXsd(new DateTime(2024, 4, 7));
+        var asDateOnly = DataXsd.ToDateOnly(data);
+
+        Assert.Equal(new DateOnly(2024, 4, 7), asDateOnly);
+    }
+
+    // ============================================
+    // Implicit operator — DateOnly = DataXsd?
+    // ============================================
+
+    [Fact]
+    public void ImplicitCast_ToDateOnly_ValidData_ReturnsCorrectDateOnly()
+    {
+        DataXsd data = new(new DateOnly(2024, 3, 15));
+        DateOnly result = data;
+
+        Assert.Equal(new DateOnly(2024, 3, 15), result);
+    }
+
+    [Fact]
+    public void ImplicitCast_ToDateOnly_NullData_ReturnsDateOnlyMinValue()
+    {
+        DataXsd? data = null;
+        DateOnly result = data;
+
+        Assert.Equal(DateOnly.MinValue, result);
+    }
+
+    [Fact]
+    public void ImplicitCast_ToDateOnly_DefaultConstructed_ReturnsDateOnlyMinValue()
+    {
+        DataXsd data = new();
+        DateOnly result = data;
+
+        Assert.Equal(DateOnly.MinValue, result);
+    }
+
+    // ============================================
+    // sealed / Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void DataXsd_IsSealed() =>
+        Assert.True(typeof(DataXsd).IsSealed);
+
+    [Fact]
+    public void Equals_SameValue_ReturnsTrue() =>
+        Assert.Equal(new DataXsd(new DateTime(2024, 6, 1)), new DataXsd(new DateTime(2024, 6, 1)));
+
+    [Fact]
+    public void Equals_DifferentValue_ReturnsFalse() =>
+        Assert.NotEqual(new DataXsd(new DateTime(2024, 6, 1)), new DataXsd(new DateTime(2024, 7, 1)));
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new DataXsd(new DateTime(2024, 6, 1)).Equals(null));
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(
+            new DataXsd(new DateTime(2024, 6, 1)).GetHashCode(),
+            new DataXsd(new DateTime(2024, 6, 1)).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(
+            new DataXsd(new DateTime(2024, 6, 1)).GetHashCode(),
+            new DataXsd(new DateTime(2024, 7, 1)).GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(DateTime?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDateTime_ReturnsNull() =>
+        Assert.Null(DataXsd.ParseIfPresent((DateTime?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDateTime_ReturnsDataXsd() =>
+        Assert.Equal(new DataXsd(new DateTime(2024, 9, 15)), DataXsd.ParseIfPresent((DateTime?)new DateTime(2024, 9, 15)));
+
+    // ============================================
+    // ParseIfPresent(DateOnly?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDateOnly_ReturnsNull() =>
+        Assert.Null(DataXsd.ParseIfPresent((DateOnly?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDateOnly_ReturnsDataXsd() =>
+        Assert.Equal(new DataXsd(new DateOnly(2024, 9, 15)), DataXsd.ParseIfPresent((DateOnly?)new DateOnly(2024, 9, 15)));
 }

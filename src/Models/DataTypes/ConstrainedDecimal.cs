@@ -82,6 +82,7 @@ public abstract class ConstrainedDecimal : XmlSerializableDataType
             {
                 result *= 10m;
             }
+
             return result;
         }
 
@@ -90,6 +91,7 @@ public abstract class ConstrainedDecimal : XmlSerializableDataType
         {
             divisor *= 10m;
         }
+
         return 1m / divisor;
     }
 
@@ -104,4 +106,42 @@ public abstract class ConstrainedDecimal : XmlSerializableDataType
     /// </returns>
     protected virtual (int integral, int fractional) GetMaxLimit() =>
         (IntegralMaxLength, FractionalMaxLength);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, invoca <paramref name="factory"/> para construir a instância.
+    /// </summary>
+    /// <remarks>
+    /// Use este método nas subclasses para expor um <c>ParseIfPresent</c> público com tipagem forte.
+    /// </remarks>
+    /// <typeparam name="T">Tipo derivado de <see cref="ConstrainedDecimal"/>.</typeparam>
+    /// <param name="value">Double de entrada, possivelmente nulo.</param>
+    /// <param name="factory">Fábrica que cria a instância a partir de um double não nulo.</param>
+    /// <returns>Instância de <typeparamref name="T"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentNullException">Se <paramref name="factory"/> for <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Propagada pela <paramref name="factory"/> se o valor não satisfizer as regras do tipo.</exception>
+    protected static T? ParseIfPresent<T>(double? value, Func<double, T> factory) where T : ConstrainedDecimal
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        return value.HasValue ? factory(value.Value) : null;
+    }
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, invoca <paramref name="factory"/> para construir a instância.
+    /// </summary>
+    /// <remarks>
+    /// Use este método nas subclasses para expor um <c>ParseIfPresent</c> público com tipagem forte.
+    /// </remarks>
+    /// <typeparam name="T">Tipo derivado de <see cref="ConstrainedDecimal"/>.</typeparam>
+    /// <param name="value">Decimal de entrada, possivelmente nulo.</param>
+    /// <param name="factory">Fábrica que cria a instância a partir de um decimal não nulo.</param>
+    /// <returns>Instância de <typeparamref name="T"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentNullException">Se <paramref name="factory"/> for <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Propagada pela <paramref name="factory"/> se o valor não satisfizer as regras do tipo.</exception>
+    protected static T? ParseIfPresent<T>(decimal? value, Func<decimal, T> factory) where T : ConstrainedDecimal
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        return value.HasValue ? factory(value.Value) : null;
+    }
 }

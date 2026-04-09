@@ -54,4 +54,24 @@ public sealed class Aliquota : ConstrainedDecimal
 
     /// <inheritdoc cref="FromDouble"/>
     public static explicit operator Aliquota(double value) => FromDouble(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Aliquota"/>.
+    /// </summary>
+    /// <param name="value">Alíquota como fração double, possivelmente nula.</param>
+    /// <returns>Nova instância de <see cref="Aliquota"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>9.9999</c>.</exception>
+    public static Aliquota? ParseIfPresent(double? value) =>
+        ParseIfPresent(value, FromDouble);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Aliquota"/>.
+    /// </summary>
+    /// <param name="value">Alíquota como fração decimal, possivelmente nula.</param>
+    /// <returns>Nova instância de <see cref="Aliquota"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>9.9999</c>.</exception>
+    public static Aliquota? ParseIfPresent(decimal? value) =>
+        ParseIfPresent(value, FromDecimal);
 }

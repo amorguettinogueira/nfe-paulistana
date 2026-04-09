@@ -57,4 +57,26 @@ public sealed class TributacaoNfe : XmlSerializableDataType
     /// </summary>
     /// <param name="value">Caractere do tipo de tributação.</param>
     public static explicit operator TributacaoNfe(char value) => FromChar(value);
+
+    /// <summary>
+    /// Cria uma instância de <see cref="TributacaoNfe"/> a partir de uma string.
+    /// </summary>
+    /// <param name="value">String com o tipo de tributação.</param>
+    /// <returns>Nova instância de <see cref="TributacaoNfe"/>.</returns>
+    /// <exception cref="ArgumentNullException">Se <paramref name="value"/> for nulo.</exception>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for vazio.</exception>
+    public static TributacaoNfe FromString(string value)
+    {
+        ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+        return value.Length == 0
+            ? throw new ArgumentException("A letra do tipo de tributação não pode ser vazia.", nameof(value))
+            : new(value[0]);
+    }
+
+    /// <summary>
+    /// Converte explicitamente uma string em <see cref="TributacaoNfe"/>.
+    /// </summary>
+    /// <param name="value">String com o tipo de tributação.</param>
+    public static explicit operator TributacaoNfe(string value) => FromString(value);
 }

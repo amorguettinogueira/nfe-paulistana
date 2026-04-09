@@ -64,5 +64,5 @@ public sealed class Email : ConstrainedString
     /// <returns>Nova instância de <see cref="Email"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> não for um e-mail válido ou exceder 75 caracteres.</exception>
     public static Email? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new Email(v));
+        ParseIfPresent(value, FromString);
 }

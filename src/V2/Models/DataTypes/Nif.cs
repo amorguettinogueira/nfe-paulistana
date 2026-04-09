@@ -57,5 +57,5 @@ public sealed class Nif : ConstrainedString
     /// <returns>Nova instância de <see cref="Nif"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 40 caracteres.</exception>
     public static Nif? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new Nif(v));
+        ParseIfPresent(value, FromString);
 }

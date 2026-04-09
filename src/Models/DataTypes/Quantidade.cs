@@ -71,4 +71,24 @@ public sealed class Quantidade : XmlSerializableDataType
 
     /// <inheritdoc cref="FromString"/>
     public static explicit operator Quantidade(string value) => FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Quantidade"/>.
+    /// </summary>
+    /// <param name="value">Quantidade como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Quantidade"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static Quantidade? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Quantidade"/>.
+    /// </summary>
+    /// <param name="value">Quantidade como número inteiro long, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Quantidade"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> estiver fora do intervalo válido.</exception>
+    public static Quantidade? ParseIfPresent(long? value) =>
+        value == null ? null : FromInt64(value.Value);
 }

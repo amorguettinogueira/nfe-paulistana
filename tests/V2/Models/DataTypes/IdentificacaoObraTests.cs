@@ -96,6 +96,73 @@ public sealed class IdentificacaoObraTests
         Assert.Equal(value, desserializado!.ToString());
     }
 
+    // ============================================
+    // Construtor padrão / sealed
+    // ============================================
+
+    [Fact]
+    public void DefaultConstructor_ToStringReturnsNull() =>
+        Assert.Null(new IdentificacaoObra().ToString());
+
+    [Fact]
+    public void IsSealed() =>
+        Assert.True(typeof(IdentificacaoObra).IsSealed);
+
+    // ============================================
+    // Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Equals_SameValue_ReturnsTrue() =>
+        Assert.Equal(
+            new IdentificacaoObra("123456789012345678901234567890"),
+            new IdentificacaoObra("123456789012345678901234567890"));
+
+    [Fact]
+    public void Equals_DifferentValue_ReturnsFalse() =>
+        Assert.NotEqual(
+            new IdentificacaoObra("123456789012345678901234567890"),
+            new IdentificacaoObra("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234"));
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new IdentificacaoObra("123456789012345678901234567890").Equals(null));
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(
+            new IdentificacaoObra("123456789012345678901234567890").GetHashCode(),
+            new IdentificacaoObra("123456789012345678901234567890").GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(
+            new IdentificacaoObra("123456789012345678901234567890").GetHashCode(),
+            new IdentificacaoObra("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234").GetHashCode());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(IdentificacaoObra.ParseIfPresent(null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(IdentificacaoObra.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsInstance() =>
+        Assert.Equal(
+            new IdentificacaoObra("123456789012345678901234567890"),
+            IdentificacaoObra.ParseIfPresent("123456789012345678901234567890"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() =>
+            IdentificacaoObra.ParseIfPresent("abc123456789012345678901234567"));
+
     private static string SerializarParaXml(IdentificacaoObra obra)
     {
         var serializer = new XmlSerializer(typeof(IdentificacaoObra));

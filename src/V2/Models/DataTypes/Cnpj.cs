@@ -140,4 +140,14 @@ public sealed partial class Cnpj : XmlSerializableDataType
 
         return new string(buffer[..pos]);
     }
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Cnpj"/>.
+    /// </summary>
+    /// <param name="value">CNPJ como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Cnpj"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static Cnpj? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
 }

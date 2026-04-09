@@ -129,4 +129,75 @@ public class CepTests
     {
         Assert.Equal(new Cep(1_310_100).GetHashCode(), new Cep(1_310_100).GetHashCode());
     }
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash()
+    {
+        Assert.NotEqual(new Cep(1_310_100).GetHashCode(), new Cep(5_000_000).GetHashCode());
+    }
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse()
+    {
+        Assert.False(new Cep(1_310_100).Equals(null));
+    }
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        var cep = new Cep(1_310_100);
+        var ibge = new CodigoIbge(1_310_100);
+
+        Assert.False(cep.Equals(ibge));
+    }
+
+    [Fact]
+    public void ExplicitCast_FromInt_WithInvalidInput_ThrowsArgumentException()
+    {
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => { var _ = (Cep)999_999; });
+        Assert.Contains("pelo menos", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ExplicitCast_FromString_WithInvalidInput_ThrowsArgumentException()
+    {
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => { var _ = (Cep)"AB-CEP"; });
+        Assert.Contains("caracteres não numéricos", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(Cep.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(Cep.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsCep() =>
+        Assert.Equal(new Cep(1_310_100), Cep.ParseIfPresent("1310100"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Cep.ParseIfPresent("AB-CEP"));
+
+    // ============================================
+    // ParseIfPresent(int?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullInt_ReturnsNull() =>
+        Assert.Null(Cep.ParseIfPresent((int?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidInt_ReturnsCep() =>
+        Assert.Equal(new Cep(1_310_100), Cep.ParseIfPresent((int?)1_310_100));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidInt_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Cep.ParseIfPresent((int?)999_999));
 }

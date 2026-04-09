@@ -56,5 +56,5 @@ public sealed class Complemento : ConstrainedString
     /// <returns>Nova instância de <see cref="Complemento"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 30 caracteres.</exception>
     public static Complemento? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new Complemento(v));
+        ParseIfPresent(value, FromString);
 }

@@ -93,4 +93,24 @@ public sealed class Cpf : ModulusElevenValidatedNumber
     /// </summary>
     [OnDeserialized]
     private void OnDeserialized(StreamingContext context) => ValidateAfterDeserialization();
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo, vazio ou apenas espaços;
+    /// caso contrário, cria uma instância de <see cref="Cpf"/>.
+    /// </summary>
+    /// <param name="value">CPF como string, possivelmente nulo ou vazio.</param>
+    /// <returns>Nova instância de <see cref="Cpf"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for inválido.</exception>
+    public static Cpf? ParseIfPresent(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : FromString(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Cpf"/>.
+    /// </summary>
+    /// <param name="value">CPF como inteiro long, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Cpf"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> estiver fora do intervalo válido.</exception>
+    public static Cpf? ParseIfPresent(long? value) =>
+        value == null ? null : FromInt64(value.Value);
 }

@@ -56,5 +56,5 @@ public sealed class Bairro : ConstrainedString
     /// <returns>Nova instância de <see cref="Bairro"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 30 caracteres.</exception>
     public static Bairro? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new Bairro(v));
+        ParseIfPresent(value, FromString);
 }

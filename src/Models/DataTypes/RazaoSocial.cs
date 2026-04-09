@@ -57,5 +57,5 @@ public sealed class RazaoSocial : ConstrainedString
     /// <returns>Nova instância de <see cref="RazaoSocial"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 75 caracteres.</exception>
     public static RazaoSocial? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new RazaoSocial(v));
+        ParseIfPresent(value, FromString);
 }

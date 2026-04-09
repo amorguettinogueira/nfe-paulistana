@@ -29,7 +29,7 @@ public class InformacoesIbsCbsTests
     public void Constructor_WithRequiredArguments_SetsProperties()
     {
         var uso = new NaoSim(true);
-        var codigo = new CodigoOperacaoFornecimento("000001");
+        var codigo = new CodigoOperacao("000001");
         var valores = new Valores(new TributosIbsCbs());
 
         var info = new InformacoesIbsCbs(
@@ -51,7 +51,7 @@ public class InformacoesIbsCbsTests
     public void Constructor_NullUsoOuConsumo_ThrowsArgumentNullException()
     {
         NaoSim? uso = null;
-        var codigo = new CodigoOperacaoFornecimento("000001");
+        var codigo = new CodigoOperacao("000001");
         var valores = new Valores(new TributosIbsCbs());
 
         _ = Assert.Throws<ArgumentNullException>(() => new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, uso!, DestinatarioServicos.ProprioTomador, valores, codigo));
@@ -60,7 +60,7 @@ public class InformacoesIbsCbsTests
     [Fact]
     public void Constructor_NullCodigoOperacao_ThrowsArgumentNullException()
     {
-        CodigoOperacaoFornecimento? codigo = null;
+        CodigoOperacao? codigo = null;
         var uso = new NaoSim(false);
         var valores = new Valores(new TributosIbsCbs());
 
@@ -72,7 +72,7 @@ public class InformacoesIbsCbsTests
     {
         Valores? valores = null;
         var uso = new NaoSim(false);
-        var codigo = new CodigoOperacaoFornecimento("000001");
+        var codigo = new CodigoOperacao("000001");
 
         _ = Assert.Throws<ArgumentNullException>(() => new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, uso, DestinatarioServicos.ProprioTomador, valores!, codigo));
     }
@@ -85,7 +85,7 @@ public class InformacoesIbsCbsTests
 
         info.FinalidadeEmissao = FinalidadeEmissaoNfe.NfseRegular;
         info.UsoOuConsumoPessoal = new NaoSim(true);
-        info.CodigoOperacaoFornecimento = new CodigoOperacaoFornecimento("000002");
+        info.CodigoOperacaoFornecimento = new CodigoOperacao("000002");
         info.TipoOperacao = TipoOperacao.FornecimentoComPagamentoRealizado;
         info.TipoOperacaoSpecified = true;
         info.NfesReferenciadas = new GrupoNfeReferenciada(new[] { new ChaveNotaNacional(new string('A', 40) + "1234567890") });

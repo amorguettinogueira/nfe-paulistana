@@ -69,5 +69,5 @@ public sealed class Discriminacao : ConstrainedString
     /// <returns>Nova instância de <see cref="Discriminacao"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 2.000 caracteres.</exception>
     public static Discriminacao? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new Discriminacao(v));
+        ParseIfPresent(value, FromString);
 }

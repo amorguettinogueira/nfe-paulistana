@@ -104,7 +104,7 @@ internal sealed class SendRpsTestV2Action(PedidoEnvioLoteFactory factory,
 
             var ibsCbs = InformacoesIbsCbsBuilder.New()
                 .SetUsoOuConsumoPessoal((NaoSim)false)
-                .SetCodigoOperacaoFornecimento((CodigoOperacaoFornecimento)s.CodigoOperacao)
+                .SetCodigoOperacaoFornecimento((CodigoOperacao)s.CodigoOperacao)
                 .SetClassificacaoTributaria((ClassificacaoTributaria)s.ClassificacaoTributaria)
                 .Build();
 

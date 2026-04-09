@@ -1,4 +1,3 @@
-
 namespace Nfe.Paulistana.Models.DataTypes;
 
 /// <summary>
@@ -49,4 +48,35 @@ public sealed class Percentual : ConstrainedDecimal
 
     /// <inheritdoc cref="FromDecimal"/>
     public static explicit operator Percentual(decimal value) => FromDecimal(value);
+
+    /// <summary>Cria um <see cref="Percentual"/> a partir de um valor <see cref="double"/>.</summary>
+    /// <remarks>O valor é convertido para <see cref="decimal"/> via cast direto; erros de representação em ponto flutuante binário são preservados.</remarks>
+    /// <param name="value">Percentual como número (ex: <c>15.5</c> para 15,5%).</param>
+    /// <returns>Nova instância de <see cref="Percentual"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>100</c>.</exception>
+    /// <exception cref="OverflowException">Se <paramref name="value"/> for <see cref="double.NaN"/>, <see cref="double.PositiveInfinity"/> ou <see cref="double.NegativeInfinity"/>.</exception>
+    public static Percentual FromDouble(double value) => new((decimal)value);
+
+    /// <inheritdoc cref="FromDouble"/>
+    public static explicit operator Percentual(double value) => FromDouble(value);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Percentual"/>.
+    /// </summary>
+    /// <param name="value">Percentual como número double, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Percentual"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>100</c>.</exception>
+    public static Percentual? ParseIfPresent(double? value) =>
+        ParseIfPresent(value, FromDouble);
+
+    /// <summary>
+    /// Retorna <see langword="null"/> se <paramref name="value"/> for nulo;
+    /// caso contrário, cria uma instância de <see cref="Percentual"/>.
+    /// </summary>
+    /// <param name="value">Percentual como número decimal, possivelmente nulo.</param>
+    /// <returns>Nova instância de <see cref="Percentual"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentException">Se <paramref name="value"/> for negativo ou superior a <c>100</c>.</exception>
+    public static Percentual? ParseIfPresent(decimal? value) =>
+        ParseIfPresent(value, FromDecimal);
 }

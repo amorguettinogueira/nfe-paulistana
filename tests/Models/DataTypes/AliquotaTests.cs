@@ -132,6 +132,23 @@ public class AliquotaTests
     public void GetHashCode_SameValue_ReturnsSameHash() =>
         Assert.Equal(new Aliquota(0.05m).GetHashCode(), new Aliquota(0.05m).GetHashCode());
 
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new Aliquota(0.05m).GetHashCode(), new Aliquota(0.1m).GetHashCode());
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new Aliquota(0.05m).Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        // Aliquota(1m) e Valor(1m) serializam como "1", mas são tipos distintos
+        object aliquota = new Aliquota(1m);
+        object valor = new Valor(1m);
+        Assert.False(aliquota.Equals(valor));
+    }
+
     // ============================================
     // XML Serialização / Desserialização
     // ============================================
@@ -227,4 +244,48 @@ public class AliquotaTests
     [Fact]
     public void ExplicitCastDouble_WithNegativeValue_ThrowsArgumentException() =>
         Assert.Throws<ArgumentException>(() => { var _ = (Aliquota)(-0.01); });
+
+    // ============================================
+    // ParseIfPresent — double?
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDouble_ReturnsNull() =>
+        Assert.Null(Aliquota.ParseIfPresent((double?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDouble_ReturnsAliquota() =>
+        Assert.Equal("0.0500", Aliquota.ParseIfPresent((double?)0.05)!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_WithNegativeDouble_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Aliquota.ParseIfPresent((double?)-0.01));
+
+    [Fact]
+    public void ParseIfPresent_WithValueExceedingMaxDouble_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Aliquota.ParseIfPresent((double?)10.0));
+
+    [Fact]
+    public void ParseIfPresent_WithNaNDouble_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Aliquota.ParseIfPresent((double?)double.NaN));
+
+    // ============================================
+    // ParseIfPresent — decimal?
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDecimal_ReturnsNull() =>
+        Assert.Null(Aliquota.ParseIfPresent((decimal?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDecimal_ReturnsAliquota() =>
+        Assert.Equal("0.0500", Aliquota.ParseIfPresent((decimal?)0.05m)!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_WithNegativeDecimal_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Aliquota.ParseIfPresent((decimal?)-0.01m));
+
+    [Fact]
+    public void ParseIfPresent_WithDecimalExceedingMax_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Aliquota.ParseIfPresent((decimal?)10m));
 }

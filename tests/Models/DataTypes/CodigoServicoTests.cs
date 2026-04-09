@@ -86,4 +86,76 @@ public class CodigoServicoTests
     {
         Assert.NotEqual(new CodigoServico(7617), new CodigoServico(9999));
     }
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new CodigoServico(7617).GetHashCode(), new CodigoServico(7617).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new CodigoServico(7617).GetHashCode(), new CodigoServico(9999).GetHashCode());
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new CodigoServico(7617).Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        var servico = new CodigoServico(1_000);
+        var numero = new Numero(1_000);
+
+        Assert.False(servico.Equals(numero));
+    }
+
+    [Fact]
+    public void ExplicitCast_FromString_ProducesSameResultAsFromString() =>
+        Assert.Equal(CodigoServico.FromString("7617").ToString(), ((CodigoServico)"7617").ToString());
+
+    [Fact]
+    public void ExplicitCast_FromString_WithInvalidInput_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => { var _ = (CodigoServico)"SERV"; });
+
+    [Fact]
+    public void ExplicitCast_FromInt_WithInvalidInput_ThrowsArgumentException()
+    {
+        ArgumentException ex = Assert.Throws<ArgumentException>(() => { var _ = (CodigoServico)999; });
+        Assert.Contains("pelo menos", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(CodigoServico.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(CodigoServico.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsCodigoServico() =>
+        Assert.Equal(new CodigoServico(7617), CodigoServico.ParseIfPresent("7617"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => CodigoServico.ParseIfPresent("SERV"));
+
+    // ============================================
+    // ParseIfPresent(int?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullInt_ReturnsNull() =>
+        Assert.Null(CodigoServico.ParseIfPresent((int?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidInt_ReturnsCodigoServico() =>
+        Assert.Equal(new CodigoServico(7617), CodigoServico.ParseIfPresent((int?)7617));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidInt_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => CodigoServico.ParseIfPresent((int?)999));
 }

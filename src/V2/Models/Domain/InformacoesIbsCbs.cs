@@ -40,7 +40,7 @@ public sealed class InformacoesIbsCbs
         NaoSim usoOuConsumoPessoal,
         DestinatarioServicos destinatarioServicos,
         Valores valores,
-        CodigoOperacaoFornecimento codigoOperacaoFornecimento,
+        CodigoOperacao codigoOperacaoFornecimento,
         TipoOperacao? tipoOperacao = null,
         GrupoNfeReferenciada? grupoNFSe = null,
         TipoEnteGovernamental? enteGovernamental = null,
@@ -73,7 +73,7 @@ public sealed class InformacoesIbsCbs
 
     /// <summary>Código indicador da operação de fornecimento, conforme tabela "código indicador de operação" publicada no ANEXO AnexoVII-IndOp_IBSCBS_V1.00.00.xlsx.</summary>
     [XmlElement("cIndOp", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-    public CodigoOperacaoFornecimento? CodigoOperacaoFornecimento { get; set; }
+    public CodigoOperacao? CodigoOperacaoFornecimento { get; set; }
 
     /// <summary>Tipo de Operação com Entes Governamentais ou outros serviços sobre bens imóveis.</summary>
     [XmlElement("tpOper", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]

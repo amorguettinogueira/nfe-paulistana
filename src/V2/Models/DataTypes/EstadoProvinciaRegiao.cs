@@ -57,5 +57,5 @@ public sealed class EstadoProvinciaRegiao : ConstrainedString
     /// <returns>Nova instância de <see cref="EstadoProvinciaRegiao"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 60 caracteres.</exception>
     public static EstadoProvinciaRegiao? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new EstadoProvinciaRegiao(v));
+        ParseIfPresent(value, FromString);
 }

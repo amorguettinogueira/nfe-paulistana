@@ -140,7 +140,11 @@ public abstract class ConstrainedString : XmlSerializableDataType
     /// <param name="value">String de entrada, possivelmente nula ou vazia.</param>
     /// <param name="factory">Fábrica que cria a instância a partir de uma string não vazia.</param>
     /// <returns>Instância de <typeparamref name="T"/> ou <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentNullException">Se <paramref name="factory"/> for <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">Propagada pela <paramref name="factory"/> se o valor não satisfizer as regras do tipo.</exception>
-    protected static T? ParseIfPresent<T>(string? value, Func<string, T> factory) where T : ConstrainedString =>
-        string.IsNullOrWhiteSpace(value) ? null : factory(value);
+    protected static T? ParseIfPresent<T>(string? value, Func<string, T> factory) where T : ConstrainedString
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+        return string.IsNullOrWhiteSpace(value) ? null : factory(value);
+    }
 }

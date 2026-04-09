@@ -57,5 +57,5 @@ public sealed class ChaveDocumentoFiscal : ConstrainedString
     /// <returns>Nova instância de <see cref="ChaveDocumentoFiscal"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 50 caracteres.</exception>
     public static ChaveDocumentoFiscal? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new ChaveDocumentoFiscal(v));
+        ParseIfPresent(value, FromString);
 }

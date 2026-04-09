@@ -57,5 +57,5 @@ public sealed class NumeroDescricaoDocumento : ConstrainedString
     /// <returns>Nova instância de <see cref="NumeroDescricaoDocumento"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 255 caracteres.</exception>
     public static NumeroDescricaoDocumento? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new NumeroDescricaoDocumento(v));
+        ParseIfPresent(value, FromString);
 }

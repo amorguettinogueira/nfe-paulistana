@@ -56,5 +56,5 @@ public sealed class SerieRps : ConstrainedString
     /// <returns>Nova instância de <see cref="SerieRps"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 5 caracteres.</exception>
     public static SerieRps? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new SerieRps(v));
+        ParseIfPresent(value, FromString);
 }

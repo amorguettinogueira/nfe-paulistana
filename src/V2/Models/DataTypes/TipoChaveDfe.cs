@@ -57,5 +57,5 @@ public sealed class TipoChaveDfe : ConstrainedString
     /// <returns>Nova instância de <see cref="TipoChaveDfe"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 255 caracteres.</exception>
     public static TipoChaveDfe? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new TipoChaveDfe(v));
+        ParseIfPresent(value, FromString);
 }

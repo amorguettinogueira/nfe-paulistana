@@ -56,5 +56,5 @@ public sealed class NumeroEndereco : ConstrainedString
     /// <returns>Nova instância de <see cref="NumeroEndereco"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 10 caracteres.</exception>
     public static NumeroEndereco? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new NumeroEndereco(v));
+        ParseIfPresent(value, FromString);
 }

@@ -288,4 +288,63 @@ public class ValorTests
     [Fact]
     public void ExplicitCastDouble_WithNegativeValue_ThrowsArgumentException() =>
         Assert.Throws<ArgumentException>(() => { var _ = (Valor)(-1.0); });
+
+    // ============================================
+    // Boundary — limites exatos
+    // ============================================
+
+    [Fact]
+    public void Boundary_ExactMaxValue_IsAccepted()
+    {
+        Exception ex = Record.Exception(() => new Valor(999_999_999_999_999.99m));
+        Assert.Null(ex);
+    }
+
+    [Fact]
+    public void Boundary_ExactMaxValue_SerializesCorrectly() =>
+        Assert.Equal("999999999999999.99", new Valor(999_999_999_999_999.99m).ToString());
+
+    [Fact]
+    public void Boundary_JustAboveMaxValue_IsRejected() =>
+        Assert.Throws<ArgumentException>(() => new Valor(1_000_000_000_000_000m));
+
+    // ============================================
+    // ParseIfPresent — double?
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDouble_ReturnsNull() =>
+        Assert.Null(Valor.ParseIfPresent((double?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDouble_ReturnsValor() =>
+        Assert.Equal("100.50", Valor.ParseIfPresent((double?)100.50)!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_WithNegativeDouble_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Valor.ParseIfPresent((double?)-1.0));
+
+    [Fact]
+    public void ParseIfPresent_WithNaNDouble_ThrowsOverflowException() =>
+        Assert.Throws<OverflowException>(() => Valor.ParseIfPresent((double?)double.NaN));
+
+    // ============================================
+    // ParseIfPresent — decimal?
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullDecimal_ReturnsNull() =>
+        Assert.Null(Valor.ParseIfPresent((decimal?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidDecimal_ReturnsValor() =>
+        Assert.Equal("500.75", Valor.ParseIfPresent((decimal?)500.75m)!.ToString());
+
+    [Fact]
+    public void ParseIfPresent_WithNegativeDecimal_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Valor.ParseIfPresent((decimal?)-1m));
+
+    [Fact]
+    public void ParseIfPresent_WithDecimalExceedingMax_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => Valor.ParseIfPresent((decimal?)1_000_000_000_000_000m));
 }

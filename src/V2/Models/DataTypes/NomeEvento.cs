@@ -57,5 +57,5 @@ public sealed class NomeEvento : ConstrainedString
     /// <returns>Nova instância de <see cref="NomeEvento"/> ou <see langword="null"/>.</returns>
     /// <exception cref="ArgumentException">Se <paramref name="value"/> exceder 255 caracteres.</exception>
     public static NomeEvento? ParseIfPresent(string? value) =>
-        ParseIfPresent(value, v => new NomeEvento(v));
+        ParseIfPresent(value, FromString);
 }

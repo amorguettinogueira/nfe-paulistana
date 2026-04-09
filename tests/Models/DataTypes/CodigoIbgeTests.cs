@@ -104,4 +104,65 @@ public class CodigoIbgeTests
     [Fact]
     public void Equals_DifferentValue_ReturnsFalse() =>
         Assert.NotEqual(new CodigoIbge(3_550_308), new CodigoIbge(3_304_557));
+
+    [Fact]
+    public void GetHashCode_SameValue_ReturnsSameHash() =>
+        Assert.Equal(new CodigoIbge(3_550_308).GetHashCode(), new CodigoIbge(3_550_308).GetHashCode());
+
+    [Fact]
+    public void GetHashCode_DifferentValue_ReturnsDifferentHash() =>
+        Assert.NotEqual(new CodigoIbge(3_550_308).GetHashCode(), new CodigoIbge(3_304_557).GetHashCode());
+
+    [Fact]
+    public void Equals_NullObject_ReturnsFalse() =>
+        Assert.False(new CodigoIbge(3_550_308).Equals(null));
+
+    [Fact]
+    public void Equals_DifferentType_SameSerializedValue_ReturnsFalse()
+    {
+        var ibge = new CodigoIbge(1_310_100);
+        var cep = new Cep(1_310_100);
+
+        Assert.False(ibge.Equals(cep));
+    }
+
+    [Fact]
+    public void ExplicitCast_FromString_ProducesSameResultAsFromString() =>
+        Assert.Equal(CodigoIbge.FromString("3550308").ToString(), ((CodigoIbge)"3550308").ToString());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNull_ReturnsNull() =>
+        Assert.Null(CodigoIbge.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithWhiteSpace_ReturnsNull() =>
+        Assert.Null(CodigoIbge.ParseIfPresent("   "));
+
+    [Fact]
+    public void ParseIfPresent_WithValidString_ReturnsCodigoIbge() =>
+        Assert.Equal(new CodigoIbge(3_550_308), CodigoIbge.ParseIfPresent("3550308"));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidString_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => CodigoIbge.ParseIfPresent("ABC-DEF"));
+
+    // ============================================
+    // ParseIfPresent(int?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_WithNullInt_ReturnsNull() =>
+        Assert.Null(CodigoIbge.ParseIfPresent((int?)null));
+
+    [Fact]
+    public void ParseIfPresent_WithValidInt_ReturnsCodigoIbge() =>
+        Assert.Equal(new CodigoIbge(3_550_308), CodigoIbge.ParseIfPresent((int?)3_550_308));
+
+    [Fact]
+    public void ParseIfPresent_WithInvalidInt_ThrowsArgumentException() =>
+        Assert.Throws<ArgumentException>(() => CodigoIbge.ParseIfPresent((int?)999_999));
 }
