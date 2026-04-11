@@ -25,7 +25,7 @@ No Visual Studio: **Test Explorer → Run All**.
 
 | Métrica | Valor |
 |---|---|
-| Total de testes | 1820 |
+| Total de testes | ~2 000 |
 | Framework | xUnit 2.9.3 / .NET 8, 9, 10 |
 | Assertions | xUnit `Assert.*` exclusivamente |
 

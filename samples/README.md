@@ -32,13 +32,13 @@ dotnet user-secrets set "CnpjDaMinhaFilial"          "00.000.000/0001-00"
 dotnet user-secrets set "MinhaInscricaoMunicipal"    "0.000.000-0"
 dotnet user-secrets set "Certificado:CaminhoArquivo" "C:\caminho\certificado.pfx"
 dotnet user-secrets set "Certificado:Senha"          "sua-senha"
-# ... preencha também os campos de cada ação (veja docs/configuracao.md)
+# ... preencha também os campos de cada ação (veja ../docs/samples/configuracao.md)
 
 # 5. Execute
 dotnet run
 ```
 
-> **Dica:** o arquivo `secrets.json.example` contém todos os campos com valores de exemplo e comentários. Cole o conteúdo inteiro no seu `secrets.json` (User Secrets) e ajuste apenas os campos necessários. Veja [docs/configuracao.md](docs/configuracao.md) para detalhes de cada campo.
+> **Dica:** o arquivo `secrets.json.example` contém todos os campos com valores de exemplo e comentários. Cole o conteúdo inteiro no seu `secrets.json` (User Secrets) e ajuste apenas os campos necessários. Veja [../docs/samples/configuracao.md](../docs/samples/configuracao.md) para detalhes de cada campo.
 
 ## Como funciona
 
@@ -107,7 +107,7 @@ As ações `SendRpsTestV1Action` e `SendRpsTestV2Action` aplicam esse padrão no
 | `Infrastructure/` | Clientes HTTP auxiliares (ex.: `HttpWsdlFetcher` para download do WSDL) |
 | `Presentation/Console/` | Menu interativo (`ConsoleMenuHost`) e utilitários de impressão formatada no terminal |
 
-> Veja o [ADR 0001](docs/adr/0001-convenção-de-nomenclatura.md) para a convenção de nomenclatura e organização de namespaces adotada.
+> Veja o [ADR 0001](../docs/adr/0001-convenção-de-nomenclatura.md) para a convenção de nomenclatura e organização de namespaces adotada.
 
 ## Usando a biblioteca no seu projeto
 
@@ -134,14 +134,14 @@ services.AddNfePaulistanaAll(options => ...,
 
 **No Visual Studio:** selecione o perfil **`(Diagnósticos SOAP)`** no dropdown de execução da barra de ferramentas — isso ativa o nível `Debug` no logger `SoapDiagnostics` automaticamente, sem alterar código.
 
-Para integrar com `ILogger` ou personalizar o comportamento, veja [Como inspecionar o XML SOAP](docs/troubleshooting.md#como-inspecionar-o-xml-soap).
+Para integrar com `ILogger` ou personalizar o comportamento, veja [Como inspecionar o XML SOAP](../docs/samples/troubleshooting.md#como-inspecionar-o-xml-soap).
 
 ## Documentação complementar
 
-- [Configuração detalhada do secrets.json](docs/configuracao.md) — todos os campos com explicações, exemplos e links de referência
-- [Troubleshooting](docs/troubleshooting.md) — erros comuns e como resolvê-los
-- [Como adicionar uma nova ação](docs/como-adicionar-uma-acao.md) — passo a passo para criar uma nova entrada no menu
-- [ADR 0001 — Convenção de nomenclatura](docs/adr/0001-convenção-de-nomenclatura.md)
+- [Configuração detalhada do secrets.json](../docs/samples/configuracao.md) — todos os campos com explicações, exemplos e links de referência
+- [Troubleshooting](../docs/samples/troubleshooting.md) — erros comuns e como resolvê-los
+- [Como adicionar uma nova ação](../docs/samples/como-adicionar-uma-acao.md) — passo a passo para criar uma nova entrada no menu
+- [ADR 0001 — Convenção de nomenclatura](../docs/adr/0001-convenção-de-nomenclatura.md)
 
 ## Contribuição
 
