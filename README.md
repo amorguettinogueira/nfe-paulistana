@@ -241,8 +241,15 @@ Namespaces: `Nfe.Paulistana.V1.Services`, `Nfe.Paulistana.V1.Builders`
 
 | Interface | Operação WSDL | Diferença em relação à V1 |
 |---|---|---|
-| `IConsultaCNPJService` | `ConsultaCNPJ` | Suporte a **CNPJ alfanumérico** (Receita Federal 2026) |
+| `IEnvioRpsService` | `EnvioRPS` | Suporte a **IBS/CBS** (reforma tributária), tomador estrangeiro com NIF e endereço exterior |
+| `IEnvioLoteRpsService` | `EnvioLoteRPS` | Suporte a **IBS/CBS** (reforma tributária) e envio de eventos fiscais |
+| `ICancelamentoNFeService` | `CancelamentoNFe` | Schema v02 (operação equivalente à V1) |
+| `IConsultaNFeService` | `ConsultaNFe` | Schema v02 (operação equivalente à V1) |
+| `IConsultaNFeRecebidasService` | `ConsultaNFeRecebidas` | Schema v02 (operação equivalente à V1) |
+| `IConsultaNFeEmitidasService` | `ConsultaNFeEmitidas` | Schema v02 (operação equivalente à V1) |
+| `IConsultaLoteService` | `ConsultaLote` | Schema v02 (operação equivalente à V1) |
 | `IConsultaInformacoesLoteService` | `ConsultaInformacoesLote` | Inscrição municipal de **1 a 12 dígitos** |
+| `IConsultaCNPJService` | `ConsultaCNPJ` | Suporte a **CNPJ alfanumérico** (Receita Federal 2026) |
 
 Namespaces: `Nfe.Paulistana.V2.Services`, `Nfe.Paulistana.V2.Builders`
 
