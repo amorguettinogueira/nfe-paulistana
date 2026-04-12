@@ -310,4 +310,44 @@ public class CnpjTests
     [Fact]
     public void Cnpj_GetHashCode_DifferentValue_ReturnsDifferentHash() =>
         Assert.NotEqual(new Cnpj(84067820000190).GetHashCode(), new Cnpj(33579346000145).GetHashCode());
+
+    // ============================================
+    // FromString / FromInt64
+    // ============================================
+
+    [Fact]
+    public void FromString_ValorValido_CriaInstanciaCorreta() =>
+        Assert.Equal("84067820000190", Cnpj.FromString("84.067.820/0001-90").ToString());
+
+    [Fact]
+    public void FromInt64_ValorValido_CriaInstanciaCorreta() =>
+        Assert.Equal("84067820000190", Cnpj.FromInt64(84067820000190L).ToString());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_StringNula_RetornaNull() =>
+        Assert.Null(Cnpj.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_StringVazia_RetornaNull() =>
+        Assert.Null(Cnpj.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_StringValida_RetornaInstancia() =>
+        Assert.Equal("84067820000190", Cnpj.ParseIfPresent("84067820000190")!.ToString());
+
+    // ============================================
+    // ParseIfPresent(long?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_LongNulo_RetornaNull() =>
+        Assert.Null(Cnpj.ParseIfPresent((long?)null));
+
+    [Fact]
+    public void ParseIfPresent_LongValido_RetornaInstancia() =>
+        Assert.Equal("84067820000190", Cnpj.ParseIfPresent((long?)84067820000190L)!.ToString());
 }
