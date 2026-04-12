@@ -173,4 +173,68 @@ public sealed class InformacoesIbsCbsBuilderTests
             builder.AddDocumentosReembolsoRepasseOuRessarcimento(documento));
         Assert.Contains("classificação tributária", exception.Message);
     }
+
+    // ============================================
+    // Métodos de configuração — retorno próprio builder
+    // ============================================
+
+    [Fact]
+    public void SetTipoOperacao_RetornaProprioBuilder()
+    {
+        // Arrange
+        var builder = InformacoesIbsCbsBuilder.New();
+
+        // Act
+        var result = builder.SetTipoOperacao(TipoOperacao.PagamentoPosterior);
+
+        // Assert
+        Assert.Same(builder, result);
+    }
+
+    [Fact]
+    public void SetEnteGovernamental_RetornaProprioBuilder()
+    {
+        // Arrange
+        var builder = InformacoesIbsCbsBuilder.New();
+
+        // Act
+        var result = builder.SetEnteGovernamental(TipoEnteGovernamental.Municipios);
+
+        // Assert
+        Assert.Same(builder, result);
+    }
+
+    [Fact]
+    public void SetCodigoOperacaoFornecimento_RetornaProprioBuilder()
+    {
+        // Arrange
+        var builder = InformacoesIbsCbsBuilder.New();
+        var codigo = new CodigoOperacao("010101");
+
+        // Act
+        var result = builder.SetCodigoOperacaoFornecimento(codigo);
+
+        // Assert
+        Assert.Same(builder, result);
+    }
+
+    // ============================================
+    // Build — caminho feliz
+    // ============================================
+
+    [Fact]
+    public void Build_ComCamposObrigatorios_RetornaInstancia()
+    {
+        // Arrange
+        var builder = InformacoesIbsCbsBuilder.New()
+            .SetUsoOuConsumoPessoal(new NaoSim())
+            .SetCodigoOperacaoFornecimento(new CodigoOperacao("010101"))
+            .SetClassificacaoTributaria(new ClassificacaoTributaria("010101"));
+
+        // Act
+        var result = builder.Build();
+
+        // Assert
+        Assert.NotNull(result);
+    }
 }

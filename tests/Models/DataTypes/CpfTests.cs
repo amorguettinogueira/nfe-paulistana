@@ -308,4 +308,44 @@ public class CpfTests
     [Fact]
     public void Cpf_GetHashCode_DifferentValue_ReturnsDifferentHash() =>
         Assert.NotEqual(new Cpf(63596780047).GetHashCode(), new Cpf(86290818210).GetHashCode());
+
+    // ============================================
+    // FromString / FromInt64
+    // ============================================
+
+    [Fact]
+    public void FromString_ValorValido_CriaInstanciaCorreta() =>
+        Assert.Equal("46381819618", Cpf.FromString("463.818.196-18").ToString());
+
+    [Fact]
+    public void FromInt64_ValorValido_CriaInstanciaCorreta() =>
+        Assert.Equal("46381819618", Cpf.FromInt64(46381819618L).ToString());
+
+    // ============================================
+    // ParseIfPresent(string?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_StringNula_RetornaNull() =>
+        Assert.Null(Cpf.ParseIfPresent((string?)null));
+
+    [Fact]
+    public void ParseIfPresent_StringVazia_RetornaNull() =>
+        Assert.Null(Cpf.ParseIfPresent(string.Empty));
+
+    [Fact]
+    public void ParseIfPresent_StringValida_RetornaInstancia() =>
+        Assert.Equal("46381819618", Cpf.ParseIfPresent("46381819618")!.ToString());
+
+    // ============================================
+    // ParseIfPresent(long?)
+    // ============================================
+
+    [Fact]
+    public void ParseIfPresent_LongNulo_RetornaNull() =>
+        Assert.Null(Cpf.ParseIfPresent((long?)null));
+
+    [Fact]
+    public void ParseIfPresent_LongValido_RetornaInstancia() =>
+        Assert.Equal("46381819618", Cpf.ParseIfPresent((long?)46381819618L)!.ToString());
 }

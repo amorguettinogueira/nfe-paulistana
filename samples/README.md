@@ -1,6 +1,6 @@
 # Nfe.Paulistana — Sample de integração
 
-Este repositório demonstra como usar a biblioteca [`Nfe.Paulistana`](https://github.com/amorguettinogueira/Nfe.Paulistana) para se comunicar com os **Web Services SOAP da NFS-e da Prefeitura de São Paulo**. O objetivo é servir como referência prática: qualquer desenvolvedor pode explorar as ações, ler o código-fonte e replicar os padrões no seu próprio projeto.
+Este repositório demonstra como usar a biblioteca [`Nfe.Paulistana`](https://github.com/amorguettinogueira/nfe-paulistana) para se comunicar com os **Web Services SOAP da NFS-e da Prefeitura de São Paulo**. O objetivo é servir como referência prática: qualquer desenvolvedor pode explorar as ações, ler o código-fonte e replicar os padrões no seu próprio projeto.
 
 > Este projeto **não é** uma suíte de testes automatizada. Todas as chamadas são feitas manualmente via menu interativo de console.
 
@@ -15,8 +15,8 @@ Este repositório demonstra como usar a biblioteca [`Nfe.Paulistana`](https://gi
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/amorguettinogueira/Nfe.Paulistana.integration.test
-cd Nfe.Paulistana.integration.test/Nfe.Paulistana.Integration.Sample
+git clone https://github.com/amorguettinogueira/nfe-paulistana
+cd samples
 
 # 2. Inicialize o User Secrets
 dotnet user-secrets init

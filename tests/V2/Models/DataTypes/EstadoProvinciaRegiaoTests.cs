@@ -109,4 +109,68 @@ public sealed class EstadoProvinciaRegiaoTests
     [Fact]
     public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
         Assert.Throws<ArgumentException>(() => EstadoProvinciaRegiao.ParseIfPresent(new string('A', 61)));
+
+    // ============================================
+    // Construtor padrão
+    // ============================================
+
+    [Fact]
+    public void DefaultConstructor_ToStringReturnsNull() =>
+        Assert.Null(new EstadoProvinciaRegiao().ToString());
+
+    // ============================================
+    // IsSealed
+    // ============================================
+
+    [Fact]
+    public void IsSealed() =>
+        Assert.True(typeof(EstadoProvinciaRegiao).IsSealed);
+
+    // ============================================
+    // Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Equals_MesmoValor_SaoIguais()
+    {
+        var a = new EstadoProvinciaRegiao("São Paulo");
+        var b = new EstadoProvinciaRegiao("São Paulo");
+
+        Assert.Equal(a, b);
+    }
+
+    [Fact]
+    public void Equals_ValoresDiferentes_NaoSaoIguais()
+    {
+        var a = new EstadoProvinciaRegiao("São Paulo");
+        var b = new EstadoProvinciaRegiao("Paraná");
+
+        Assert.NotEqual(a, b);
+    }
+
+    [Fact]
+    public void Equals_Nulo_RetornaFalse()
+    {
+        var estado = new EstadoProvinciaRegiao("São Paulo");
+
+        Assert.False(estado.Equals(null));
+    }
+
+    [Fact]
+    public void GetHashCode_MesmoValor_MesmoHash()
+    {
+        var a = new EstadoProvinciaRegiao("São Paulo");
+        var b = new EstadoProvinciaRegiao("São Paulo");
+
+        Assert.Equal(a.GetHashCode(), b.GetHashCode());
+    }
+
+    [Fact]
+    public void GetHashCode_ValoresDiferentes_HashDiferente()
+    {
+        var a = new EstadoProvinciaRegiao("São Paulo");
+        var b = new EstadoProvinciaRegiao("Paraná");
+
+        Assert.NotEqual(a.GetHashCode(), b.GetHashCode());
+    }
 }

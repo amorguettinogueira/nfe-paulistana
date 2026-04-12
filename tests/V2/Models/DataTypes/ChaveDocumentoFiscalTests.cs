@@ -86,4 +86,68 @@ public sealed class ChaveDocumentoFiscalTests
     [Fact]
     public void ParseIfPresent_ExceedingMaxLengthInput_ThrowsArgumentException() =>
         Assert.Throws<ArgumentException>(() => ChaveDocumentoFiscal.ParseIfPresent(new string('A', 51)));
+
+    // ============================================
+    // Construtor padrão
+    // ============================================
+
+    [Fact]
+    public void DefaultConstructor_ToStringReturnsNull() =>
+        Assert.Null(new ChaveDocumentoFiscal().ToString());
+
+    // ============================================
+    // IsSealed
+    // ============================================
+
+    [Fact]
+    public void IsSealed() =>
+        Assert.True(typeof(ChaveDocumentoFiscal).IsSealed);
+
+    // ============================================
+    // Equals / GetHashCode
+    // ============================================
+
+    [Fact]
+    public void Equals_MesmoValor_SaoIguais()
+    {
+        var a = new ChaveDocumentoFiscal("12345");
+        var b = new ChaveDocumentoFiscal("12345");
+
+        Assert.Equal(a, b);
+    }
+
+    [Fact]
+    public void Equals_ValoresDiferentes_NaoSaoIguais()
+    {
+        var a = new ChaveDocumentoFiscal("12345");
+        var b = new ChaveDocumentoFiscal("67890");
+
+        Assert.NotEqual(a, b);
+    }
+
+    [Fact]
+    public void Equals_Nulo_RetornaFalse()
+    {
+        var chave = new ChaveDocumentoFiscal("12345");
+
+        Assert.False(chave.Equals(null));
+    }
+
+    [Fact]
+    public void GetHashCode_MesmoValor_MesmoHash()
+    {
+        var a = new ChaveDocumentoFiscal("12345");
+        var b = new ChaveDocumentoFiscal("12345");
+
+        Assert.Equal(a.GetHashCode(), b.GetHashCode());
+    }
+
+    [Fact]
+    public void GetHashCode_ValoresDiferentes_HashDiferente()
+    {
+        var a = new ChaveDocumentoFiscal("12345");
+        var b = new ChaveDocumentoFiscal("67890");
+
+        Assert.NotEqual(a.GetHashCode(), b.GetHashCode());
+    }
 }

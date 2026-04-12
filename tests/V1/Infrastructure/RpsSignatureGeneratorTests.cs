@@ -106,4 +106,40 @@ public class RpsSignatureGeneratorTests
         Assert.NotNull(rps.Assinatura);
         Assert.Equal(primeiraAssinatura.Length, rps.Assinatura.Length);
     }
+
+    // ============================================
+    // Caminho com intermediário (102 chars)
+    // ============================================
+
+    [Fact]
+    public void Sign_RpsComIntermediario_AssinaturaContemBytes()
+    {
+        // Arrange
+        var generator = new RpsSignatureGenerator();
+        using X509Certificate2 certificate = CriarCertificado();
+
+        var intermediario = IntermediarioBuilder
+            .New(new Cpf(new ValidCpfNumber().Min()), false)
+            .Build();
+
+        Rps rps = RpsBuilder.New(
+                new InscricaoMunicipal(39616924),
+                TipoRps.Rps,
+                new Numero(4106),
+                new Discriminacao("Desenvolvimento de software com intermediário."),
+                new SerieRps("BB"))
+            .SetNFe(new DataXsd(new DateTime(2024, 1, 20)), (TributacaoNfe)'T', StatusNfe.Normal)
+            .SetServico(new CodigoServico(7617), (Valor)1000m)
+            .SetIss((Aliquota)0.05m, false)
+            .SetTomador(TomadorPadrao)
+            .SetIntermediario(intermediario)
+            .Build();
+
+        // Act
+        generator.Sign(rps, certificate);
+
+        // Assert
+        Assert.NotNull(rps.Assinatura);
+        Assert.True(rps.Assinatura!.Length > 0);
+    }
 }
