@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <!-- Formato Cobertura é necessário para o Codecov processar o relatório -->
+          <Format>cobertura</Format>
+
+          <!-- Restringe a cobertura apenas ao projeto da biblioteca -->
+          <Include>[Nfe.Paulistana]*</Include>
+          <Exclude>[*.Tests]*,[*.Benchmarks]*,[*.Sample]*</Exclude>
+
+          <!--
+            Dois limiares simultâneos (valores separados por vírgula):
+              1º  total   → 90 % de cobertura de linha no assembly inteiro
+              2º  minimum → 80 % de cobertura de linha no arquivo com menor cobertura
+            O dotnet test falha se qualquer limiar for violado.
+          -->
+          <Threshold>90,80</Threshold>
+          <ThresholdType>line,line</ThresholdType>
+          <ThresholdStat>total,minimum</ThresholdStat>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
