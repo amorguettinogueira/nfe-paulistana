@@ -8,7 +8,7 @@ using InscricaoMunicipal = Nfe.Paulistana.V2.Models.DataTypes.InscricaoMunicipal
 namespace Nfe.Paulistana.Tests.V2.Infrastructure;
 
 /// <summary>
-///
+/// Testes unitários para a classe CancelamentoSignatureGenerator, responsável por gerar a assinatura digital
 /// </summary>
 public class CancelamentoSignatureGeneratorTests
 {

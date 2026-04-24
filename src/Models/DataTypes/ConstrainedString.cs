@@ -1,5 +1,6 @@
 using Nfe.Paulistana.Extensions;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -53,15 +54,15 @@ public abstract class ConstrainedString : XmlSerializableDataType
 
         foreach (char c in span)
         {
-            _ = c switch
+            _ = sb.Append(c switch
             {
-                '&' => sb.Append("&amp;"),
-                '>' => sb.Append("&gt;"),
-                '<' => sb.Append("&lt;"),
-                '"' => sb.Append("&quot;"),
-                '\'' => sb.Append("&apos;"),
-                _ => sb.Append(c),
-            };
+                '&' => "&amp;",
+                '>' => "&gt;",
+                '<' => "&lt;",
+                '"' => "&quot;",
+                '\'' => "&apos;",
+                _ => c,
+            });
         }
 
         return sb.ToString();

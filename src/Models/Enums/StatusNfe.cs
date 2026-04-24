@@ -10,7 +10,7 @@ namespace Nfe.Paulistana.Models.Enums;
 /// <summary>
 /// Status da NF-e: Normal, Cancelada ou Extraviada
 /// </summary>
-[SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "We have to abide to XML Schema (XSD) that doesn't publish zero")]
+[SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "Propriedade necessária para compatibilidade com XML Schema (XSD)")]
 public enum StatusNfe
 {
     /// <summary>NF-e em situação normal, com validade fiscal plena.</summary>

@@ -108,31 +108,16 @@ public abstract class ElementSignatureGeneratorBase<T>
             ? string.Empty
             : (value.ToString() ?? string.Empty).Replace("-", string.Empty, StringComparison.InvariantCultureIgnoreCase);
 
-    /// <summary>Formata o campo StatusRps obtendo o valor do atributo <see cref="XmlEnumAttribute"/> ou o nome do enum como fallback.</summary>
-    protected static string FormatStatusRps(StatusNfe? value)
-    {
-        if (!value.HasValue)
+    /// <summary>Formata o campo StatusRps</summary>
+    protected static string FormatStatusRps(StatusNfe? value) =>
+        // convertido de Reflection para switch para reduzir complexidade e melhorar legibilidade e performance (zero alocação de objetos e chamadas de método)
+        value switch
         {
-            return string.Empty;
-        }
-
-        string enumAsString = value.Value.ToString();
-
-        MemberInfo[] memberInfo = typeof(StatusNfe).GetMember(enumAsString);
-
-        if (memberInfo?.Length > 0)
-        {
-            XmlEnumAttribute? attribute = memberInfo[0]
-                .GetCustomAttribute<XmlEnumAttribute>();
-
-            if (attribute != null && !string.IsNullOrWhiteSpace(attribute.Name))
-            {
-                return attribute.Name;
-            }
-        }
-
-        return enumAsString;
-    }
+            StatusNfe.Normal => "N",
+            StatusNfe.Cancelada => "C",
+            StatusNfe.Extraviada => "E",
+            _ => string.Empty
+        };
 
     /// <summary>Formata o campo CpfOrCnpj com indicador de tipo e identificador com 14 dígitos.</summary>
     /// <remarks>Formato: [Tipo][ID com 14 dígitos] — Tipo 1: CPF, Tipo 2: CNPJ, Tipo 3: Padrão.</remarks>
