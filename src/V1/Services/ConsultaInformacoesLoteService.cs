@@ -29,6 +29,6 @@ internal sealed class ConsultaInformacoesLoteService(HttpClient httpClient)
         response.RetornoXml?.Payload;
 
     /// <inheritdoc/>
-    public Task<RetornoInformacoesLote> SendAsync(PedidoInformacoesLote pedidoInformacoesLote, CancellationToken cancellationToken = default) =>
+    public new Task<RetornoInformacoesLote> SendAsync(PedidoInformacoesLote pedidoInformacoesLote, CancellationToken cancellationToken = default) =>
         base.SendAsync(pedidoInformacoesLote, cancellationToken);
 }

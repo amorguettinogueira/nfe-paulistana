@@ -42,6 +42,6 @@ internal sealed class EnvioLoteRpsService(HttpClient httpClient)
         response.RetornoXml?.Payload;
 
     /// <inheritdoc/>
-    public Task<RetornoEnvioLoteRps> SendAsync(PedidoEnvioLote pedidoEnvioLote, bool modoTeste = false, CancellationToken cancellationToken = default) =>
+    public new Task<RetornoEnvioLoteRps> SendAsync(PedidoEnvioLote pedidoEnvioLote, bool modoTeste = false, CancellationToken cancellationToken = default) =>
         base.SendAsync(pedidoEnvioLote, modoTeste, cancellationToken);
 }

@@ -29,6 +29,6 @@ internal sealed class ConsultaNFeEmitidasService(HttpClient httpClient)
         response.RetornoXml?.Payload;
 
     /// <inheritdoc/>
-    public Task<RetornoConsulta> SendAsync(PedidoConsultaNFePeriodo pedidoConsultaNFePeriodo, CancellationToken cancellationToken = default) =>
+    public new Task<RetornoConsulta> SendAsync(PedidoConsultaNFePeriodo pedidoConsultaNFePeriodo, CancellationToken cancellationToken = default) =>
         base.SendAsync(pedidoConsultaNFePeriodo, cancellationToken);
 }

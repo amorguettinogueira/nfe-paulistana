@@ -29,6 +29,6 @@ internal sealed class CancelamentoNFeService(HttpClient httpClient)
         response.RetornoXml?.Payload;
 
     /// <inheritdoc/>
-    public Task<RetornoCancelamentoNFe> SendAsync(PedidoCancelamentoNFe pedidoCancelamentoNFe, CancellationToken cancellationToken = default) =>
+    public new Task<RetornoCancelamentoNFe> SendAsync(PedidoCancelamentoNFe pedidoCancelamentoNFe, CancellationToken cancellationToken = default) =>
         base.SendAsync(pedidoCancelamentoNFe, cancellationToken);
 }

@@ -29,6 +29,6 @@ internal sealed class ConsultaCNPJService(HttpClient httpClient)
         response.RetornoXml?.Payload;
 
     /// <inheritdoc/>
-    public Task<RetornoConsultaCNPJ> SendAsync(PedidoConsultaCNPJ pedidoConsultaCNPJ, CancellationToken cancellationToken = default) =>
+    public new Task<RetornoConsultaCNPJ> SendAsync(PedidoConsultaCNPJ pedidoConsultaCNPJ, CancellationToken cancellationToken = default) =>
         base.SendAsync(pedidoConsultaCNPJ, cancellationToken);
 }
