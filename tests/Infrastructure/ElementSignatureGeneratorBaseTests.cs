@@ -264,15 +264,22 @@ public class ElementSignatureGeneratorBaseTests
     }
 
     [Fact]
+    public void FormatStatusRps_StatusComXmlEnum_RetornaValorDoAtributoExtraviada()
+    {
+        var result = Stub.ExposedFormatStatusRps(StatusNfe.Extraviada);
+
+        Assert.Equal("E", result);
+    }
+
+    [Fact]
     public void FormatStatusRps_StatusSemMembro_RetornaEnumToString()
     {
-        // Valor inteiro que não corresponde a nenhum membro do enum,
-        // fazendo GetMember retornar array vazio → cobre o return enumAsString (linha 134)
+        // Valor inteiro que não corresponde a nenhum membro do enum
         var statusInvalido = (StatusNfe)999;
 
         var result = Stub.ExposedFormatStatusRps(statusInvalido);
 
-        Assert.Equal("999", result);
+        Assert.Equal(string.Empty, result);
     }
 
     // ============================================

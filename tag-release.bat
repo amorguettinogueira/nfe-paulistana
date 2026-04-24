@@ -55,6 +55,41 @@ if not errorlevel 1 (
     exit /b 1
 )
 
+:: Garante que estamos na branch main
+for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD') do set "BRANCH=%%B"
+if /i "!BRANCH!" neq "main" (
+    echo.
+    echo  ERRO: tags de release só podem ser criadas a partir da branch main.
+    echo  Branch atual: !BRANCH!
+    echo  Execute: git checkout main
+    echo.
+    exit /b 1
+)
+
+:: Sincroniza com o remoto antes de tagear para garantir que HEAD está no histórico de main
+echo.
+echo  Sincronizando com origin/main...
+git fetch origin main >nul 2>&1
+if errorlevel 1 (
+    echo.
+    echo  ERRO: falha ao executar git fetch. Verifique a conexão com o remoto.
+    echo.
+    exit /b 1
+)
+
+:: Compara HEAD local com origin/main — qualquer divergência aborta
+for /f "delims=" %%L in ('git rev-parse HEAD') do set "LOCAL_SHA=%%L"
+for /f "delims=" %%R in ('git rev-parse origin/main') do set "REMOTE_SHA=%%R"
+if "!LOCAL_SHA!" neq "!REMOTE_SHA!" (
+    echo.
+    echo  ERRO: o HEAD local não está sincronizado com origin/main.
+    echo  Local : !LOCAL_SHA!
+    echo  Remote: !REMOTE_SHA!
+    echo  Execute "git pull origin main" e tente novamente.
+    echo.
+    exit /b 1
+)
+
 :: Exibe o estado atual do repositório
 echo.
 echo  Repositório : %CD%

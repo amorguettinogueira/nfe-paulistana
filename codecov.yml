@@ -1,0 +1,21 @@
+coverage:
+  status:
+    # Cobertura total do projeto: falha se ficar abaixo de 90 %
+    project:
+      default:
+        target: 90%
+        # Tolerância de 1 % para evitar falhas por variação mínima
+        threshold: 1%
+        informational: false
+
+    # Cobertura do patch (linhas alteradas no PR): falha se ficar abaixo de 80 %
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
+        informational: false
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: true
