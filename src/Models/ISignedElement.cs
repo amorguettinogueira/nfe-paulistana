@@ -1,4 +1,6 @@
-﻿namespace Nfe.Paulistana.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Nfe.Paulistana.Models;
 
 /// <summary>
 /// <para>
@@ -34,7 +36,7 @@
 /// </item>
 /// </list>
 /// </remarks>
-internal interface ISignedElement
+public interface ISignedElement
 {
     /// <summary>
     /// Obtém ou define a assinatura digital deste objeto.
@@ -43,5 +45,6 @@ internal interface ISignedElement
     /// Os bytes da assinatura codificados em base64, ou <c>null</c> se o objeto não foi assinado.
     /// Esta propriedade é utilizada durante a serialização XML de documentos assinados.
     /// </value>
+    [SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "Propriedade necessária para serialização XML")]
     byte[]? Assinatura { get; set; }
 }

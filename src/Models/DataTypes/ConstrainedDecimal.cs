@@ -75,24 +75,15 @@ public abstract class ConstrainedDecimal : XmlSerializableDataType
             return 1m;
         }
 
-        if (exponent > 0)
-        {
-            decimal result = 1m;
-            for (int i = 0; i < exponent; i++)
-            {
-                result *= 10m;
-            }
+        decimal factor = exponent > 0 ? 10m : 0.1m;
+        decimal result = 1m;
 
-            return result;
+        for (int i = 0; i < Math.Abs(exponent); i++)
+        {
+            result *= factor;
         }
 
-        decimal divisor = 1m;
-        for (int i = 0; i < -exponent; i++)
-        {
-            divisor *= 10m;
-        }
-
-        return 1m / divisor;
+        return result;
     }
 
     /// <summary>
