@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
 using Nfe.Paulistana.V2.Models.Enums;
@@ -77,9 +76,8 @@ public class InformacoesIbsCbsTests
         _ = Assert.Throws<ArgumentNullException>(() => new InformacoesIbsCbs(FinalidadeEmissaoNfe.NfseRegular, uso, DestinatarioServicos.ProprioTomador, valores!, codigo));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Setters_AssignValuesCorrectly(long cpfNumber)
+    [Fact]
+    public void Setters_AssignValuesCorrectly()
     {
         var info = new InformacoesIbsCbs();
 
@@ -92,7 +90,7 @@ public class InformacoesIbsCbsTests
         info.EnteGovernamental = TipoEnteGovernamental.Municipios;
         info.EnteGovernamentalSpecified = true;
         info.DestinatarioServicos = DestinatarioServicos.OutraPessoa;
-        info.Destinatario = new InformacoesPessoa((Cpf)cpfNumber, new RazaoSocial("Nome"));
+        info.Destinatario = new InformacoesPessoa((Cpf)Tests.Helpers.TestConstants.ValidCpf, new RazaoSocial("Nome"));
         info.Valores = new Valores(new TributosIbsCbs());
         var imovel = new ImovelObra(new CadastroImovel("ABCDEFGH"));
         info.ImovelObra = imovel;

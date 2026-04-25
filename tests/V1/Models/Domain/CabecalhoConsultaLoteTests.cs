@@ -1,6 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
-using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
 
 namespace Nfe.Paulistana.Tests.V1.Models.Domain;
@@ -20,11 +18,10 @@ public class CabecalhoConsultaLoteTests
         Assert.Equal(1, cab.Versao);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_ComCpfOrCnpj_DefinePropriedade(long cpfNumber)
+    [Fact]
+    public void Constructor_ComCpfOrCnpj_DefinePropriedade()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var cab = new CabecalhoConsultaLote(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
@@ -44,11 +41,10 @@ public class CabecalhoConsultaLoteTests
     public void HerdaDeCabecalho() =>
         Assert.True(typeof(CabecalhoConsultaLote).IsSubclassOf(typeof(Cabecalho)));
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_ComCpfENumeroLote_DefineAmbasPropriedades(long cpfNumber)
+    [Fact]
+    public void Constructor_ComCpfENumeroLote_DefineAmbasPropriedades()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var numero = new Numero(99);
 
         var cab = new CabecalhoConsultaLote(cpfOrCnpj) { NumeroLote = numero };

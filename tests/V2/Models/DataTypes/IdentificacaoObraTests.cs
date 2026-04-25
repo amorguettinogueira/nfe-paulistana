@@ -1,6 +1,6 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.V2.Models.DataTypes;
 
@@ -75,7 +75,7 @@ public sealed class IdentificacaoObraTests
         const string xml = """<?xml version="1.0" encoding="utf-16"?><IdentificacaoObra xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">abc123456789012345678901234567</IdentificacaoObra>""";
 
         // Act
-        Action act = () => DesserializarDeXml(xml);
+        Action act = () => XmlTestHelper.DesserializarDeXml<IdentificacaoObra>(xml);
 
         // Assert
         var ex = Assert.Throws<InvalidOperationException>(act);
@@ -87,10 +87,10 @@ public sealed class IdentificacaoObraTests
     {
         // Arrange
         const string value = "123456789012345678901234567890";
-        var xml = SerializarParaXml(new IdentificacaoObra(value));
+        var xml = XmlTestHelper.SerializarParaXml(new IdentificacaoObra(value));
 
         // Act
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<IdentificacaoObra>(xml);
 
         // Assert
         Assert.Equal(value, desserializado!.ToString());
@@ -163,18 +163,4 @@ public sealed class IdentificacaoObraTests
         Assert.Throws<ArgumentException>(() =>
             IdentificacaoObra.ParseIfPresent("abc123456789012345678901234567"));
 
-    private static string SerializarParaXml(IdentificacaoObra obra)
-    {
-        var serializer = new XmlSerializer(typeof(IdentificacaoObra));
-        using var sw = new StringWriter();
-        serializer.Serialize(sw, obra);
-        return sw.ToString();
-    }
-
-    private static IdentificacaoObra? DesserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(IdentificacaoObra));
-        using var sr = new StringReader(xml);
-        return (IdentificacaoObra?)serializer.Deserialize(sr);
-    }
 }

@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V1.Models.Response;
 
 namespace Nfe.Paulistana.Tests.V1.Models.Response;
@@ -7,20 +8,6 @@ namespace Nfe.Paulistana.Tests.V1.Models.Response;
 /// </summary>
 public sealed class EnderecoNfeTests
 {
-    private static string SerializarParaXml(EnderecoNfe obj)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(EnderecoNfe));
-        using var sw = new System.IO.StringWriter();
-        serializer.Serialize(sw, obj);
-        return sw.ToString();
-    }
-
-    private static EnderecoNfe? DesserializarDeXml(string xml)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(EnderecoNfe));
-        using var sr = new System.IO.StringReader(xml);
-        return (EnderecoNfe?)serializer.Deserialize(sr);
-    }
 
     [Fact]
     public void Constructor_SemArgumentos_CriaInstancia() =>
@@ -83,7 +70,7 @@ public sealed class EnderecoNfeTests
         };
 
         // Act
-        var desserializado = DesserializarDeXml(SerializarParaXml(endereco))!;
+        var desserializado = XmlTestHelper.DesserializarDeXml<EnderecoNfe>(XmlTestHelper.SerializarParaXml(endereco))!;
 
         // Assert
         Assert.Equal(endereco.TipoLogradouro, desserializado.TipoLogradouro);
@@ -103,7 +90,7 @@ public sealed class EnderecoNfeTests
         var endereco = new EnderecoNfe { Uf = "SP", Cep = "01310100" };
 
         // Act
-        var xml = SerializarParaXml(endereco);
+        var xml = XmlTestHelper.SerializarParaXml(endereco);
 
         // Assert
         Assert.Contains("<UF>SP</UF>", xml);

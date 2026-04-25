@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.Response;
 
 namespace Nfe.Paulistana.Tests.V2.Models.Response;
@@ -7,20 +8,6 @@ namespace Nfe.Paulistana.Tests.V2.Models.Response;
 /// </summary>
 public sealed class NfeModelTests
 {
-    private static string SerializarParaXml(NfeModel obj)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(NfeModel));
-        using var sw = new System.IO.StringWriter();
-        serializer.Serialize(sw, obj);
-        return sw.ToString();
-    }
-
-    private static NfeModel? DesserializarDeXml(string xml)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(NfeModel));
-        using var sr = new System.IO.StringReader(xml);
-        return (NfeModel?)serializer.Deserialize(sr);
-    }
 
     // ── Construção ────────────────────────────────────────────────────────────
 
@@ -311,7 +298,7 @@ public sealed class NfeModelTests
         };
 
         // Act
-        var desserializado = DesserializarDeXml(SerializarParaXml(nfe))!;
+        var desserializado = XmlTestHelper.DesserializarDeXml<NfeModel>(XmlTestHelper.SerializarParaXml(nfe))!;
 
         // Assert
         Assert.Equal(nfe.ChaveNFe.NumeroNFe, desserializado.ChaveNFe!.NumeroNFe);
@@ -354,7 +341,7 @@ public sealed class NfeModelTests
         };
 
         // Act
-        var xml = SerializarParaXml(nfe);
+        var xml = XmlTestHelper.SerializarParaXml(nfe);
 
         // Assert
         Assert.Contains("<ChaveNFe>", xml);
@@ -390,7 +377,7 @@ public sealed class NfeModelTests
         };
 
         // Act
-        var xml = SerializarParaXml(nfe);
+        var xml = XmlTestHelper.SerializarParaXml(nfe);
 
         // Assert
         Assert.Contains("<ValorInicialCobrado>1500.00</ValorInicialCobrado>", xml);

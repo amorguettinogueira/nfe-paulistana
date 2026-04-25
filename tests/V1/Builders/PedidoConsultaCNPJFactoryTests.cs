@@ -1,28 +1,16 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.V1.Builders;
 
 /// <summary>
 /// Testes unitários para <see cref="PedidoConsultaCNPJFactory"/> (V1).
 /// </summary>
-public sealed class PedidoConsultaCNPJFactoryTests
+public sealed class PedidoConsultaCNPJFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarCertificado()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
-
     [Fact]
     public void Construtor_CertificadoNulo_ThrowsArgumentNullException()
     {
@@ -34,7 +22,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void Construtor_CertificadoValido_NaoLancaExcecao()
     {
         // Arrange & Act
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
 
         // Assert
         Assert.NotNull(factory);
@@ -44,7 +32,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void NewCpf_CpfNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var contribuinte = new CpfOrCnpj(new Cpf(46381819618L));
 
         // Act & Assert
@@ -55,7 +43,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void NewCpf_ContribuinteNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618L);
 
         // Act & Assert
@@ -66,7 +54,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void NewCpf_ComParametrosValidos_RetornaPedidoAssinado()
     {
         // Arrange
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618L);
         var contribuinte = new CpfOrCnpj(new Cpf(46381819618L));
 
@@ -83,7 +71,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void NewCnpj_CnpjNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var contribuinte = new CpfOrCnpj(new Cpf(46381819618L));
 
         // Act & Assert
@@ -94,7 +82,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void NewCnpj_ContribuinteNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var cnpj = new Cnpj(84067820000190L);
 
         // Act & Assert
@@ -105,7 +93,7 @@ public sealed class PedidoConsultaCNPJFactoryTests
     public void NewCnpj_ComParametrosValidos_RetornaPedidoAssinado()
     {
         // Arrange
-        var factory = new PedidoConsultaCNPJFactory(CriarCertificado());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var cnpj = new Cnpj(84067820000190L);
         var contribuinte = new CpfOrCnpj(new Cnpj(84067820000190L));
 

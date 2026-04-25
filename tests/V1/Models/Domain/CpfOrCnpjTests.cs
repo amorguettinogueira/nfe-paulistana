@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
@@ -17,22 +16,20 @@ public class CpfOrCnpjTests
         Assert.Null(doc.Cnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void CpfOrCnpj_WithCpf_SetsCpfAndLeavesNullCnpj(long cpfNumber)
+    [Fact]
+    public void CpfOrCnpj_WithCpf_SetsCpfAndLeavesNullCnpj()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var doc = new CpfOrCnpj(cpf);
 
         Assert.Equal(cpf, doc.Cpf);
         Assert.Null(doc.Cnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void CpfOrCnpj_WithCnpj_SetsCnpjAndLeavesNullCpf(long cnpjNumber)
+    [Fact]
+    public void CpfOrCnpj_WithCnpj_SetsCnpjAndLeavesNullCpf()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
         var doc = new CpfOrCnpj(cnpj);
 
         Assert.Equal(cnpj, doc.Cnpj);
@@ -55,21 +52,19 @@ public class CpfOrCnpjTests
         _ = Assert.Throws<ArgumentNullException>(() => new CpfOrCnpj(cnpj!));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void CpfOrCnpj_ToString_ReturnsCpfWhenCpfIsSet(long cpfNumber)
+    [Fact]
+    public void CpfOrCnpj_ToString_ReturnsCpfWhenCpfIsSet()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var doc = new CpfOrCnpj(cpf);
 
         Assert.Equal(cpf.ToString(), doc.ToString());
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void CpfOrCnpj_ToString_ReturnsCnpjWhenCnpjIsSet(long cnpjNumber)
+    [Fact]
+    public void CpfOrCnpj_ToString_ReturnsCnpjWhenCnpjIsSet()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
         var doc = new CpfOrCnpj(cnpj);
 
         Assert.Equal(cnpj.ToString(), doc.ToString());
@@ -79,33 +74,30 @@ public class CpfOrCnpjTests
     public void CpfOrCnpj_ToString_ReturnsNullWhenBothNull() =>
         Assert.Null(new CpfOrCnpj().ToString());
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void CpfOrCnpj_FromCpf_CreatesCpfInstance(long cpfNumber)
+    [Fact]
+    public void CpfOrCnpj_FromCpf_CreatesCpfInstance()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var doc = CpfOrCnpj.FromCpf(cpf);
 
         Assert.Equal(cpf, doc.Cpf);
         Assert.Null(doc.Cnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void CpfOrCnpj_FromCnpj_CreatesCnpjInstance(long cnpjNumber)
+    [Fact]
+    public void CpfOrCnpj_FromCnpj_CreatesCnpjInstance()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
         var doc = CpfOrCnpj.FromCnpj(cnpj);
 
         Assert.Equal(cnpj, doc.Cnpj);
         Assert.Null(doc.Cpf);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void CpfOrCnpj_ExplicitCastFromCpf_EqualToFromCpf(long cpfNumber)
+    [Fact]
+    public void CpfOrCnpj_ExplicitCastFromCpf_EqualToFromCpf()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var viaFactory = CpfOrCnpj.FromCpf(cpf);
         var viaCast = (CpfOrCnpj)cpf;
@@ -113,11 +105,10 @@ public class CpfOrCnpjTests
         Assert.Equal(viaFactory.Cpf, viaCast.Cpf);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void CpfOrCnpj_ExplicitCastFromCnpj_EqualToFromCnpj(long cnpjNumber)
+    [Fact]
+    public void CpfOrCnpj_ExplicitCastFromCnpj_EqualToFromCnpj()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
 
         var viaFactory = CpfOrCnpj.FromCnpj(cnpj);
         var viaCast = (CpfOrCnpj)cnpj;

@@ -1,10 +1,11 @@
 using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.Options;
 
-public class CertificadoTests
+public class CertificadoTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
     // ============================================
     // Propriedades: FilePath
@@ -181,7 +182,7 @@ public class CertificadoTests
     public void Build_WithPointerHandle_CreatesFromHandle()
     {
         // Arrange
-        using var tempCert = CreateTestCertificate();
+        var tempCert = fixture.Certificate;
         var certificado = new Certificado
         {
             PointerHandle = tempCert.Handle
@@ -250,7 +251,7 @@ public class CertificadoTests
     public void Build_WithCertificateInstance_ReturnsCopy()
     {
         // Arrange
-        using var original = CreateTestCertificate();
+        var original = fixture.Certificate;
         var certificado = new Certificado
         {
             Certificate = original
@@ -287,7 +288,7 @@ public class CertificadoTests
     public void Build_WithMultipleSources_PrefersFilePath()
     {
         // Arrange
-        using var tempCert = CreateTestCertificate();
+        var tempCert = fixture.Certificate;
         var rawData = GetTestCertificateBytes();
         var certificado = new Certificado
         {
@@ -311,7 +312,7 @@ public class CertificadoTests
     public void Build_WithPointerHandleAndRawData_PrefersPointerHandle()
     {
         // Arrange
-        using var tempCert = CreateTestCertificate();
+        var tempCert = fixture.Certificate;
         var rawData = GetTestCertificateBytes();
         var certificado = new Certificado
         {
@@ -332,7 +333,7 @@ public class CertificadoTests
     public void Build_WithRawDataAndCertificate_PrefersRawData()
     {
         // Arrange
-        using var tempCert = CreateTestCertificate();
+        var tempCert = fixture.Certificate;
         var rawData = GetTestCertificateBytes();
         var certificado = new Certificado
         {
@@ -353,37 +354,14 @@ public class CertificadoTests
     // Métodos auxiliares
     // ============================================
 
-    private static string GetTestCertificatePath()
+    private string GetTestCertificatePath()
     {
-        // Cria um certificado de teste temporário
         var tempPath = Path.Combine(Path.GetTempPath(), $"test_cert_{Guid.NewGuid()}.pfx");
-        var cert = CreateTestCertificate();
-        var bytes = cert.Export(X509ContentType.Pfx, "test");
+        var bytes = fixture.Certificate.Export(X509ContentType.Pfx, "test");
         File.WriteAllBytes(tempPath, bytes);
-        cert.Dispose();
         return tempPath;
     }
 
-    private static byte[] GetTestCertificateBytes()
-    {
-        using var cert = CreateTestCertificate();
-        return cert.Export(X509ContentType.Pfx, "test");
-    }
-
-    private static X509Certificate2 CreateTestCertificate()
-    {
-        // Cria um certificado auto-assinado para testes
-        using var rsa = System.Security.Cryptography.RSA.Create(2048);
-        var request = new CertificateRequest(
-            "CN=Test Certificate",
-            rsa,
-            System.Security.Cryptography.HashAlgorithmName.SHA256,
-            System.Security.Cryptography.RSASignaturePadding.Pkcs1);
-
-        var cert = request.CreateSelfSigned(
-            DateTimeOffset.UtcNow.AddDays(-1),
-            DateTimeOffset.UtcNow.AddDays(1));
-
-        return cert;
-    }
+    private byte[] GetTestCertificateBytes() =>
+        fixture.Certificate.Export(X509ContentType.Pfx, "test");
 }

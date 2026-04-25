@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Models.DataTypes;
@@ -16,11 +15,10 @@ public class TomadorBuilderTests
     // NewCpf() Factory Method Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void NewCpf_WithValidCpfAndRazaoSocial_ReturnsBuilder(long cpfNumber)
+    [Fact]
+    public void NewCpf_WithValidCpfAndRazaoSocial_ReturnsBuilder()
     {
-        var builder = TomadorBuilder.NewCpf((Cpf)cpfNumber);
+        var builder = TomadorBuilder.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf);
 
         Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
@@ -37,11 +35,10 @@ public class TomadorBuilderTests
     // NewCnpj() Factory Method Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewCnpj_WithValidCnpjAndRazaoSocial_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void NewCnpj_WithValidCnpjAndRazaoSocial_ReturnsBuilder()
     {
-        var builder = TomadorBuilder.NewCnpj(new Cnpj(cnpjNumber), RazaoSocialPadrao);
+        var builder = TomadorBuilder.NewCnpj((Cnpj)TestConstants.ValidCnpj, RazaoSocialPadrao);
 
         Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
@@ -54,13 +51,12 @@ public class TomadorBuilderTests
         _ = Assert.Throws<ArgumentNullException>(() => TomadorBuilder.NewCnpj(cnpj!, RazaoSocialPadrao));
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewCnpj_WithNullRazaoSocial_ThrowsArgumentNullException(long cnpjNumber)
+    [Fact]
+    public void NewCnpj_WithNullRazaoSocial_ThrowsArgumentNullException()
     {
         RazaoSocial? razaoSocial = null;
 
-        _ = Assert.Throws<ArgumentNullException>(() => TomadorBuilder.NewCnpj(new Cnpj(cnpjNumber), razaoSocial!));
+        _ = Assert.Throws<ArgumentNullException>(() => TomadorBuilder.NewCnpj((Cnpj)TestConstants.ValidCnpj, razaoSocial!));
     }
 
     // ============================================
@@ -148,11 +144,10 @@ public class TomadorBuilderTests
     // Build() Output Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Build_WithCpf_ReturnsTomadorWithCpfAndRazaoSocial(long cpfNumber)
+    [Fact]
+    public void Build_WithCpf_ReturnsTomadorWithCpfAndRazaoSocial()
     {
-        var tomador = TomadorBuilder.NewCpf((Cpf)cpfNumber).Build();
+        var tomador = TomadorBuilder.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf).Build();
 
         Assert.NotNull(tomador);
         Assert.NotNull(tomador.CpfOrCnpjTomador);
@@ -163,11 +158,10 @@ public class TomadorBuilderTests
         Assert.Null(tomador.EnderecoTomador);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void Build_WithCnpj_ReturnsTomadorWithCnpjAndRazaoSocial(long cnpjNumber)
+    [Fact]
+    public void Build_WithCnpj_ReturnsTomadorWithCnpjAndRazaoSocial()
     {
-        var tomador = TomadorBuilder.NewCnpj(new Cnpj(cnpjNumber), RazaoSocialPadrao).Build();
+        var tomador = TomadorBuilder.NewCnpj((Cnpj)TestConstants.ValidCnpj, RazaoSocialPadrao).Build();
 
         Assert.NotNull(tomador);
         Assert.NotNull(tomador.CpfOrCnpjTomador);
@@ -189,9 +183,8 @@ public class TomadorBuilderTests
     // Fluent Chain Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Build_WithCompleteChain_AllPropertiesSet(long cpfNumber)
+    [Fact]
+    public void Build_WithCompleteChain_AllPropertiesSet()
     {
         var endereco = EnderecoBuilder.New()
             .SetUf(new Uf("SP"))
@@ -203,7 +196,7 @@ public class TomadorBuilderTests
             .SetNumero(new NumeroEndereco("1578"))
             .Build();
 
-        var tomador = TomadorBuilder.NewCpf((Cpf)cpfNumber)
+        var tomador = TomadorBuilder.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf)
             .SetEmail(EmailPadrao)
             .SetEndereco(endereco)
             .Build();
@@ -229,13 +222,12 @@ public class TomadorBuilderTests
         Assert.Equal(EmailPadrao.ToString(), tomador.EmailTomador.ToString());
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void Build_WithCnpjAndEndereco_CorrectlySet(long cnpjNumber)
+    [Fact]
+    public void Build_WithCnpjAndEndereco_CorrectlySet()
     {
         var endereco = EnderecoBuilder.New().SetUf(new Uf("RJ")).Build();
 
-        var tomador = TomadorBuilder.NewCnpj(new Cnpj(cnpjNumber), RazaoSocialPadrao)
+        var tomador = TomadorBuilder.NewCnpj((Cnpj)TestConstants.ValidCnpj, RazaoSocialPadrao)
             .SetEndereco(endereco)
             .Build();
 
@@ -261,20 +253,18 @@ public class TomadorBuilderTests
     // NewInscricaoMunicipal() Factory Method Tests
     // ============================================
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewInscricaoMunicipal_WithValidArgs_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void NewInscricaoMunicipal_WithValidArgs_ReturnsBuilder()
     {
-        ITomadorBuilder builder = TomadorBuilder.NewInscricaoMunicipal(new InscricaoMunicipal(12345678), new Cnpj(cnpjNumber));
+        ITomadorBuilder builder = TomadorBuilder.NewInscricaoMunicipal(new InscricaoMunicipal(12345678), (Cnpj)TestConstants.ValidCnpj);
         _ = Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewInscricaoMunicipal_WithNullInscricaoMunicipal_ThrowsArgumentNullException(long cnpjNumber)
+    [Fact]
+    public void NewInscricaoMunicipal_WithNullInscricaoMunicipal_ThrowsArgumentNullException()
     {
         InscricaoMunicipal? inscricao = null;
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
         _ = Assert.Throws<ArgumentNullException>(() => TomadorBuilder.NewInscricaoMunicipal(inscricao!, cnpj));
     }
 
@@ -323,11 +313,10 @@ public class TomadorBuilderTests
         _ = Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void SetEmail_OnCnpjBuilder_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void SetEmail_OnCnpjBuilder_ReturnsBuilder()
     {
-        ITomadorBuilder builder = TomadorBuilder.NewCnpj(new Cnpj(cnpjNumber), RazaoSocialPadrao).SetEmail(EmailPadrao);
+        ITomadorBuilder builder = TomadorBuilder.NewCnpj((Cnpj)TestConstants.ValidCnpj, RazaoSocialPadrao).SetEmail(EmailPadrao);
         _ = Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
 
@@ -339,12 +328,11 @@ public class TomadorBuilderTests
         _ = Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void SetEndereco_OnCnpjBuilder_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void SetEndereco_OnCnpjBuilder_ReturnsBuilder()
     {
         Endereco endereco = EnderecoBuilder.New().SetUf(new Uf("SP")).Build();
-        ITomadorBuilder builder = TomadorBuilder.NewCnpj(new Cnpj(cnpjNumber), RazaoSocialPadrao).SetEndereco(endereco);
+        ITomadorBuilder builder = TomadorBuilder.NewCnpj((Cnpj)TestConstants.ValidCnpj, RazaoSocialPadrao).SetEndereco(endereco);
         _ = Assert.IsAssignableFrom<ITomadorBuilder>(builder);
     }
 
@@ -352,11 +340,10 @@ public class TomadorBuilderTests
     // Build() Output for all static methods
     // ============================================
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void Build_WithInscricaoMunicipal_SetsPropertiesCorrectly(long cnpjNumber)
+    [Fact]
+    public void Build_WithInscricaoMunicipal_SetsPropertiesCorrectly()
     {
-        Tomador tomador = TomadorBuilder.NewInscricaoMunicipal(new InscricaoMunicipal(12345678), new Cnpj(cnpjNumber)).Build();
+        Tomador tomador = TomadorBuilder.NewInscricaoMunicipal(new InscricaoMunicipal(12345678), (Cnpj)TestConstants.ValidCnpj).Build();
         Assert.NotNull(tomador.CpfOrCnpjTomador);
         Assert.NotNull(tomador.InscricaoMunicipalTomador);
         Assert.Null(tomador.InscricaoEstadualTomador);

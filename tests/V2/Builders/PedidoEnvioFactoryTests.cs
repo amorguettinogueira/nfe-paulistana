@@ -1,14 +1,10 @@
-using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Models.Enums;
+﻿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Options;
-using Nfe.Paulistana.Tests.Helpers;
-using Nfe.Paulistana.Tests.V1.Helpers;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V2.Builders;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
 using Nfe.Paulistana.V2.Models.Operations;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.V2.Builders;
 
@@ -17,37 +13,8 @@ namespace Nfe.Paulistana.Tests.V2.Builders;
 /// guard clauses do construtor e dos métodos de fábrica, e verificação
 /// de que o pedido retornado está corretamente assinado.
 /// </summary>
-public class PedidoEnvioFactoryTests
+public class PedidoEnvioFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarConfiguracao()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
-
-    private static readonly Tomador TomadorPadrao =
-        TomadorBuilder.NewCpf(new Cpf(new ValidCpfNumber().Min())).Build();
-
-    private static Rps CriarRps() =>
-        RpsBuilder.New(
-                new InscricaoMunicipal(39616924),
-                TipoRps.NotaFiscalConjugada,
-                new Numero(4105),
-                new Discriminacao("Desenvolvimento de software."),
-                new SerieRps("BB"))
-            .SetNFe(new DataXsd(new DateTime(2024, 1, 20)), (TributacaoNfe)'T', (NaoSim)false, (NaoSim)false, StatusNfe.Normal)
-            .SetServico(new CodigoServico(7617), new CodigoNBS("123456789"))
-            .SetIss((Aliquota)0.05m, false)
-            .SetIbsCbs(new InformacoesIbsCbs())
-            .SetValorInicialCobrado((Valor)1000m)
-            .SetLocalPrestacao((CodigoIbge)"3550308")
-            .SetTomador(TomadorPadrao)
-            .Build();
-
     // ============================================
     // Construtor
     // ============================================
@@ -67,61 +34,56 @@ public class PedidoEnvioFactoryTests
     [Fact]
     public void NewCpf_CpfNulo_ThrowsArgumentNullException()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
         Cpf? cpf = null;
 
-        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf(cpf!, CriarRps()));
+        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf(cpf!, Helpers.RpsTestFactory.Padrao()));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void NewCpf_RpsNulo_ThrowsArgumentNullException(long cpfNumber)
+    [Fact]
+    public void NewCpf_RpsNulo_ThrowsArgumentNullException()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
         Rps? rps = null;
 
-        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf((Cpf)cpfNumber, rps!));
+        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf, rps!));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void NewCpf_ArgumentosValidos_RetornaPedidoEnvioComAssinaturaPreenchida(long cpfNumber)
+    [Fact]
+    public void NewCpf_ArgumentosValidos_RetornaPedidoEnvioComAssinaturaPreenchida()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCpf((Cpf)cpfNumber, CriarRps());
+        PedidoEnvio resultado = factory.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf, Helpers.RpsTestFactory.Padrao());
         Assert.NotNull(resultado.SignedXmlContent);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void NewCpf_ArgumentosValidos_RpsContidoTemAssinaturaPreenchida(long cpfNumber)
+    [Fact]
+    public void NewCpf_ArgumentosValidos_RpsContidoTemAssinaturaPreenchida()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCpf((Cpf)cpfNumber, CriarRps());
+        PedidoEnvio resultado = factory.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf, Helpers.RpsTestFactory.Padrao());
         Assert.NotNull(resultado.Rps?.Assinatura);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void NewCpf_ArgumentosValidos_CabecalhoContemCpfCorreto(long cpfNumber)
+    [Fact]
+    public void NewCpf_ArgumentosValidos_CabecalhoContemCpfCorreto()
     {
-        var cpf = (Cpf)cpfNumber;
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCpf(cpf, CriarRps());
+        PedidoEnvio resultado = factory.NewCpf(cpf, Helpers.RpsTestFactory.Padrao());
 
         Assert.Equal(cpf.ToString(), resultado.Cabecalho?.CpfOrCnpj?.Cpf?.ToString());
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void NewCpf_ArgumentosValidos_CabecalhoNaoContemCnpj(long cpfNumber)
+    [Fact]
+    public void NewCpf_ArgumentosValidos_CabecalhoNaoContemCnpj()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCpf((Cpf)cpfNumber, CriarRps());
+        PedidoEnvio resultado = factory.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf, Helpers.RpsTestFactory.Padrao());
         Assert.Null(resultado.Cabecalho?.CpfOrCnpj?.Cnpj);
     }
 
@@ -132,50 +94,46 @@ public class PedidoEnvioFactoryTests
     [Fact]
     public void NewCnpj_CnpjNulo_ThrowsArgumentNullException()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
         Cnpj? cnpj = null;
 
-        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCnpj(cnpj!, CriarRps()));
+        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCnpj(cnpj!, Helpers.RpsTestFactory.Padrao()));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewCnpj_RpsNulo_ThrowsArgumentNullException(long cnpjNumber)
+    [Fact]
+    public void NewCnpj_RpsNulo_ThrowsArgumentNullException()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
         Rps? rps = null;
 
-        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCnpj(new Cnpj(cnpjNumber.ToString("D14")), rps!));
+        _ = Assert.Throws<ArgumentNullException>(() => factory.NewCnpj((Cnpj)Helpers.TestConstants.ValidFormattedCnpj, rps!));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewCnpj_ArgumentosValidos_RetornaPedidoEnvioComAssinaturaPreenchida(long cnpjNumber)
+    [Fact]
+    public void NewCnpj_ArgumentosValidos_RetornaPedidoEnvioComAssinaturaPreenchida()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCnpj(new Cnpj(cnpjNumber.ToString("D14")), CriarRps());
+        PedidoEnvio resultado = factory.NewCnpj((Cnpj)Helpers.TestConstants.ValidFormattedCnpj, Helpers.RpsTestFactory.Padrao());
         Assert.NotNull(resultado.SignedXmlContent);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewCnpj_ArgumentosValidos_RpsContidoTemAssinaturaPreenchida(long cnpjNumber)
+    [Fact]
+    public void NewCnpj_ArgumentosValidos_RpsContidoTemAssinaturaPreenchida()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCnpj(new Cnpj(cnpjNumber.ToString("D14")), CriarRps());
+        PedidoEnvio resultado = factory.NewCnpj((Cnpj)Helpers.TestConstants.ValidFormattedCnpj, Helpers.RpsTestFactory.Padrao());
         Assert.NotNull(resultado.Rps?.Assinatura);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NewCnpj_ArgumentosValidos_CabecalhoContemCnpjCorreto(long cnpjNumber)
+    [Fact]
+    public void NewCnpj_ArgumentosValidos_CabecalhoContemCnpjCorreto()
     {
-        var cnpj = new Cnpj(cnpjNumber.ToString("D14"));
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
+        var cnpj = (Cnpj)Helpers.TestConstants.ValidFormattedCnpj;
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
 
-        PedidoEnvio resultado = factory.NewCnpj(cnpj, CriarRps());
+        PedidoEnvio resultado = factory.NewCnpj(cnpj, Helpers.RpsTestFactory.Padrao());
 
         Assert.Equal(cnpj.ToString(), resultado.Cabecalho?.CpfOrCnpj?.Cnpj?.ToString());
     }

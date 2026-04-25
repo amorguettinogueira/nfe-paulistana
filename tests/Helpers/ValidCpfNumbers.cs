@@ -1,10 +1,11 @@
-﻿namespace Nfe.Paulistana.Tests.Helpers;
+namespace Nfe.Paulistana.Tests.Helpers;
 
-internal class ValidCpfNumbers : ValidCpfNumber
+internal class ValidCpfNumbers : TheoryData<long>
 {
     public ValidCpfNumbers()
     {
         // Random valid CPFs generated with https://www.4devs.com.br/gerador_de_cpf
+        Add(TestConstants.ValidCpf);
         Add(63596780047);
         Add(86290818210);
         Add(94471862030);

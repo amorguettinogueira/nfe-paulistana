@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -117,28 +118,13 @@ public sealed class CodigoPaisISOTests
     // Serialização XML (round-trip)
     // ============================================
 
-    private static CodigoPaisISO? DeserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(CodigoPaisISO));
-        using var sr = new StringReader(xml);
-        return (CodigoPaisISO?)serializer.Deserialize(sr);
-    }
-
-    private static string SerializarParaXml(CodigoPaisISO cod)
-    {
-        var serializer = new XmlSerializer(typeof(CodigoPaisISO));
-        using var sw = new StringWriter();
-        serializer.Serialize(sw, cod);
-        return sw.ToString();
-    }
-
     [Fact]
     public void XmlRoundTrip_ValorValido_DeserializaCorretamente()
     {
         var original = new CodigoPaisISO("BR");
-        string xml = SerializarParaXml(original);
+        string xml = XmlTestHelper.SerializarParaXml(original);
 
-        var deserialized = DeserializarDeXml(xml);
+        var deserialized = XmlTestHelper.DesserializarDeXml<CodigoPaisISO>(xml);
 
         Assert.Equal("BR", deserialized?.ToString());
     }

@@ -1,6 +1,6 @@
 using Nfe.Paulistana.Models;
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
+using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
 
@@ -11,9 +11,6 @@ namespace Nfe.Paulistana.Tests.V2.Models.Domain;
 /// </summary>
 public sealed class CpfOrCnpjTests
 {
-    private static Cpf CriarCpf() => new(new ValidCpfNumber().Min());
-    private static Cnpj CriarCnpj() => new("XA412263000170");
-
     // ============================================
     // Construtor padrão
     // ============================================
@@ -34,7 +31,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void Constructor_ComCpf_DefiniCpfEDeixaCnpjNulo()
     {
-        var cpf = CriarCpf();
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var doc = new CpfOrCnpj(cpf);
 
@@ -57,7 +54,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void Constructor_ComCnpj_DefiniCnpjEDeixaCpfNulo()
     {
-        var cnpj = CriarCnpj();
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
 
         var doc = new CpfOrCnpj(cnpj);
 
@@ -80,7 +77,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void ToString_ComCpf_RetornaRepresentacaoCpf()
     {
-        var cpf = CriarCpf();
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var doc = new CpfOrCnpj(cpf);
 
         Assert.Equal(cpf.ToString(), doc.ToString());
@@ -89,7 +86,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void ToString_ComCnpj_RetornaRepresentacaoCnpj()
     {
-        var cnpj = CriarCnpj();
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
         var doc = new CpfOrCnpj(cnpj);
 
         Assert.Equal(cnpj.ToString(), doc.ToString());
@@ -106,7 +103,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void FromCpf_CriaCpfOrCnpjComCpf()
     {
-        var cpf = CriarCpf();
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var doc = CpfOrCnpj.FromCpf(cpf);
 
@@ -117,7 +114,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void FromCnpj_CriaCpfOrCnpjComCnpj()
     {
-        var cnpj = CriarCnpj();
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
 
         var doc = CpfOrCnpj.FromCnpj(cnpj);
 
@@ -132,7 +129,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void ExplicitCast_Cpf_EhEquivalenteAFromCpf()
     {
-        var cpf = CriarCpf();
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var viaFactory = CpfOrCnpj.FromCpf(cpf);
         var viaCast = (CpfOrCnpj)cpf;
@@ -143,7 +140,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void ExplicitCast_Cnpj_EhEquivalenteAFromCnpj()
     {
-        var cnpj = CriarCnpj();
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
 
         var viaFactory = CpfOrCnpj.FromCnpj(cnpj);
         var viaCast = (CpfOrCnpj)cnpj;
@@ -158,7 +155,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void ICpfOrCnpj_Cpf_RetornaStringCpf()
     {
-        var cpf = CriarCpf();
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         ICpfOrCnpj doc = new CpfOrCnpj(cpf);
 
         Assert.Equal(cpf.ToString(), doc.Cpf);
@@ -168,7 +165,7 @@ public sealed class CpfOrCnpjTests
     [Fact]
     public void ICpfOrCnpj_Cnpj_RetornaStringCnpj()
     {
-        var cnpj = CriarCnpj();
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
         ICpfOrCnpj doc = new CpfOrCnpj(cnpj);
 
         Assert.Equal(cnpj.ToString(), doc.Cnpj);

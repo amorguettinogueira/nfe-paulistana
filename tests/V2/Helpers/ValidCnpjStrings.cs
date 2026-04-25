@@ -1,10 +1,11 @@
 namespace Nfe.Paulistana.Tests.V2.Helpers;
 
-internal class ValidCnpjStrings : ValidCnpjString
+internal class ValidCnpjStrings : TheoryData<string, string>
 {
     public ValidCnpjStrings()
     {
         // Random valid CNPJs generated with https://servicos.receitafederal.gov.br/servico/cnpj-alfa/simular
+        Add(TestConstants.ValidFormattedCnpj, TestConstants.ValidUnformattedCnpj);
         Add("XA.412.263/0001-70", "XA412263000170");
         Add("CP.34N.HRC/0001-08", "CP34NHRC000108");
         Add("T0.RNE.N3Y/H59P-76", "T0RNEN3YH59P76");

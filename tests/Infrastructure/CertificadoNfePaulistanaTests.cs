@@ -1,6 +1,6 @@
 using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.Infrastructure;
@@ -9,14 +9,8 @@ namespace Nfe.Paulistana.Tests.Infrastructure;
 /// Testes unitários para <see cref="Certificado"/>:
 /// sanitização de propriedades e comportamento de <see cref="Certificado.Build"/>.
 /// </summary>
-public class CertificadoNfePaulistanaTests
+public class CertificadoNfePaulistanaTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static X509Certificate2 CriarCertificado()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1));
-    }
 
     // ============================================
     // FilePath — sanitização
@@ -122,7 +116,7 @@ public class CertificadoNfePaulistanaTests
     [Fact]
     public void BuildCertificate_ComCertificate_RetornaCertificadoComMesmoThumbprint()
     {
-        using X509Certificate2 original = CriarCertificado();
+        X509Certificate2 original = fixture.Certificate;
         var config = new Certificado { Certificate = original };
 
         using X509Certificate2 resultado = config.Build();
@@ -133,7 +127,7 @@ public class CertificadoNfePaulistanaTests
     [Fact]
     public void BuildCertificate_ComCertificate_RetornaNovaInstancia()
     {
-        using X509Certificate2 original = CriarCertificado();
+        X509Certificate2 original = fixture.Certificate;
         var config = new Certificado { Certificate = original };
 
         using X509Certificate2 resultado = config.Build();
@@ -144,7 +138,7 @@ public class CertificadoNfePaulistanaTests
     [Fact]
     public void BuildCertificate_ComRawData_RetornaCertificadoComMesmoThumbprint()
     {
-        using X509Certificate2 original = CriarCertificado();
+        X509Certificate2 original = fixture.Certificate;
         byte[] pfxBytes = original.Export(X509ContentType.Pkcs12);
         var config = new Certificado { RawData = new ReadOnlyCollection<byte>(pfxBytes) };
 
@@ -156,7 +150,7 @@ public class CertificadoNfePaulistanaTests
     [Fact]
     public void BuildCertificate_Chama_Multiplas_Vezes_RetornaInstanciasDiferentes()
     {
-        using X509Certificate2 cert = CriarCertificado();
+        X509Certificate2 cert = fixture.Certificate;
         var config = new Certificado { Certificate = cert };
 
         using X509Certificate2 r1 = config.Build();

@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
@@ -17,22 +16,20 @@ public class CabecalhoTests
         Assert.Null(cab.CpfOrCnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Cabecalho_WithCpfOrCnpj_SetsCpfOrCnpj(long cpfNumber)
+    [Fact]
+    public void Cabecalho_WithCpfOrCnpj_SetsCpfOrCnpj()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var cab = new Cabecalho(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
         Assert.Equal(1, cab.Versao);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Cabecalho_FromCpf_SetsCpfField(long cpfNumber)
+    [Fact]
+    public void Cabecalho_FromCpf_SetsCpfField()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var cab = Cabecalho.FromCpf(cpf);
 
         Assert.NotNull(cab.CpfOrCnpj);
@@ -40,11 +37,10 @@ public class CabecalhoTests
         Assert.Null(cab.CpfOrCnpj.Cnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void Cabecalho_FromCnpj_SetsCnpjField(long cnpjNumber)
+    [Fact]
+    public void Cabecalho_FromCnpj_SetsCnpjField()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
         var cab = Cabecalho.FromCnpj(cnpj);
 
         Assert.NotNull(cab.CpfOrCnpj);
@@ -52,11 +48,10 @@ public class CabecalhoTests
         Assert.Null(cab.CpfOrCnpj.Cpf);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Cabecalho_ExplicitCastFromCpf_EqualToFromCpf(long cpfNumber)
+    [Fact]
+    public void Cabecalho_ExplicitCastFromCpf_EqualToFromCpf()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var viaFactory = Cabecalho.FromCpf(cpf);
         var viaCast = (Cabecalho)cpf;
@@ -64,11 +59,10 @@ public class CabecalhoTests
         Assert.Equal(viaFactory.CpfOrCnpj?.Cpf, viaCast.CpfOrCnpj?.Cpf);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void Cabecalho_ExplicitCastFromCnpj_EqualToFromCnpj(long cnpjNumber)
+    [Fact]
+    public void Cabecalho_ExplicitCastFromCnpj_EqualToFromCnpj()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
 
         var viaFactory = Cabecalho.FromCnpj(cnpj);
         var viaCast = (Cabecalho)cnpj;

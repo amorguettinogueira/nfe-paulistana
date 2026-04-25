@@ -1,8 +1,8 @@
+using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using System.Globalization;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.V1.Models.DataTypes;
 
@@ -14,25 +14,6 @@ public class CnpjTests
         //01234567890123
         //01.234.567/8901-23
         return $"{s.Substring(0, 2)}.{s.Substring(2, 3)}.{s.Substring(5, 3)}/{s.Substring(8, 4)}-{s.Substring(12, 2)}";
-    }
-
-    private static string SerializeCnpjToXml(Cnpj cnpj)
-    {
-        var serializer = new XmlSerializer(typeof(Cnpj));
-        using (var stringWriter = new StringWriter())
-        {
-            serializer.Serialize(stringWriter, cnpj);
-            return stringWriter.ToString();
-        }
-    }
-
-    private static Cnpj? DeserializeCnpjFromXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(Cnpj));
-        using (var stringReader = new StringReader(xml))
-        {
-            return (Cnpj?)serializer.Deserialize(stringReader);
-        }
     }
 
     // ============================================
@@ -95,7 +76,7 @@ public class CnpjTests
     [Fact]
     public void ExplicitOperators_CreateInstances()
     {
-        long cnpjNumber = new ValidCnpjNumber().Min();
+        long cnpjNumber = Helpers.TestConstants.ValidCnpj;
         Cnpj cnpjFromLong = (Cnpj)cnpjNumber;
         Cnpj cnpjFromString = (Cnpj)FormatCnpj(cnpjNumber);
 
@@ -160,8 +141,8 @@ public class CnpjTests
         var cnpj = new Cnpj(value);
 
         // Act
-        var xml = SerializeCnpjToXml(cnpj);
-        var deserialized = DeserializeCnpjFromXml(xml);
+        var xml = XmlTestHelper.SerializarParaXml(cnpj);
+        var deserialized = XmlTestHelper.DesserializarDeXml<Cnpj>(xml);
 
         // Assert
         Assert.NotNull(deserialized);
@@ -177,7 +158,7 @@ public class CnpjTests
         var cnpjXml = $@"<?xml version=""1.0"" encoding=""utf-16""?><Cnpj xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">{cnpjValue}</Cnpj>";
 
         // Act
-        var deserialized = DeserializeCnpjFromXml(cnpjXml);
+        var deserialized = XmlTestHelper.DesserializarDeXml<Cnpj>(cnpjXml);
 
         // Assert
         Assert.NotNull(deserialized);
@@ -199,7 +180,7 @@ public class CnpjTests
         // We verify the underlying SerializationException to properly test our validation logic without coupling
         // the test to XmlSerializer's implementation details.
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCnpjFromXml(invalidCnpjXml));
+            XmlTestHelper.DesserializarDeXml<Cnpj>(invalidCnpjXml));
 
         // Verify the actual validation exception is in the inner exception chain
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
@@ -215,7 +196,7 @@ public class CnpjTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCnpjFromXml(invalidCnpjXml));
+            XmlTestHelper.DesserializarDeXml<Cnpj>(invalidCnpjXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -230,7 +211,7 @@ public class CnpjTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCnpjFromXml(invalidCnpjXml));
+            XmlTestHelper.DesserializarDeXml<Cnpj>(invalidCnpjXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -245,7 +226,7 @@ public class CnpjTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCnpjFromXml(invalidCnpjXml));
+            XmlTestHelper.DesserializarDeXml<Cnpj>(invalidCnpjXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -260,7 +241,7 @@ public class CnpjTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCnpjFromXml(invalidCnpjXml));
+            XmlTestHelper.DesserializarDeXml<Cnpj>(invalidCnpjXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -275,7 +256,7 @@ public class CnpjTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCnpjFromXml(invalidCnpjXml));
+            XmlTestHelper.DesserializarDeXml<Cnpj>(invalidCnpjXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);

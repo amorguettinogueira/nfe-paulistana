@@ -2,11 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Nfe.Paulistana.Constants;
 using Nfe.Paulistana.Extensions;
 using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Services;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using V2Builders = Nfe.Paulistana.V2.Builders;
 using V2Services = Nfe.Paulistana.V2.Services;
 
@@ -17,14 +16,8 @@ namespace Nfe.Paulistana.Tests.Extensions;
 /// guard clauses, validação de certificado, verificação de registro de serviços
 /// e invocação do delegate <c>configureClient</c>.
 /// </summary>
-public class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static X509Certificate2 CriarCertificado()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1));
-    }
 
     // ============================================
     // Guard clauses — testados via V1 (lógica compartilhada em ValidateAndBuild)
@@ -134,8 +127,7 @@ public class ServiceCollectionExtensionsTests
     public void AddNfePaulistanaV1_CertificadoX509_RegistraIEnvioLoteRpsService()
     {
         var services = new ServiceCollection();
-        using X509Certificate2 cert = CriarCertificado();
-        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.Certificate = cert);
+        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.Certificate = fixture.Certificate);
 
         using ServiceProvider provider = services.BuildServiceProvider();
 
@@ -322,8 +314,7 @@ public class ServiceCollectionExtensionsTests
     public void AddNfePaulistanaV1_FactoryResolvidaPeloContainer()
     {
         var services = new ServiceCollection();
-        using X509Certificate2 cert = CriarCertificado();
-        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.Certificate = cert);
+        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.Certificate = fixture.Certificate);
 
         using ServiceProvider provider = services.BuildServiceProvider();
 

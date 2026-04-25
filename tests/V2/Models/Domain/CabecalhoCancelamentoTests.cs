@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
@@ -21,22 +20,20 @@ public class CabecalhoCancelamentoTests
         Assert.Null(cab.CpfOrCnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_ComCpf_DefinePropriedade(long cpfNumber)
+    [Fact]
+    public void Constructor_ComCpf_DefinePropriedade()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var cab = new CabecalhoCancelamento(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
         Assert.True(cab.Transacao);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjString))]
-    public void Constructor_ComCnpj_DefinePropriedade(string cnpjFormatado, string _)
+    [Fact]
+    public void Constructor_ComCnpj_DefinePropriedade()
     {
-        var cnpj = new Cnpj(cnpjFormatado);
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
         var cpfOrCnpj = new CpfOrCnpj(cnpj);
         var cab = new CabecalhoCancelamento(cpfOrCnpj);
 

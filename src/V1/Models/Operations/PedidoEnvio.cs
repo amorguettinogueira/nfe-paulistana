@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models;
+ï»¿using Nfe.Paulistana.Models;
 using Nfe.Paulistana.V1.Models.Domain;
 using Nfe.Paulistana.Xml;
 using System.Xml.Schema;
@@ -7,17 +7,17 @@ using System.Xml.Serialization;
 namespace Nfe.Paulistana.V1.Models.Operations;
 
 /// <summary>
-/// Define o corpo da requisição de envio individual de RPS (<c>PedidoEnvioRPS</c>).
+/// Define o corpo da requisiÃ§Ã£o de envio individual de RPS (<c>PedidoEnvioRPS</c>).
 /// Implementa <see cref="ISignedXmlFile"/> para armazenamento do XML assinado e
-/// <see cref="IXmlValidatableSchema"/> para validação contra o XSD correspondente.
+/// <see cref="IXmlValidatableSchema"/> para validaÃ§Ã£o contra o XSD correspondente.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Fonte: <c>PedidoEnvioRPS_v01.xsd</c> — Elemento <c>PedidoEnvioRPS</c>, linha 8.
+/// Fonte: <c>PedidoEnvioRPS_v01.xsd</c> â€” Elemento <c>PedidoEnvioRPS</c>, linha 8.
 /// </para>
 /// <para>
-/// Representa uma solicitação de envio de um único RPS à Prefeitura de São Paulo.
-/// Instâncias devem ser criadas exclusivamente via
+/// Representa uma solicitaÃ§Ã£o de envio de um Ãºnico RPS Ã  Prefeitura de SÃ£o Paulo.
+/// InstÃ¢ncias devem ser criadas exclusivamente via
 /// <see cref="Builders.PedidoEnvioFactory"/>, que garante
 /// que o RPS e o pedido estejam corretamente assinados antes do envio.
 /// </para>
@@ -30,11 +30,11 @@ public sealed class PedidoEnvio : ISignedXmlFile, IXmlValidatableSchema
     private static readonly XmlSchemaSet _validationSchema =
         SchemaProvider.GetSchemaSetV1(Constants.Uris.Nfe, "PedidoEnvioRPS_v01.xsd");
 
-    /// <summary>Cabeçalho da requisição contendo o CPF ou CNPJ do prestador de serviços.</summary>
+    /// <summary>CabeÃ§alho da requisiÃ§Ã£o contendo o CPF ou CNPJ do prestador de serviÃ§os.</summary>
     [XmlElement(Form = XmlSchemaForm.Unqualified)]
     public Cabecalho? Cabecalho { get; set; }
 
-    /// <summary>RPS (Recibo Provisório de Serviços) a ser enviado, incluindo sua assinatura digital.</summary>
+    /// <summary>RPS (Recibo ProvisÃ³rio de ServiÃ§os) a ser enviado, incluindo sua assinatura digital.</summary>
     [XmlElement(ElementName = "RPS", Form = XmlSchemaForm.Unqualified)]
     public Rps? Rps { get; set; }
 

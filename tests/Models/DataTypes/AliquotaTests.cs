@@ -1,5 +1,6 @@
-using Nfe.Paulistana.Models.DataTypes;
-using System.Xml.Serialization;
+﻿using Nfe.Paulistana.Models.DataTypes;
+
+using Nfe.Paulistana.Tests.Helpers;
 
 namespace Nfe.Paulistana.Tests.Models.DataTypes;
 
@@ -153,21 +154,6 @@ public class AliquotaTests
     // XML Serialização / Desserialização
     // ============================================
 
-    private static string SerializarParaXml(Aliquota aliquota)
-    {
-        var serializer = new XmlSerializer(typeof(Aliquota));
-        using var writer = new StringWriter();
-        serializer.Serialize(writer, aliquota);
-        return writer.ToString();
-    }
-
-    private static Aliquota? DesserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(Aliquota));
-        using var reader = new StringReader(xml);
-        return (Aliquota?)serializer.Deserialize(reader);
-    }
-
     [Theory]
     [InlineData(0.05)]
     [InlineData(0)]
@@ -176,8 +162,8 @@ public class AliquotaTests
     public void XmlSerialization_RoundTrip_PreservesValue(double rawValue)
     {
         var aliquota = new Aliquota((decimal)rawValue);
-        var xml = SerializarParaXml(aliquota);
-        var desserializado = DesserializarDeXml(xml);
+        var xml = XmlTestHelper.SerializarParaXml(aliquota);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Aliquota>(xml);
         Assert.Equal(aliquota.ToString(), desserializado!.ToString());
     }
 
@@ -189,7 +175,7 @@ public class AliquotaTests
     public void XmlDeserialization_ValorValido_PreservaCadeia(string xmlValue)
     {
         var xml = $"""<?xml version="1.0" encoding="utf-16"?><Aliquota xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">{xmlValue}</Aliquota>""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Aliquota>(xml);
         Assert.Equal(xmlValue, desserializado!.ToString());
     }
 
@@ -197,7 +183,7 @@ public class AliquotaTests
     public void XmlDeserialization_ElementoVazio_ToStringRetornaNull()
     {
         var xml = """<?xml version="1.0" encoding="utf-16"?><Aliquota xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Aliquota>(xml);
         Assert.Null(desserializado!.ToString());
     }
 

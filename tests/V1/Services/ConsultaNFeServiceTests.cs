@@ -1,5 +1,5 @@
-using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Options;
+﻿using Nfe.Paulistana.Models.DataTypes;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Models.DataTypes;
@@ -7,11 +7,7 @@ using Nfe.Paulistana.V1.Models.Domain;
 using Nfe.Paulistana.V1.Models.Operations;
 using Nfe.Paulistana.V1.Models.Response;
 using Nfe.Paulistana.V1.Services;
-using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using DomainChaveRps = Nfe.Paulistana.V1.Models.Domain.ChaveRps;
-
 namespace Nfe.Paulistana.Tests.V1.Services;
 
 /// <summary>
@@ -19,34 +15,15 @@ namespace Nfe.Paulistana.Tests.V1.Services;
 /// guard clauses do construtor e de <see cref="IConsultaNFeService.SendAsync"/>,
 /// falha na validação XSD e deserialização da resposta do webservice.
 /// </summary>
-public class ConsultaNFeServiceTests
+public class ConsultaNFeServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarConfiguracao()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
 
-    private static PedidoConsultaNFe CriarConsultaAssinada()
+    private PedidoConsultaNFe CriarConsultaAssinada()
     {
-        var factory = new PedidoConsultaNFeFactory(CriarConfiguracao());
+        var factory = new PedidoConsultaNFeFactory(fixture.Certificado);
         var detalhe = new DetalheConsultaNFe(
             new DomainChaveRps(new InscricaoMunicipal(39616924), new SerieRps("BB"), new Numero(4105)));
-        return factory.NewCpf(new Cpf(new ValidCpfNumber().Min()), [detalhe]);
-    }
-
-    private static HttpClient CriarHttpClientFake(string responseXml)
-    {
-        var handler = new FakeHttpMessageHandler(
-            new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(responseXml, System.Text.Encoding.UTF8, "text/xml")
-            });
-        return new HttpClient(handler) { BaseAddress = new Uri("https://fake-nfe/") };
+        return factory.NewCpf((Cpf)TestConstants.ValidCpf, [detalhe]);
     }
 
     // Sem payload
@@ -56,12 +33,6 @@ public class ConsultaNFeServiceTests
     // Com payload
     private const string SoapEnvelopeComRetorno =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ConsultaNFeResponse xmlns="http://www.prefeitura.sp.gov.br/nfe"><RetornoXML><RetornoConsulta xmlns="http://www.prefeitura.sp.gov.br/nfe"><Cabecalho xmlns="" Versao="1"><Sucesso>true</Sucesso></Cabecalho></RetornoConsulta></RetornoXML></ConsultaNFeResponse></soap:Body></soap:Envelope>""";
-
-    private sealed class FakeHttpMessageHandler(HttpResponseMessage response) : HttpMessageHandler
-    {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            => Task.FromResult(response);
-    }
 
     // ============================================
     // Construtor
@@ -80,7 +51,7 @@ public class ConsultaNFeServiceTests
     [Fact]
     public async Task SendAsync_PedidoNulo_ThrowsArgumentNullException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new ConsultaNFeService(httpClient);
         PedidoConsultaNFe? pedido = null;
 
@@ -91,7 +62,7 @@ public class ConsultaNFeServiceTests
     [Fact]
     public async Task SendAsync_PedidoNaoAssinado_ThrowsInvalidOperationException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new ConsultaNFeService(httpClient);
         var pedido = new PedidoConsultaNFe();
 
@@ -106,7 +77,7 @@ public class ConsultaNFeServiceTests
     [Fact]
     public async Task SendAsync_RespostaSemPayload_ThrowsInvalidOperationException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new ConsultaNFeService(httpClient);
         PedidoConsultaNFe pedido = CriarConsultaAssinada();
 
@@ -117,7 +88,7 @@ public class ConsultaNFeServiceTests
     [Fact]
     public async Task SendAsync_RespostaValida_RetornaRetornoNaoNulo()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaNFeService(httpClient);
         PedidoConsultaNFe pedido = CriarConsultaAssinada();
 
@@ -129,7 +100,7 @@ public class ConsultaNFeServiceTests
     [Fact]
     public async Task SendAsync_RespostaValida_CabecalhoIndicaSucesso()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaNFeService(httpClient);
         PedidoConsultaNFe pedido = CriarConsultaAssinada();
 

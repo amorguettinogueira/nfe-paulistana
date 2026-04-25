@@ -1,5 +1,5 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
+using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
 
@@ -10,12 +10,6 @@ namespace Nfe.Paulistana.Tests.V2.Models.Domain;
 /// </summary>
 public sealed class CabecalhoInformacoesLoteTests
 {
-    private static CpfOrCnpj CriarCpfOrCnpjComCpf() =>
-        new(new Cpf(new ValidCpfNumber().Min()));
-
-    private static CpfOrCnpj CriarCpfOrCnpjComCnpj() =>
-        new(new Cnpj("XA412263000170"));
-
     // ============================================
     // Construtor padrão
     // ============================================
@@ -45,7 +39,7 @@ public sealed class CabecalhoInformacoesLoteTests
     [Fact]
     public void Constructor_ComCpf_DefineCpfOrCnpj()
     {
-        var cpfOrCnpj = CriarCpfOrCnpjComCpf();
+        var cpfOrCnpj = (CpfOrCnpj)(Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var cabecalho = new CabecalhoInformacoesLote(cpfOrCnpj);
 
@@ -55,7 +49,7 @@ public sealed class CabecalhoInformacoesLoteTests
     [Fact]
     public void Constructor_ComCnpj_DefineCpfOrCnpj()
     {
-        var cpfOrCnpj = CriarCpfOrCnpjComCnpj();
+        var cpfOrCnpj = (CpfOrCnpj)(Cnpj)TestConstants.ValidFormattedCnpj;
 
         var cabecalho = new CabecalhoInformacoesLote(cpfOrCnpj);
 
@@ -65,7 +59,7 @@ public sealed class CabecalhoInformacoesLoteTests
     [Fact]
     public void Constructor_ComCpfOrCnpj_OutrasPropriedadesNulas()
     {
-        var cabecalho = new CabecalhoInformacoesLote(CriarCpfOrCnpjComCpf());
+        var cabecalho = new CabecalhoInformacoesLote((CpfOrCnpj)(Cpf)Tests.Helpers.TestConstants.ValidCpf);
 
         Assert.Null(cabecalho.NumeroLote);
         Assert.Null(cabecalho.InscricaoPrestador);
@@ -99,7 +93,7 @@ public sealed class CabecalhoInformacoesLoteTests
 
     [Fact]
     public void Versao_EhSempre2() =>
-        Assert.Equal(2, new CabecalhoInformacoesLote(CriarCpfOrCnpjComCpf()).Versao);
+        Assert.Equal(2, new CabecalhoInformacoesLote((CpfOrCnpj)(Cpf)Tests.Helpers.TestConstants.ValidCpf).Versao);
 
     [Fact]
     public void IsSealed() =>

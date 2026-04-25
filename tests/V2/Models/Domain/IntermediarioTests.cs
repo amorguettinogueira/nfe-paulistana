@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
 
@@ -7,11 +6,10 @@ namespace Nfe.Paulistana.Tests.V2.Models.Domain;
 
 public class IntermediarioTests
 {
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Intermediario_WithCpf_SetsAllFields(long cpfNumber)
+    [Fact]
+    public void Intermediario_WithCpf_SetsAllFields()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var inscricao = new InscricaoMunicipal(12345678);
         var email = new Email("inter@teste.com.br");
 
