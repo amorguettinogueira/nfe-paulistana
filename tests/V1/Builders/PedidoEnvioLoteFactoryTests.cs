@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+ï»¿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Options;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.V1.Helpers;
@@ -10,9 +10,9 @@ using Nfe.Paulistana.V1.Models.Operations;
 namespace Nfe.Paulistana.Tests.V1.Builders;
 
 /// <summary>
-/// Testes unitários para <see cref="PedidoEnvioLoteFactory"/>:
-/// guard clauses, assinatura de todos os RPS, e verificação das totalizações
-/// automáticas de <see cref="CabecalhoLote"/>.
+/// Testes unitÃ¡rios para <see cref="PedidoEnvioLoteFactory"/>:
+/// guard clauses, assinatura de todos os RPS, e verificaÃ§Ã£o das totalizaÃ§Ãµes
+/// automÃ¡ticas de <see cref="CabecalhoLote"/>.
 /// </summary>
 public class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -29,7 +29,7 @@ public class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFix
     }
 
     // ============================================
-    // NewCpf — guard clauses
+    // NewCpf â€” guard clauses
     // ============================================
 
     [Fact]
@@ -95,7 +95,7 @@ public class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFix
     }
 
     // ============================================
-    // NewCnpj — guard clauses
+    // NewCnpj â€” guard clauses
     // ============================================
 
     [Fact]
@@ -147,7 +147,7 @@ public class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFix
     }
 
     // ============================================
-    // NewCpf — assinatura
+    // NewCpf â€” assinatura
     // ============================================
 
     [Fact]
@@ -173,7 +173,7 @@ public class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFix
     }
 
     // ============================================
-    // NewCpf — totalizações automáticas
+    // NewCpf â€” totalizaÃ§Ãµes automÃ¡ticas
     // ============================================
 
     [Fact]

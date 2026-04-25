@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+﻿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Builders;
@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 namespace Nfe.Paulistana.Tests.Xml;
 
 /// <summary>
-/// Testes unit�rios para <see cref="SerializationExtensions"/>:
+/// Testes unitários para <see cref="SerializationExtensions"/>:
 /// <see cref="SerializationExtensions.ToXmlDocument{T}"/>,
 /// <see cref="SerializationExtensions.IsValidXsd{T}"/> e
 /// <see cref="SerializationExtensions.SaveXmlFile{T}"/>.

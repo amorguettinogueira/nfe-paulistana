@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models;
+ï»¿using Nfe.Paulistana.Models;
 using Nfe.Paulistana.V1.Models.Domain;
 using Nfe.Paulistana.Xml;
 using System.Diagnostics.CodeAnalysis;
@@ -8,19 +8,19 @@ using System.Xml.Serialization;
 namespace Nfe.Paulistana.V1.Models.Operations;
 
 /// <summary>
-/// Define o corpo da requisição de envio em lote de RPS (<c>PedidoEnvioLoteRPS</c>).
+/// Define o corpo da requisiÃ§Ã£o de envio em lote de RPS (<c>PedidoEnvioLoteRPS</c>).
 /// Implementa <see cref="ISignedXmlFile"/> para armazenamento do XML assinado e
-/// <see cref="IXmlValidatableSchema"/> para validação contra o XSD correspondente.
+/// <see cref="IXmlValidatableSchema"/> para validaÃ§Ã£o contra o XSD correspondente.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Fonte: <c>PedidoEnvioLoteRPS_v01.xsd</c> — Elemento <c>PedidoEnvioLoteRPS</c>, linha 8.
+/// Fonte: <c>PedidoEnvioLoteRPS_v01.xsd</c> â€” Elemento <c>PedidoEnvioLoteRPS</c>, linha 8.
 /// </para>
 /// <para>
-/// Representa uma solicitação de envio em lote contendo múltiplos RPS à Prefeitura de São Paulo.
-/// Instâncias devem ser criadas exclusivamente via
+/// Representa uma solicitaÃ§Ã£o de envio em lote contendo mÃºltiplos RPS Ã  Prefeitura de SÃ£o Paulo.
+/// InstÃ¢ncias devem ser criadas exclusivamente via
 /// <see cref="Builders.PedidoEnvioLoteFactory"/>, que garante que todos
-/// os RPS estejam individualmente assinados, as totalizações calculadas e o lote assinado.
+/// os RPS estejam individualmente assinados, as totalizaÃ§Ãµes calculadas e o lote assinado.
 /// </para>
 /// </remarks>
 [XmlType(AnonymousType = true, Namespace = Constants.Uris.Nfe)]
@@ -31,13 +31,13 @@ public sealed class PedidoEnvioLote : ISignedXmlFile, IXmlValidatableSchema
     private static readonly XmlSchemaSet _validationSchema =
         SchemaProvider.GetSchemaSetV1(Constants.Uris.Nfe, "PedidoEnvioLoteRPS_v01.xsd");
 
-    /// <summary>Cabeçalho do lote contendo identificação do prestador, período de competência e totalizações calculadas.</summary>
+    /// <summary>CabeÃ§alho do lote contendo identificaÃ§Ã£o do prestador, perÃ­odo de competÃªncia e totalizaÃ§Ãµes calculadas.</summary>
     [XmlElement(Form = XmlSchemaForm.Unqualified)]
     public CabecalhoLote? Cabecalho { get; set; }
 
-    /// <summary>Array de RPS (Recibos Provisórios de Serviços) contidos no lote, cada um com sua assinatura digital.</summary>
+    /// <summary>Array de RPS (Recibos ProvisÃ³rios de ServiÃ§os) contidos no lote, cada um com sua assinatura digital.</summary>
     [XmlElement(ElementName = "RPS", Form = XmlSchemaForm.Unqualified)]
-    [SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "Necessário para serialização XML sequencial dos elementos RPS; atribuído pela PedidoEnvioLoteFactory.")]
+    [SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "NecessÃ¡rio para serializaÃ§Ã£o XML sequencial dos elementos RPS; atribuÃ­do pela PedidoEnvioLoteFactory.")]
     public Rps[]? Rps { get; set; }
 
     /// <inheritdoc/>

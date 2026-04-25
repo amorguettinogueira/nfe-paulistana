@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models;
+Ôªøusing Nfe.Paulistana.Models;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Infrastructure;
@@ -42,7 +42,7 @@ namespace Nfe.Paulistana.Infrastructure;
 /// </item>
 /// <item>
 /// <strong>Specification-Driven:</strong> Implementations are guided by official specifications from
-/// the S„o Paulo city hall (Nota do Milh„o) for NFe signing requirements.
+/// the S√£o Paulo city hall (Nota do Milh√£o) for NFe signing requirements.
 /// </item>
 /// </list>
 /// </remarks>

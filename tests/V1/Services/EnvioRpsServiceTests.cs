@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+ï»¿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V1.Helpers;
@@ -10,9 +10,9 @@ using Nfe.Paulistana.V1.Services;
 namespace Nfe.Paulistana.Tests.V1.Services;
 
 /// <summary>
-/// Testes unitários para <see cref="EnvioRpsService"/>:
+/// Testes unitÃ¡rios para <see cref="EnvioRpsService"/>:
 /// guard clauses do construtor e de <see cref="IEnvioRpsService.SendAsync"/>,
-/// falha na validação XSD e deserialização da resposta do webservice.
+/// falha na validaÃ§Ã£o XSD e deserializaÃ§Ã£o da resposta do webservice.
 /// </summary>
 public class EnvioRpsServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -37,7 +37,7 @@ public class EnvioRpsServiceTests(CertificadoFixture fixture) : IClassFixture<Ce
         Assert.Throws<ArgumentNullException>(() => new EnvioRpsService(null!));
 
     // ============================================
-    // Guard clauses — SendAsync
+    // Guard clauses â€” SendAsync
     // ============================================
 
     [Fact]

@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+Ôªøusing Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V2.Builders;
 using Nfe.Paulistana.V2.Models.DataTypes;
@@ -6,7 +6,7 @@ using Nfe.Paulistana.V2.Models.Domain;
 namespace Nfe.Paulistana.Tests.V2.Builders;
 
 /// <summary>
-/// Testes unit·rios para <see cref="PedidoEnvioLoteFactory"/>.
+/// Testes unit√°rios para <see cref="PedidoEnvioLoteFactory"/>.
 /// </summary>
 public sealed class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -44,7 +44,7 @@ public sealed class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IC
     {
         // Arrange
         var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
-        var cpf = new Cpf(46381819618L); // CPF v·lido para teste
+        var cpf = new Cpf(46381819618L); // CPF v√°lido para teste
 
         // Act & Assert
         Assert.ThrowsAny<ArgumentNullException>(() => factory.NewCpf(cpf, false, null!));
@@ -55,7 +55,7 @@ public sealed class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IC
     {
         // Arrange
         var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
-        var cpf = new Cpf(46381819618L); // CPF v·lido para teste
+        var cpf = new Cpf(46381819618L); // CPF v√°lido para teste
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => factory.NewCpf(cpf, false, []));
@@ -67,7 +67,7 @@ public sealed class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IC
     {
         // Arrange
         var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
-        var cpf = new Cpf(46381819618L); // CPF v·lido para teste
+        var cpf = new Cpf(46381819618L); // CPF v√°lido para teste
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => factory.NewCpf(cpf, false, [null!, null!]));

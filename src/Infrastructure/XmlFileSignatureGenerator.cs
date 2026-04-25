@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Constants;
+ï»¿using Nfe.Paulistana.Constants;
 using Nfe.Paulistana.Models;
 using Nfe.Paulistana.Xml;
 using System.Diagnostics.CodeAnalysis;
@@ -13,14 +13,14 @@ namespace Nfe.Paulistana.Infrastructure;
 /// Serializa qualquer objeto <see cref="ISignedXmlFile"/> em um documento XML,
 /// computa a assinatura XMLDSig via <see cref="SignedXml"/> e armazena
 /// o XML assinado em <see cref="ISignedXmlFile.SignedXmlContent"/> para
-/// transmissão direta, garantindo que o conteúdo enviado ao servidor
-/// seja idêntico ao que foi assinado digitalmente.
+/// transmissÃ£o direta, garantindo que o conteÃºdo enviado ao servidor
+/// seja idÃªntico ao que foi assinado digitalmente.
 /// </summary>
 /// <typeparam name="T">Tipo que implementa <see cref="ISignedXmlFile"/>.</typeparam>
 [SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "Requisito do modelo NF-e Paulistana que utiliza XMLDSig com SHA1")]
 internal sealed class XmlFileSignatureGenerator<T> : IXmlFileSignatureGenerator<T> where T : class, ISignedXmlFile
 {
-    private const string ChavePrivadaNaoEncontrada = "Chave privada não encontrada no certificado.";
+    private const string ChavePrivadaNaoEncontrada = "Chave privada nÃ£o encontrada no certificado.";
 
     /// <summary>
     /// Assina o objeto XML serializado com o certificado fornecido utilizando <see cref="SignedXml"/>,
@@ -29,7 +29,7 @@ internal sealed class XmlFileSignatureGenerator<T> : IXmlFileSignatureGenerator<
     /// <param name="xmlToSign">Objeto a ser serializado em XML e assinado.</param>
     /// <param name="certificate">Certificado X509 com chave privada para assinatura RSA-SHA1.</param>
     /// <exception cref="ArgumentNullException">Se <paramref name="xmlToSign"/> ou <paramref name="certificate"/> for nulo.</exception>
-    /// <exception cref="CryptographicException">Se o certificado não contiver chave privada RSA.</exception>
+    /// <exception cref="CryptographicException">Se o certificado nÃ£o contiver chave privada RSA.</exception>
     public void Sign(T xmlToSign, X509Certificate2 certificate)
     {
         ArgumentNullException.ThrowIfNull(xmlToSign);
@@ -41,13 +41,13 @@ internal sealed class XmlFileSignatureGenerator<T> : IXmlFileSignatureGenerator<
         XmlDocument doc = xmlToSign.ToXmlDocument();
         doc.PreserveWhitespace = true;
 
-        // Remove a declaração XML (MensagemXml transmite sem declaração)
+        // Remove a declaraÃ§Ã£o XML (MensagemXml transmite sem declaraÃ§Ã£o)
         if (doc.FirstChild is XmlDeclaration xmlDecl)
         {
             _ = doc.RemoveChild(xmlDecl);
         }
 
-        // Obtém a chave privada RSA do certificado
+        // ObtÃ©m a chave privada RSA do certificado
         using RSA privateKey = certificate.GetRSAPrivateKey()
             ?? throw new CryptographicException(ChavePrivadaNaoEncontrada);
 
@@ -61,7 +61,7 @@ internal sealed class XmlFileSignatureGenerator<T> : IXmlFileSignatureGenerator<
 
         if (signedXml.SignedInfo == null)
         {
-            throw new InvalidOperationException("SignedInfo não pode ser nulo após adicionar referência.");
+            throw new InvalidOperationException("SignedInfo nÃ£o pode ser nulo apÃ³s adicionar referÃªncia.");
         }
 
         signedXml.SignedInfo.CanonicalizationMethod = Uris.CanonicalXml;
@@ -71,14 +71,14 @@ internal sealed class XmlFileSignatureGenerator<T> : IXmlFileSignatureGenerator<
         keyInfo.AddClause(new KeyInfoX509Data(certificate));
         signedXml.KeyInfo = keyInfo;
 
-        // Computa DigestValue e SignatureValue de forma atômica
+        // Computa DigestValue e SignatureValue de forma atÃ´mica
         signedXml.ComputeSignature();
 
         // Insere o elemento Signature no documento
         XmlElement sigElement = signedXml.GetXml();
         _ = doc.DocumentElement!.AppendChild(doc.ImportNode(sigElement, true));
 
-        // Armazena o XML assinado para transmissão direta (garante identidade com o assinado)
+        // Armazena o XML assinado para transmissÃ£o direta (garante identidade com o assinado)
         xmlToSign.SignedXmlContent = doc.OuterXml;
     }
 }

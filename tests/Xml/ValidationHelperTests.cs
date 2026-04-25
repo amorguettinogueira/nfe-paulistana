@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models;
+ï»¿using Nfe.Paulistana.Models;
 using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.V1.Helpers;
@@ -9,9 +9,9 @@ using Nfe.Paulistana.Xml;
 namespace Nfe.Paulistana.Tests.Xml;
 
 /// <summary>
-/// Testes unitários para <see cref="ValidationHelper"/>:
+/// Testes unitÃ¡rios para <see cref="ValidationHelper"/>:
 /// guard clause de argumento nulo, ramo com <see cref="ISignedXmlFile.SignedXmlContent"/>
-/// preenchido, ramo sem <c>SignedXmlContent</c> e acúmulo de erros de validação XSD.
+/// preenchido, ramo sem <c>SignedXmlContent</c> e acÃºmulo de erros de validaÃ§Ã£o XSD.
 /// </summary>
 public class ValidationHelperTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -49,14 +49,14 @@ public class ValidationHelperTests(CertificadoFixture fixture) : IClassFixture<C
     }
 
     // ============================================
-    // Ramo sem SignedXmlContent (serialização direta)
+    // Ramo sem SignedXmlContent (serializaÃ§Ã£o direta)
     // ============================================
 
     [Fact]
     public void Validate_LoteSemSignedXmlContent_RetornaFalseComErro()
     {
         // O XSD de PedidoEnvioLoteRPS exige o elemento <Signature>.
-        // O XML re-serializado sem assinatura não satisfaz esse requisito,
+        // O XML re-serializado sem assinatura nÃ£o satisfaz esse requisito,
         // documentando que o lote deve ser assinado antes de ser validado.
         PedidoEnvioLote pedido = CriarLoteAssinado();
         pedido.SignedXmlContent = null;
@@ -68,14 +68,14 @@ public class ValidationHelperTests(CertificadoFixture fixture) : IClassFixture<C
     }
 
     // ============================================
-    // Acúmulo de erros de validação XSD
+    // AcÃºmulo de erros de validaÃ§Ã£o XSD
     // ============================================
 
     [Fact]
     public void Validate_SignedXmlContentInvalido_RetornaFalseComErro()
     {
         PedidoEnvioLote pedido = CriarLoteAssinado();
-        pedido.SignedXmlContent = "<PedidoEnvioLoteRPS xmlns=\"http://www.prefeitura.sp.gov.br/nfe\"/>";  // Ausência de Cabecalho/RPS obrigatórios
+        pedido.SignedXmlContent = "<PedidoEnvioLoteRPS xmlns=\"http://www.prefeitura.sp.gov.br/nfe\"/>";  // AusÃªncia de Cabecalho/RPS obrigatÃ³rios
 
         bool resultado = ValidationHelper.Validate(pedido, out string? erro);
 

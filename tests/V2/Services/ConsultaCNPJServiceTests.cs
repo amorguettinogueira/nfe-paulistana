@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+ï»¿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
@@ -12,9 +12,9 @@ using Nfe.Paulistana.V2.Services;
 namespace Nfe.Paulistana.Tests.V2.Services;
 
 /// <summary>
-/// Testes unitários para <see cref="ConsultaCNPJService"/> v02:
+/// Testes unitÃ¡rios para <see cref="ConsultaCNPJService"/> v02:
 /// guard clauses do construtor e de <see cref="IConsultaCNPJService.SendAsync"/>,
-/// falha na validação XSD e deserialização da resposta do webservice.
+/// falha na validaÃ§Ã£o XSD e deserializaÃ§Ã£o da resposta do webservice.
 /// </summary>
 public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -53,7 +53,7 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     }
 
     // ============================================
-    // Guard clauses — SendAsync
+    // Guard clauses â€” SendAsync
     // ============================================
 
     [Fact]
@@ -145,7 +145,7 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     }
 
     // ============================================
-    // Factory — CNPJ alfanumérico
+    // Factory â€” CNPJ alfanumÃ©rico
     // ============================================
 
     [Fact]
@@ -161,7 +161,7 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     }
 
     // ============================================
-    // Cnpj V2 — validação
+    // Cnpj V2 â€” validaÃ§Ã£o
     // ============================================
 
     [Theory]
@@ -189,7 +189,7 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     [Fact]
     public void Cnpj_UltimosDigitosComLetras_ThrowsArgumentException()
     {
-        // Os 2 últimos dígitos devem ser numéricos [0-9]{2}
+        // Os 2 Ãºltimos dÃ­gitos devem ser numÃ©ricos [0-9]{2}
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("ABCD1234EF56AB"));
     }
 
@@ -206,7 +206,7 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     }
 
     // ============================================
-    // Cnpj V2 — edge cases
+    // Cnpj V2 â€” edge cases
     // ============================================
 
     [Theory]
@@ -220,14 +220,14 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     [Fact]
     public void Cnpj_ApenasDigitosNumericos_DigitoVerificadorInvalido_ThrowsArgumentException()
     {
-        // 14 dígitos numéricos com dígitos verificadores inválidos
+        // 14 dÃ­gitos numÃ©ricos com dÃ­gitos verificadores invÃ¡lidos
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("12345678000199"));
     }
 
     [Fact]
     public void Cnpj_TodosDigitosIguais_ThrowsArgumentException()
     {
-        // Todos os caracteres iguais (00000000000000) — rejeitado pela regra allSameValues
+        // Todos os caracteres iguais (00000000000000) â€” rejeitado pela regra allSameValues
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("00000000000000"));
     }
 
@@ -242,7 +242,7 @@ public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixtur
     [Fact]
     public void Cnpj_CaracteresEspeciaisInvalidos_ThrowsArgumentException()
     {
-        // Caracteres que não são alfanuméricos nem de formatação padrão
+        // Caracteres que nÃ£o sÃ£o alfanumÃ©ricos nem de formataÃ§Ã£o padrÃ£o
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("BX#5S4!X0C@001"));
     }
 }

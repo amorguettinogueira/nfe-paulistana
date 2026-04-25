@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+ï»¿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
@@ -12,9 +12,9 @@ using Nfe.Paulistana.V2.Services;
 namespace Nfe.Paulistana.Tests.V2.Services;
 
 /// <summary>
-/// Testes unitários para <see cref="EnvioLoteRpsService"/>:
+/// Testes unitÃ¡rios para <see cref="EnvioLoteRpsService"/>:
 /// guard clauses do construtor e de <see cref="IEnvioLoteRpsService.SendAsync"/>,
-/// falha na validação XSD e deserialização da resposta para modo de produção e modo de teste.
+/// falha na validaÃ§Ã£o XSD e deserializaÃ§Ã£o da resposta para modo de produÃ§Ã£o e modo de teste.
 /// </summary>
 public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -35,15 +35,15 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
     private const string SoapEnvelopeLoteVazio =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><EnvioLoteRPSResponse xmlns="http://www.prefeitura.sp.gov.br/nfe" /></soap:Body></soap:Envelope>""";
 
-    // Produção — com payload
+    // ProduÃ§Ã£o â€” com payload
     private const string SoapEnvelopeLoteComRetorno =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><EnvioLoteRPSResponse xmlns="http://www.prefeitura.sp.gov.br/nfe"><RetornoXML><RetornoEnvioLoteRPS xmlns="http://www.prefeitura.sp.gov.br/nfe"><Cabecalho xmlns="" Versao="2"><Sucesso>true</Sucesso></Cabecalho></RetornoEnvioLoteRPS></RetornoXML></EnvioLoteRPSResponse></soap:Body></soap:Envelope>""";
 
-    // Teste — sem payload
+    // Teste â€” sem payload
     private const string SoapEnvelopeTesteVazio =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><TesteEnvioLoteRPSResponse xmlns="http://www.prefeitura.sp.gov.br/nfe" /></soap:Body></soap:Envelope>""";
 
-    // Teste — com payload
+    // Teste â€” com payload
     private const string SoapEnvelopeTesteComRetorno =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><TesteEnvioLoteRPSResponse xmlns="http://www.prefeitura.sp.gov.br/nfe"><RetornoXML><RetornoEnvioLoteRPS xmlns="http://www.prefeitura.sp.gov.br/nfe"><Cabecalho xmlns="" Versao="2"><Sucesso>true</Sucesso></Cabecalho></RetornoEnvioLoteRPS></RetornoXML></TesteEnvioLoteRPSResponse></soap:Body></soap:Envelope>""";
 
@@ -72,7 +72,7 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
     }
 
     // ============================================
-    // Guard clauses — SendAsync
+    // Guard clauses â€” SendAsync
     // ============================================
 
     [Fact]
@@ -100,11 +100,11 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             service.SendAsync(pedidoEnvioLote));
 
-        Assert.Contains("não foram validados com sucesso", exception.Message);
+        Assert.Contains("nÃ£o foram validados com sucesso", exception.Message);
     }
 
     // ============================================
-    // Modo de produção — resposta do webservice
+    // Modo de produÃ§Ã£o â€” resposta do webservice
     // ============================================
 
     [Fact]
@@ -119,7 +119,7 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             service.SendAsync(pedidoEnvioLote, modoTeste: false));
 
-        Assert.Contains("resposta vazia ou inválida", exception.Message);
+        Assert.Contains("resposta vazia ou invÃ¡lida", exception.Message);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
     }
 
     // ============================================
-    // Modo de teste — resposta do webservice
+    // Modo de teste â€” resposta do webservice
     // ============================================
 
     [Fact]
@@ -185,7 +185,7 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             service.SendAsync(pedidoEnvioLote, modoTeste: true));
 
-        Assert.Contains("resposta vazia ou inválida", exception.Message);
+        Assert.Contains("resposta vazia ou invÃ¡lida", exception.Message);
     }
 
     [Fact]
@@ -236,7 +236,7 @@ public sealed class EnvioLoteRpsServiceTests(CertificadoFixture fixture) : IClas
     }
 
     // ============================================
-    // Validação de comportamento
+    // ValidaÃ§Ã£o de comportamento
     // ============================================
 
     [Fact]

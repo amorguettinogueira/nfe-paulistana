@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+ï»¿using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V1.Builders;
@@ -8,9 +8,9 @@ using Nfe.Paulistana.V1.Services;
 namespace Nfe.Paulistana.Tests.V1.Services;
 
 /// <summary>
-/// Testes unitários para <see cref="ConsultaLoteService"/>:
+/// Testes unitÃ¡rios para <see cref="ConsultaLoteService"/>:
 /// guard clauses do construtor e de <see cref="IConsultaLoteService.SendAsync"/>,
-/// falha na validação XSD e deserialização da resposta do webservice.
+/// falha na validaÃ§Ã£o XSD e deserializaÃ§Ã£o da resposta do webservice.
 /// </summary>
 public class ConsultaLoteServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -41,7 +41,7 @@ public class ConsultaLoteServiceTests(CertificadoFixture fixture) : IClassFixtur
     }
 
     // ============================================
-    // Guard clauses — SendAsync
+    // Guard clauses â€” SendAsync
     // ============================================
 
     [Fact]

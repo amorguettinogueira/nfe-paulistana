@@ -1,4 +1,4 @@
-using Nfe.Paulistana.Models.DataTypes;
+Ôªøusing Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Options;
 using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V2.Builders;
@@ -9,9 +9,9 @@ using Nfe.Paulistana.V2.Models.Operations;
 namespace Nfe.Paulistana.Tests.V2.Builders;
 
 /// <summary>
-/// Testes unit·rios para <see cref="PedidoEnvioFactory"/> v02:
-/// guard clauses do construtor e dos mÈtodos de f·brica, e verificaÁ„o
-/// de que o pedido retornado est· corretamente assinado.
+/// Testes unit√°rios para <see cref="PedidoEnvioFactory"/> v02:
+/// guard clauses do construtor e dos m√©todos de f√°brica, e verifica√ß√£o
+/// de que o pedido retornado est√° corretamente assinado.
 /// </summary>
 public class PedidoEnvioFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
@@ -28,7 +28,7 @@ public class PedidoEnvioFactoryTests(CertificadoFixture fixture) : IClassFixture
     }
 
     // ============================================
-    // NewCpf ó guard clauses
+    // NewCpf ‚Äî guard clauses
     // ============================================
 
     [Fact]
