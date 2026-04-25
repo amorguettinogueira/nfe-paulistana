@@ -1,5 +1,6 @@
-using Nfe.Paulistana.Models.DataTypes;
-using System.Xml.Serialization;
+﻿using Nfe.Paulistana.Models.DataTypes;
+
+using Nfe.Paulistana.Tests.Helpers;
 
 namespace Nfe.Paulistana.Tests.Models.DataTypes;
 
@@ -190,21 +191,6 @@ public class ValorTests
     // XML Serialização / Desserialização
     // ============================================
 
-    private static string SerializarParaXml(Valor valor)
-    {
-        var serializer = new XmlSerializer(typeof(Valor));
-        using var writer = new StringWriter();
-        serializer.Serialize(writer, valor);
-        return writer.ToString();
-    }
-
-    private static Valor? DesserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(Valor));
-        using var reader = new StringReader(xml);
-        return (Valor?)serializer.Deserialize(reader);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(100.50)]
@@ -212,8 +198,8 @@ public class ValorTests
     public void XmlSerialization_RoundTrip_PreservesValue(double rawValue)
     {
         var valor = new Valor((decimal)rawValue);
-        var xml = SerializarParaXml(valor);
-        var desserializado = DesserializarDeXml(xml);
+        var xml = XmlTestHelper.SerializarParaXml(valor);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Valor>(xml);
         Assert.Equal(valor.ToString(), desserializado!.ToString());
     }
 
@@ -225,7 +211,7 @@ public class ValorTests
     public void XmlDeserialization_ValorValido_PreservaCadeia(string xmlValue)
     {
         var xml = $"""<?xml version="1.0" encoding="utf-16"?><Valor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">{xmlValue}</Valor>""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Valor>(xml);
         Assert.Equal(xmlValue, desserializado!.ToString());
     }
 
@@ -233,7 +219,7 @@ public class ValorTests
     public void XmlDeserialization_ElementoVazio_ToStringRetornaNull()
     {
         var xml = """<?xml version="1.0" encoding="utf-16"?><Valor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Valor>(xml);
         Assert.Null(desserializado!.ToString());
     }
 
@@ -241,7 +227,7 @@ public class ValorTests
     public void XmlDeserialization_ElementoVazio_FromValorRetornaZero()
     {
         var xml = """<?xml version="1.0" encoding="utf-16"?><Valor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Valor>(xml);
         Assert.Equal(decimal.Zero, Valor.FromValor(desserializado));
     }
 

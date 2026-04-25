@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V1.Models.Response;
 
 namespace Nfe.Paulistana.Tests.V1.Models.Response;
@@ -7,20 +8,6 @@ namespace Nfe.Paulistana.Tests.V1.Models.Response;
 /// </summary>
 public sealed class ChaveNFeRpsTests
 {
-    private static string SerializarParaXml(ChaveNFeRps obj)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ChaveNFeRps));
-        using var sw = new System.IO.StringWriter();
-        serializer.Serialize(sw, obj);
-        return sw.ToString();
-    }
-
-    private static ChaveNFeRps? DesserializarDeXml(string xml)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ChaveNFeRps));
-        using var sr = new System.IO.StringReader(xml);
-        return (ChaveNFeRps?)serializer.Deserialize(sr);
-    }
 
     [Fact]
     public void Constructor_SemArgumentos_CriaInstancia() =>
@@ -64,7 +51,7 @@ public sealed class ChaveNFeRpsTests
         };
 
         // Act
-        var desserializado = DesserializarDeXml(SerializarParaXml(par))!;
+        var desserializado = XmlTestHelper.DesserializarDeXml<ChaveNFeRps>(XmlTestHelper.SerializarParaXml(par))!;
 
         // Assert
         Assert.Equal(par.ChaveNFe.NumeroNFe, desserializado.ChaveNFe!.NumeroNFe);
@@ -82,7 +69,7 @@ public sealed class ChaveNFeRpsTests
         };
 
         // Act
-        var xml = SerializarParaXml(par);
+        var xml = XmlTestHelper.SerializarParaXml(par);
 
         // Assert
         Assert.Contains("<ChaveNFe>", xml);

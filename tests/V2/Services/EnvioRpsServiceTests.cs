@@ -1,7 +1,7 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Models.Enums;
-using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
+using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Builders;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
@@ -9,32 +9,16 @@ using Nfe.Paulistana.V2.Models.Enums;
 using Nfe.Paulistana.V2.Models.Operations;
 using Nfe.Paulistana.V2.Models.Response;
 using Nfe.Paulistana.V2.Services;
-using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.V2.Services;
 
 /// <summary>
-/// Testes unitÃ¡rios para <see cref="EnvioRpsService"/> v02:
+/// Testes unitários para <see cref="EnvioRpsService"/> v02:
 /// guard clauses do construtor e de <see cref="IEnvioRpsService.SendAsync"/>,
-/// falha na validaÃ§Ã£o XSD e deserializaÃ§Ã£o da resposta do webservice.
+/// falha na validação XSD e deserialização da resposta do webservice.
 /// </summary>
-public class EnvioRpsServiceTests
+public class EnvioRpsServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarConfiguracao()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
-
-    private static readonly Tomador TomadorPadrao =
-        TomadorBuilder.NewCpf(new Cpf(new ValidCpfNumber().Min())).Build();
-
     private static ClassificacaoTributaria ClassificacaoTributariaPadrao =>
         new ClassificacaoTributaria("123456");
 
@@ -48,36 +32,10 @@ public class EnvioRpsServiceTests
                     new TributoIbsCbs(ClassificacaoTributariaPadrao, new TributoRegular(ClassificacaoTributariaPadrao)))),
             (CodigoOperacao)"123456");
 
-    private static Rps CriarRps() =>
-        RpsBuilder.New(
-                new InscricaoMunicipal(39616924),
-                TipoRps.Rps,
-                new Numero(4105),
-                new Discriminacao("Desenvolvimento de software."),
-                new SerieRps("BB"))
-            .SetNFe(new DataXsd(new DateTime(2024, 1, 20)), (TributacaoNfe)'T', (NaoSim)false, (NaoSim)false, StatusNfe.Normal)
-            .SetServico(new CodigoServico(7617), new CodigoNBS("123456789"))
-            .SetIss((Aliquota)0.05m, false)
-            .SetIbsCbs(CriarInformacoesIbsCbs())
-            .SetValorInicialCobrado(new Valor(1000m))
-            .SetLocalPrestacao((CodigoIbge)3550308)
-            .SetTomador(TomadorPadrao)
-            .Build();
-
-    private static PedidoEnvio CriarPedidoAssinado()
+    private PedidoEnvio CriarPedidoAssinado()
     {
-        var factory = new PedidoEnvioFactory(CriarConfiguracao());
-        return factory.NewCpf(new Cpf(new ValidCpfNumber().Min()), CriarRps());
-    }
-
-    private static HttpClient CriarHttpClientFake(string responseXml)
-    {
-        var handler = new FakeHttpMessageHandler(
-            new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(responseXml, System.Text.Encoding.UTF8, "text/xml")
-            });
-        return new HttpClient(handler) { BaseAddress = new Uri("https://fake-nfe/") };
+        var factory = new PedidoEnvioFactory(fixture.Certificado);
+        return factory.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf, RpsTestFactory.Padrao(ibsCbs: CriarInformacoesIbsCbs()));
     }
 
     // Sem payload
@@ -88,12 +46,6 @@ public class EnvioRpsServiceTests
     private const string SoapEnvelopeComRetorno =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><EnvioRPSResponse xmlns="http://www.prefeitura.sp.gov.br/nfe"><RetornoXML><RetornoEnvioRPS xmlns="http://www.prefeitura.sp.gov.br/nfe"><Cabecalho xmlns="" Versao="2"><Sucesso>true</Sucesso></Cabecalho></RetornoEnvioRPS></RetornoXML></EnvioRPSResponse></soap:Body></soap:Envelope>""";
 
-    private sealed class FakeHttpMessageHandler(HttpResponseMessage response) : HttpMessageHandler
-    {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            => Task.FromResult(response);
-    }
-
     // ============================================
     // Construtor
     // ============================================
@@ -103,13 +55,13 @@ public class EnvioRpsServiceTests
         Assert.Throws<ArgumentNullException>(() => new EnvioRpsService(null!));
 
     // ============================================
-    // Guard clauses â€” SendAsync
+    // Guard clauses — SendAsync
     // ============================================
 
     [Fact]
     public async Task SendAsync_PedidoEnvioNulo_ThrowsArgumentNullException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new EnvioRpsService(httpClient);
         PedidoEnvio? pedidoEnvio = null;
 
@@ -120,7 +72,7 @@ public class EnvioRpsServiceTests
     [Fact]
     public async Task SendAsync_PedidoEnvioNaoAssinado_ThrowsInvalidOperationException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new EnvioRpsService(httpClient);
         var pedidoEnvio = new PedidoEnvio();
 
@@ -135,7 +87,7 @@ public class EnvioRpsServiceTests
     [Fact]
     public async Task SendAsync_WebserviceRetornaRespostaSemPayload_ThrowsInvalidOperationException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new EnvioRpsService(httpClient);
         PedidoEnvio pedidoEnvio = CriarPedidoAssinado();
 
@@ -146,7 +98,7 @@ public class EnvioRpsServiceTests
     [Fact]
     public async Task SendAsync_WebserviceRetornaRespostaValida_RetornaRetornoNaoNulo()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new EnvioRpsService(httpClient);
         PedidoEnvio pedidoEnvio = CriarPedidoAssinado();
 
@@ -158,7 +110,7 @@ public class EnvioRpsServiceTests
     [Fact]
     public async Task SendAsync_WebserviceRetornaRespostaValida_CabecalhoIndicaSucesso()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new EnvioRpsService(httpClient);
         PedidoEnvio pedidoEnvio = CriarPedidoAssinado();
 

@@ -2,8 +2,6 @@ using Nfe.Paulistana.Infrastructure;
 using Nfe.Paulistana.Models;
 using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Models.Enums;
-using Nfe.Paulistana.Tests.Helpers;
-using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
 using System.Security.Cryptography.X509Certificates;
@@ -294,23 +292,22 @@ public class ElementSignatureGeneratorBaseTests
         Assert.Equal(string.Empty, result);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void FormatCpfOrCnpj_ComCpf_RetornaTipo1EIdPadded(long cpfNumber)
+    [Fact]
+    public void FormatCpfOrCnpj_ComCpf_RetornaTipo1EIdPadded()
     {
-        var doc = new CpfOrCnpj((Cpf)cpfNumber);
+        var doc = new CpfOrCnpj((Cpf)Helpers.TestConstants.ValidCpf);
 
         var result = Stub.ExposedFormatCpfOrCnpj(doc);
 
-        var expectedId = cpfNumber.ToString().PadLeft(14, '0');
+        var expectedId = Helpers.TestConstants.ValidCpf.ToString().PadLeft(14, '0');
         Assert.Equal($"1{expectedId}", result);
     }
 
     [Fact]
     public void FormatCpfOrCnpj_ComCnpj_RetornaTipo2EIdPadded()
     {
-        var cnpjNumber = new ValidCnpjNumber().Min();
-        var doc = new CpfOrCnpj(new Cnpj(cnpjNumber));
+        var cnpjNumber = V1.Helpers.TestConstants.ValidCnpj;
+        var doc = (CpfOrCnpj)(Cnpj)cnpjNumber;
 
         var result = Stub.ExposedFormatCpfOrCnpj(doc);
 

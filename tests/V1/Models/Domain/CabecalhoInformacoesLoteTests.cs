@@ -1,6 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
-using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
 
@@ -11,9 +9,6 @@ namespace Nfe.Paulistana.Tests.V1.Models.Domain;
 /// </summary>
 public sealed class CabecalhoInformacoesLoteTests
 {
-    private static CpfOrCnpj CriarCpfOrCnpj() =>
-        new(new Cpf(new ValidCpfNumber().Min()));
-
     // ============================================
     // Construtor padrão
     // ============================================
@@ -43,7 +38,7 @@ public sealed class CabecalhoInformacoesLoteTests
     [Fact]
     public void Constructor_ComCpfOrCnpj_DefineCpfOrCnpj()
     {
-        var cpfOrCnpj = CriarCpfOrCnpj();
+        var cpfOrCnpj = (CpfOrCnpj)(Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         var cabecalho = new CabecalhoInformacoesLote(cpfOrCnpj);
 
@@ -53,7 +48,7 @@ public sealed class CabecalhoInformacoesLoteTests
     [Fact]
     public void Constructor_ComCpfOrCnpj_OutrasPropriedadesNulas()
     {
-        var cabecalho = new CabecalhoInformacoesLote(CriarCpfOrCnpj());
+        var cabecalho = new CabecalhoInformacoesLote((CpfOrCnpj)(Cpf)Tests.Helpers.TestConstants.ValidCpf);
 
         Assert.Null(cabecalho.NumeroLote);
         Assert.Null(cabecalho.InscricaoPrestador);
@@ -63,11 +58,10 @@ public sealed class CabecalhoInformacoesLoteTests
     // Propriedades opcionais
     // ============================================
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void NumeroLote_QuandoDefinido_RetornaValorCorreto(long cnpjNumber)
+    [Fact]
+    public void NumeroLote_QuandoDefinido_RetornaValorCorreto()
     {
-        var numero = new Numero((int)cnpjNumber % 100_000 + 1);
+        var numero = (Numero)100_001;
         var cabecalho = new CabecalhoInformacoesLote { NumeroLote = numero };
 
         Assert.Same(numero, cabecalho.NumeroLote);
@@ -88,7 +82,7 @@ public sealed class CabecalhoInformacoesLoteTests
 
     [Fact]
     public void Versao_EhSempre1() =>
-        Assert.Equal(1, new CabecalhoInformacoesLote(CriarCpfOrCnpj()).Versao);
+        Assert.Equal(1, new CabecalhoInformacoesLote((CpfOrCnpj)(Cpf)Tests.Helpers.TestConstants.ValidCpf).Versao);
 
     [Fact]
     public void IsSealed() =>

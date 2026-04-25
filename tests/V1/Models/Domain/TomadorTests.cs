@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
@@ -8,11 +7,10 @@ namespace Nfe.Paulistana.Tests.V1.Models.Domain;
 
 public class TomadorTests
 {
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Tomador_WithAllFields_SetsAllProperties(long cpfNumber)
+    [Fact]
+    public void Tomador_WithAllFields_SetsAllProperties()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var razaoSocial = new RazaoSocial("Empresa Teste Ltda");
         var inscricaoMunicipal = new InscricaoMunicipal(12345678);
         var inscricaoEstadual = new InscricaoEstadual(123456789);

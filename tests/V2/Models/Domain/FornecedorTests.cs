@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
@@ -20,11 +19,10 @@ public class FornecedorTests
         Assert.Null(f.Nome);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Fornecedor_WithCpfAndNome_SetsProperties(long cpfNumber)
+    [Fact]
+    public void Fornecedor_WithCpfAndNome_SetsProperties()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var nome = new RazaoSocial("Nome Fornecedor");
 
         var f = new Fornecedor(cpf, nome);
@@ -35,11 +33,10 @@ public class FornecedorTests
         Assert.Equal(nome, f.Nome);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjString))]
-    public void Fornecedor_WithCnpjAndNome_SetsProperties(string cnpjFormatted, string _)
+    [Fact]
+    public void Fornecedor_WithCnpjAndNome_SetsProperties()
     {
-        var cnpj = new Cnpj(cnpjFormatted);
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
         var nome = new RazaoSocial("Empresa");
 
         var f = new Fornecedor(cnpj, nome);
@@ -80,23 +77,19 @@ public class FornecedorTests
         Assert.True(f.MotivoNifNaoInformadoSpecified);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Fornecedor_Ctor_NullNome_ThrowsArgumentNullException_ForCpf(long cpfNumber)
+    [Fact]
+    public void Fornecedor_Ctor_NullNome_ThrowsArgumentNullException_ForCpf()
     {
         RazaoSocial? nome = null;
-        var cpf = (Cpf)cpfNumber;
-
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         _ = Assert.Throws<ArgumentNullException>(() => new Fornecedor(cpf, nome!));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjString))]
-    public void Fornecedor_Ctor_NullNome_ThrowsArgumentNullException_ForCnpj(string cnpjFormatted, string _)
+    [Fact]
+    public void Fornecedor_Ctor_NullNome_ThrowsArgumentNullException_ForCnpj()
     {
         RazaoSocial? nome = null;
-        var cnpj = new Cnpj(cnpjFormatted);
-
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
         Assert.Throws<ArgumentNullException>(() => new Fornecedor(cnpj, nome!));
     }
 

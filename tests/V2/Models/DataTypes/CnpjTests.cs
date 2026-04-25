@@ -1,7 +1,7 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.V2.Models.DataTypes;
 
@@ -10,20 +10,6 @@ namespace Nfe.Paulistana.Tests.V2.Models.DataTypes;
 /// </summary>
 public class CnpjTests
 {
-    private static Cnpj? DeserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(Cnpj));
-        using var sr = new StringReader(xml);
-        return (Cnpj?)serializer.Deserialize(sr);
-    }
-
-    private static string SerializarParaXml(Cnpj cnpj)
-    {
-        var serializer = new XmlSerializer(typeof(Cnpj));
-        using var sw = new StringWriter();
-        serializer.Serialize(sw, cnpj);
-        return sw.ToString();
-    }
 
     // ============================================
     // Construtor padrão (desserialização)
@@ -186,8 +172,8 @@ public class CnpjTests
     {
         var original = new Cnpj(unformatted);
 
-        var xml = SerializarParaXml(original);
-        var deserialized = DeserializarDeXml(xml);
+        var xml = XmlTestHelper.SerializarParaXml(original);
+        var deserialized = XmlTestHelper.DesserializarDeXml<Cnpj>(xml);
 
         Assert.Equal(unformatted, deserialized?.ToString());
     }
@@ -197,7 +183,7 @@ public class CnpjTests
     {
         const string xml = """<?xml version="1.0" encoding="utf-16"?><Cnpj xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">XA412263000171</Cnpj>""";
 
-        var ex = Assert.Throws<InvalidOperationException>(() => DeserializarDeXml(xml));
+        var ex = Assert.Throws<InvalidOperationException>(() => XmlTestHelper.DesserializarDeXml<Cnpj>(xml));
         Assert.IsType<SerializationException>(ex.InnerException);
     }
 
@@ -206,7 +192,7 @@ public class CnpjTests
     {
         const string xml = """<?xml version="1.0" encoding="utf-16"?><Cnpj xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">ABC/XYZ-XXXX</Cnpj>""";
 
-        var ex = Assert.Throws<InvalidOperationException>(() => DeserializarDeXml(xml));
+        var ex = Assert.Throws<InvalidOperationException>(() => XmlTestHelper.DesserializarDeXml<Cnpj>(xml));
         Assert.IsType<SerializationException>(ex.InnerException);
     }
 
@@ -215,7 +201,7 @@ public class CnpjTests
     {
         const string xml = """<?xml version="1.0" encoding="utf-16"?><Cnpj xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"></Cnpj>""";
 
-        var ex = Assert.Throws<InvalidOperationException>(() => DeserializarDeXml(xml));
+        var ex = Assert.Throws<InvalidOperationException>(() => XmlTestHelper.DesserializarDeXml<Cnpj>(xml));
         Assert.IsType<SerializationException>(ex.InnerException);
     }
 }

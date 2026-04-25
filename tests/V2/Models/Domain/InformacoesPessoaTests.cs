@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
@@ -25,11 +24,10 @@ public class InformacoesPessoaTests
         Assert.Null(p.Email);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_WithCpf_SetsProperties(long cpfNumber)
+    [Fact]
+    public void Constructor_WithCpf_SetsProperties()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var nome = new RazaoSocial("Pessoa");
         var endereco = new EnderecoSimplesIBSCBS(
             new Logradouro("Rua Teste"),
@@ -49,11 +47,10 @@ public class InformacoesPessoaTests
         Assert.Equal(email, p.Email);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjString))]
-    public void Constructor_WithCnpj_SetsProperties(string cnpjFormatted, string _)
+    [Fact]
+    public void Constructor_WithCnpj_SetsProperties()
     {
-        var cnpj = new Cnpj(cnpjFormatted);
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
         var nome = new RazaoSocial("Empresa");
 
         var p = new InformacoesPessoa(cnpj, nome);
@@ -89,22 +86,20 @@ public class InformacoesPessoaTests
         Assert.True(p.MotivoNifNaoInformadoSpecified);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_NullNome_ThrowsArgumentNullException_ForCpf(long cpfNumber)
+    [Fact]
+    public void Constructor_NullNome_ThrowsArgumentNullException_ForCpf()
     {
         RazaoSocial? nome = null;
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
 
         _ = Assert.Throws<ArgumentNullException>(() => new InformacoesPessoa(cpf, nome!));
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjString))]
-    public void Constructor_NullNome_ThrowsArgumentNullException_ForCnpj(string cnpjFormatted, string _)
+    [Fact]
+    public void Constructor_NullNome_ThrowsArgumentNullException_ForCnpj()
     {
         RazaoSocial? nome = null;
-        var cnpj = new Cnpj(cnpjFormatted);
+        var cnpj = (Cnpj)TestConstants.ValidFormattedCnpj;
 
         Assert.Throws<ArgumentNullException>(() => new InformacoesPessoa(cnpj, nome!));
     }
@@ -142,12 +137,11 @@ public class InformacoesPessoaTests
     // XML serialization tests
     // ==========================
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Xml_SerializeAndDeserialize_RoundTripPreservesValues(long cpfNumber)
+    [Fact]
+    public void Xml_SerializeAndDeserialize_RoundTripPreservesValues()
     {
         // Arrange
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var nome = new RazaoSocial("Pessoa XML");
         var endereco = new EnderecoSimplesIBSCBS(
             new Logradouro("Rua XML"),
@@ -187,11 +181,10 @@ public class InformacoesPessoaTests
         Assert.Equal(original.Endereco?.Numero, roundtripped?.Endereco?.Numero);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Xml_Serialize_WithoutDefaultNamespaces_WhenEmptyNamespacesProvided(long cpfNumber)
+    [Fact]
+    public void Xml_Serialize_WithoutDefaultNamespaces_WhenEmptyNamespacesProvided()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var p = new InformacoesPessoa(cpf, new RazaoSocial("X"));
 
         var serializer = new XmlSerializer(typeof(InformacoesPessoa));

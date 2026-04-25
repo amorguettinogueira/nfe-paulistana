@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
@@ -131,28 +132,13 @@ public sealed class CodigoOperacaoTests
     // Serialização XML (round-trip)
     // ============================================
 
-    private static CodigoOperacao? DeserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(CodigoOperacao));
-        using var sr = new StringReader(xml);
-        return (CodigoOperacao?)serializer.Deserialize(sr);
-    }
-
-    private static string SerializarParaXml(CodigoOperacao codigo)
-    {
-        var serializer = new XmlSerializer(typeof(CodigoOperacao));
-        using var sw = new StringWriter();
-        serializer.Serialize(sw, codigo);
-        return sw.ToString();
-    }
-
     [Fact]
     public void XmlRoundTrip_ValorValido_DeserializaCorretamente()
     {
         var original = new CodigoOperacao("010101");
-        string xml = SerializarParaXml(original);
+        string xml = XmlTestHelper.SerializarParaXml(original);
 
-        var deserialized = DeserializarDeXml(xml);
+        var deserialized = XmlTestHelper.DesserializarDeXml<CodigoOperacao>(xml);
 
         Assert.Equal("010101", deserialized?.ToString());
     }

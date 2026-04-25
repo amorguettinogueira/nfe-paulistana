@@ -1,5 +1,5 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V2.Helpers;
 using Nfe.Paulistana.V2.Builders;
@@ -8,53 +8,30 @@ using Nfe.Paulistana.V2.Models.Domain;
 using Nfe.Paulistana.V2.Models.Operations;
 using Nfe.Paulistana.V2.Models.Response;
 using Nfe.Paulistana.V2.Services;
-using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.V2.Services;
 
 /// <summary>
-/// Testes unitÃ¡rios para <see cref="ConsultaCNPJService"/> v02:
+/// Testes unitários para <see cref="ConsultaCNPJService"/> v02:
 /// guard clauses do construtor e de <see cref="IConsultaCNPJService.SendAsync"/>,
-/// falha na validaÃ§Ã£o XSD e deserializaÃ§Ã£o da resposta do webservice.
+/// falha na validação XSD e deserialização da resposta do webservice.
 /// </summary>
-public class ConsultaCNPJServiceTests
+public class ConsultaCNPJServiceTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarConfiguracao()
+    private PedidoConsultaCNPJ CriarConsultaAssinada()
     {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
-
-    private static PedidoConsultaCNPJ CriarConsultaAssinada()
-    {
-        var factory = new PedidoConsultaCNPJFactory(CriarConfiguracao());
-        var cpf = new Cpf(new ValidCpfNumber().Min());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var cnpjContribuinte = new CpfOrCnpj(cpf);
         return factory.NewCpf(cpf, cnpjContribuinte);
     }
 
-    private static PedidoConsultaCNPJ CriarConsultaAssinadaComCnpj()
+    private PedidoConsultaCNPJ CriarConsultaAssinadaComCnpj()
     {
-        var factory = new PedidoConsultaCNPJFactory(CriarConfiguracao());
+        var factory = new PedidoConsultaCNPJFactory(fixture.Certificado);
         var cnpj = new Cnpj(new ValidCnpjStrings().FirstOrDefault([string.Empty, string.Empty])?.FirstOrDefault(string.Empty).ToString() ?? string.Empty);
         var cnpjContribuinte = new CpfOrCnpj(cnpj);
         return factory.NewCnpj(cnpj, cnpjContribuinte);
-    }
-
-    private static HttpClient CriarHttpClientFake(string responseXml)
-    {
-        var handler = new FakeHttpMessageHandler(
-            new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(responseXml, System.Text.Encoding.UTF8, "text/xml")
-            });
-        return new HttpClient(handler) { BaseAddress = new Uri("https://fake-nfe/") };
     }
 
     // Sem payload
@@ -64,12 +41,6 @@ public class ConsultaCNPJServiceTests
     // Com payload (Versao=2)
     private const string SoapEnvelopeComRetorno =
         """<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ConsultaCNPJResponse xmlns="http://www.prefeitura.sp.gov.br/nfe"><RetornoXML><RetornoConsultaCNPJ xmlns="http://www.prefeitura.sp.gov.br/nfe"><Cabecalho xmlns="" Versao="2"><Sucesso>true</Sucesso></Cabecalho><Detalhe xmlns=""><InscricaoMunicipal>39616924</InscricaoMunicipal><EmiteNFe>true</EmiteNFe></Detalhe></RetornoConsultaCNPJ></RetornoXML></ConsultaCNPJResponse></soap:Body></soap:Envelope>""";
-
-    private sealed class FakeHttpMessageHandler(HttpResponseMessage response) : HttpMessageHandler
-    {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-            => Task.FromResult(response);
-    }
 
     // ============================================
     // Construtor
@@ -82,13 +53,13 @@ public class ConsultaCNPJServiceTests
     }
 
     // ============================================
-    // Guard clauses â€” SendAsync
+    // Guard clauses — SendAsync
     // ============================================
 
     [Fact]
     public async Task SendAsync_PedidoNulo_ThrowsArgumentNullException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ? pedido = null;
 
@@ -99,7 +70,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public async Task SendAsync_PedidoNaoAssinado_ThrowsInvalidOperationException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new ConsultaCNPJService(httpClient);
         var pedido = new PedidoConsultaCNPJ();
 
@@ -114,7 +85,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public async Task SendAsync_RespostaSemPayload_ThrowsInvalidOperationException()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeVazio);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeVazio);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ pedido = CriarConsultaAssinada();
 
@@ -125,7 +96,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public async Task SendAsync_RespostaValida_RetornaRetornoNaoNulo()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ pedido = CriarConsultaAssinada();
 
@@ -137,7 +108,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public async Task SendAsync_RespostaValida_CabecalhoIndicaSucesso()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ pedido = CriarConsultaAssinada();
 
@@ -149,7 +120,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public async Task SendAsync_RespostaValida_CabecalhoVersaoIgualADois()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ pedido = CriarConsultaAssinada();
 
@@ -161,7 +132,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public async Task SendAsync_RespostaValida_DetalheContemInscricaoMunicipal()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ pedido = CriarConsultaAssinada();
 
@@ -174,13 +145,13 @@ public class ConsultaCNPJServiceTests
     }
 
     // ============================================
-    // Factory â€” CNPJ alfanumÃ©rico
+    // Factory — CNPJ alfanumérico
     // ============================================
 
     [Fact]
     public async Task SendAsync_CriadoComCnpjAlfanumerico_RetornaRetornoNaoNulo()
     {
-        using HttpClient httpClient = CriarHttpClientFake(SoapEnvelopeComRetorno);
+        using HttpClient httpClient = FakeHttpClient.Create(SoapEnvelopeComRetorno);
         var service = new ConsultaCNPJService(httpClient);
         PedidoConsultaCNPJ pedido = CriarConsultaAssinadaComCnpj();
 
@@ -190,7 +161,7 @@ public class ConsultaCNPJServiceTests
     }
 
     // ============================================
-    // Cnpj V2 â€” validaÃ§Ã£o
+    // Cnpj V2 — validação
     // ============================================
 
     [Theory]
@@ -218,7 +189,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public void Cnpj_UltimosDigitosComLetras_ThrowsArgumentException()
     {
-        // Os 2 Ãºltimos dÃ­gitos devem ser numÃ©ricos [0-9]{2}
+        // Os 2 últimos dígitos devem ser numéricos [0-9]{2}
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("ABCD1234EF56AB"));
     }
 
@@ -235,7 +206,7 @@ public class ConsultaCNPJServiceTests
     }
 
     // ============================================
-    // Cnpj V2 â€” edge cases
+    // Cnpj V2 — edge cases
     // ============================================
 
     [Theory]
@@ -249,14 +220,14 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public void Cnpj_ApenasDigitosNumericos_DigitoVerificadorInvalido_ThrowsArgumentException()
     {
-        // 14 dÃ­gitos numÃ©ricos com dÃ­gitos verificadores invÃ¡lidos
+        // 14 dígitos numéricos com dígitos verificadores inválidos
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("12345678000199"));
     }
 
     [Fact]
     public void Cnpj_TodosDigitosIguais_ThrowsArgumentException()
     {
-        // Todos os caracteres iguais (00000000000000) â€” rejeitado pela regra allSameValues
+        // Todos os caracteres iguais (00000000000000) — rejeitado pela regra allSameValues
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("00000000000000"));
     }
 
@@ -271,7 +242,7 @@ public class ConsultaCNPJServiceTests
     [Fact]
     public void Cnpj_CaracteresEspeciaisInvalidos_ThrowsArgumentException()
     {
-        // Caracteres que nÃ£o sÃ£o alfanumÃ©ricos nem de formataÃ§Ã£o padrÃ£o
+        // Caracteres que não são alfanuméricos nem de formatação padrão
         _ = Assert.Throws<ArgumentException>(() => new Cnpj("BX#5S4!X0C@001"));
     }
 }

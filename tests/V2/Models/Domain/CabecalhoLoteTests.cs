@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.Domain;
 
 namespace Nfe.Paulistana.Tests.V2.Models.Domain;
@@ -22,11 +21,10 @@ public sealed class CabecalhoLoteTests
         Assert.Null(cab.QtdRps);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_ComCpfOrCnpj_DefiniCpfOrCnpj(long cpfNumber)
+    [Fact]
+    public void Constructor_ComCpfOrCnpj_DefiniCpfOrCnpj()
     {
-        var cpfOrCnpj = new CpfOrCnpj(new Cpf(cpfNumber));
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var cab = new CabecalhoLote(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);

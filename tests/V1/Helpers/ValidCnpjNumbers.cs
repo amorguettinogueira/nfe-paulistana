@@ -1,10 +1,11 @@
 namespace Nfe.Paulistana.Tests.V1.Helpers;
 
-internal class ValidCnpjNumbers : ValidCnpjNumber
+internal class ValidCnpjNumbers : TheoryData<long>
 {
     public ValidCnpjNumbers()
     {
         // Random valid CNPJs generated with https://www.4devs.com.br/gerador_de_cnpj
+        Add(TestConstants.ValidCnpj);
         Add(84067820000190);
         Add(33579346000145);
         Add(23461695000104);

@@ -1,5 +1,6 @@
-using Nfe.Paulistana.Models.DataTypes;
-using System.Xml.Serialization;
+﻿using Nfe.Paulistana.Models.DataTypes;
+
+using Nfe.Paulistana.Tests.Helpers;
 
 namespace Nfe.Paulistana.Tests.Models.DataTypes;
 
@@ -244,21 +245,6 @@ public class PercentualTests
     // XML Serialização / Desserialização
     // ============================================
 
-    private static string SerializarParaXml(Percentual percentual)
-    {
-        var serializer = new XmlSerializer(typeof(Percentual));
-        using var writer = new StringWriter();
-        serializer.Serialize(writer, percentual);
-        return writer.ToString();
-    }
-
-    private static Percentual? DesserializarDeXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(Percentual));
-        using var reader = new StringReader(xml);
-        return (Percentual?)serializer.Deserialize(reader);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(50)]
@@ -267,8 +253,8 @@ public class PercentualTests
     public void XmlSerialization_RoundTrip_PreservesValue(double rawValue)
     {
         var percentual = new Percentual((decimal)rawValue);
-        var xml = SerializarParaXml(percentual);
-        var desserializado = DesserializarDeXml(xml);
+        var xml = XmlTestHelper.SerializarParaXml(percentual);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Percentual>(xml);
         Assert.Equal(percentual.ToString(), desserializado!.ToString());
     }
 
@@ -280,7 +266,7 @@ public class PercentualTests
     public void XmlDeserialization_ValorValido_PreservaCadeia(string xmlValue)
     {
         var xml = $"""<?xml version="1.0" encoding="utf-16"?><Percentual xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">{xmlValue}</Percentual>""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Percentual>(xml);
         Assert.Equal(xmlValue, desserializado!.ToString());
     }
 
@@ -288,7 +274,7 @@ public class PercentualTests
     public void XmlDeserialization_ElementoVazio_ToStringRetornaNull()
     {
         var xml = """<?xml version="1.0" encoding="utf-16"?><Percentual xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />""";
-        var desserializado = DesserializarDeXml(xml);
+        var desserializado = XmlTestHelper.DesserializarDeXml<Percentual>(xml);
         Assert.Null(desserializado!.ToString());
     }
 

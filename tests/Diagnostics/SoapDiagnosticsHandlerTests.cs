@@ -1,4 +1,5 @@
 using Nfe.Paulistana.Diagnostics;
+using Nfe.Paulistana.Tests.Helpers;
 using System.Diagnostics;
 using System.Net;
 
@@ -22,20 +23,12 @@ public sealed class SoapDiagnosticsHandlerTests
         string responseBody = "<response/>") =>
         new(new SoapDiagnosticsHandler(onExchange)
         {
-            InnerHandler = new FakeHttpMessageHandler(
+            InnerHandler = new FakeHttpClient.FakeHttpMessageHandler(
                 new HttpResponseMessage(statusCode)
                 {
                     Content = new StringContent(responseBody, System.Text.Encoding.UTF8, "text/xml")
                 })
         });
-
-    private sealed class FakeHttpMessageHandler(HttpResponseMessage response) : HttpMessageHandler
-    {
-        protected override Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request,
-            CancellationToken cancellationToken) =>
-            Task.FromResult(response);
-    }
 
     // ============================================
     // Construtor

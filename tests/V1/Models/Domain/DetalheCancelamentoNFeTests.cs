@@ -10,9 +10,6 @@ namespace Nfe.Paulistana.Tests.V1.Models.Domain;
 /// </summary>
 public class DetalheCancelamentoNFeTests
 {
-    private static ChaveNfe CriarChaveNfe() =>
-        new(new InscricaoMunicipal(39_616_924), new Numero(1), new CodigoVerificacao("ABCDEFGH"));
-
     [Fact]
     public void DefaultConstructor_PropriedadesNulas()
     {
@@ -25,7 +22,7 @@ public class DetalheCancelamentoNFeTests
     [Fact]
     public void Constructor_ComChaveNfe_DefinePropriedade()
     {
-        var chave = CriarChaveNfe();
+        ChaveNfe chave = new(new InscricaoMunicipal(39_616_924), new Numero(1), new CodigoVerificacao("ABCDEFGH"));
         var detalhe = new DetalheCancelamentoNFe(chave);
 
         Assert.Same(chave, detalhe.ChaveNfe);

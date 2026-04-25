@@ -1,27 +1,15 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V2.Builders;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-
 namespace Nfe.Paulistana.Tests.V2.Builders;
 
 /// <summary>
-/// Testes unitÃ¡rios para <see cref="PedidoEnvioLoteFactory"/>.
+/// Testes unitários para <see cref="PedidoEnvioLoteFactory"/>.
 /// </summary>
-public sealed class PedidoEnvioLoteFactoryTests
+public sealed class PedidoEnvioLoteFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarConfiguracao()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
 
     [Fact]
     public void Construtor_CertificadoNulo_ThrowsArgumentNullException()
@@ -34,7 +22,7 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void Construtor_CertificadoValido_NaoLancaExcecao()
     {
         // Arrange & Act
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
 
         // Assert
         Assert.NotNull(factory);
@@ -44,7 +32,7 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCpf_CpfNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
         var rps = new Rps();
 
         // Act & Assert
@@ -55,8 +43,8 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCpf_RpsListNula_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
-        var cpf = new Cpf(46381819618L); // CPF vÃ¡lido para teste
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
+        var cpf = new Cpf(46381819618L); // CPF válido para teste
 
         // Act & Assert
         Assert.ThrowsAny<ArgumentNullException>(() => factory.NewCpf(cpf, false, null!));
@@ -66,8 +54,8 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCpf_RpsListVazia_ThrowsArgumentException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
-        var cpf = new Cpf(46381819618L); // CPF vÃ¡lido para teste
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
+        var cpf = new Cpf(46381819618L); // CPF válido para teste
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => factory.NewCpf(cpf, false, []));
@@ -78,8 +66,8 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCpf_RpsListComApenasNulos_ThrowsArgumentException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
-        var cpf = new Cpf(46381819618L); // CPF vÃ¡lido para teste
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
+        var cpf = new Cpf(46381819618L); // CPF válido para teste
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => factory.NewCpf(cpf, false, [null!, null!]));
@@ -90,7 +78,7 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCnpj_CnpjNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
         var rps = new Rps();
 
         // Act & Assert
@@ -101,7 +89,7 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCnpj_RpsListNula_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
 
         // Act & Assert
@@ -112,7 +100,7 @@ public sealed class PedidoEnvioLoteFactoryTests
     public void NewCnpj_RpsListVazia_ThrowsArgumentException()
     {
         // Arrange
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
 
         // Act & Assert

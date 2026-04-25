@@ -1,6 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
-using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
@@ -33,21 +31,19 @@ public partial class IntermediarioBuilderTests
     // SetEmail — Null and Invalid Value Object Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void SetEmail_WithNullEmail_ThrowsArgumentNullException(long cpfNumber)
+    [Fact]
+    public void SetEmail_WithNullEmail_ThrowsArgumentNullException()
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)cpfNumber, true);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true);
         Email? email = null;
 
         _ = Assert.Throws<ArgumentNullException>(() => builder.SetEmail(email!));
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void SetEmail_WithInvalidEmailFormat_ThrowsArgumentException(long cpfNumber)
+    [Fact]
+    public void SetEmail_WithInvalidEmailFormat_ThrowsArgumentException()
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)cpfNumber, true);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true);
 
         _ = Assert.Throws<ArgumentException>(() => builder.SetEmail(new Email("formato-invalido")));
     }
@@ -56,29 +52,26 @@ public partial class IntermediarioBuilderTests
     // New() Factory Method Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void New_WithCpfDomainObject_ReturnsBuilder(long cpfNumber)
+    [Fact]
+    public void New_WithCpfDomainObject_ReturnsBuilder()
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)cpfNumber, true);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true);
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(builder);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void New_WithCnpjDomainObject_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void New_WithCnpjDomainObject_ReturnsBuilder()
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null);
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(builder);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void New_WithCnpjAndInscricao_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void New_WithCnpjAndInscricao_ReturnsBuilder()
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, new InscricaoMunicipal(98765432));
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, new InscricaoMunicipal(98765432));
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(builder);
     }
@@ -87,22 +80,20 @@ public partial class IntermediarioBuilderTests
     // Build Output Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void New_WithCpfOnly_BuildIncludesCpfAndNullInscricao(long cpfNumber)
+    [Fact]
+    public void New_WithCpfOnly_BuildIncludesCpfAndNullInscricao()
     {
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true).Build();
 
         Assert.NotNull(intermediario.CpfCnpjIntermediario);
         Assert.Null(intermediario.InscricaoMunicipalIntermediario);
         Assert.Null(intermediario.EmailIntermediario);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void New_WithCnpjOnly_BuildIncludesCnpjAndNullInscricao(long cnpjNumber)
+    [Fact]
+    public void New_WithCnpjOnly_BuildIncludesCnpjAndNullInscricao()
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null).Build();
 
         Assert.NotNull(intermediario.CpfCnpjIntermediario);
         Assert.Null(intermediario.InscricaoMunicipalIntermediario);
@@ -113,38 +104,34 @@ public partial class IntermediarioBuilderTests
     // IssRetidoIntermediario Flag Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void New_WithCpf_IssRetidoTrue_CorrectlySet(long cpfNumber)
+    [Fact]
+    public void New_WithCpf_IssRetidoTrue_CorrectlySet()
     {
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true).Build();
 
         Assert.True(intermediario.IssRetidoIntermediario);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void New_WithCpf_IssRetidoFalse_CorrectlySet(long cpfNumber)
+    [Fact]
+    public void New_WithCpf_IssRetidoFalse_CorrectlySet()
     {
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, false).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, false).Build();
 
         Assert.False(intermediario.IssRetidoIntermediario);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void New_WithCnpj_IssRetidoTrue_CorrectlySet(long cnpjNumber)
+    [Fact]
+    public void New_WithCnpj_IssRetidoTrue_CorrectlySet()
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null).Build();
 
         Assert.True(intermediario.IssRetidoIntermediario);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void New_WithCnpj_IssRetidoFalse_CorrectlySet(long cnpjNumber)
+    [Fact]
+    public void New_WithCnpj_IssRetidoFalse_CorrectlySet()
     {
-        Intermediario intermediario = IntermediarioBuilder.New(new Cnpj(cnpjNumber), false, null).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, false, null).Build();
 
         Assert.False(intermediario.IssRetidoIntermediario);
     }
@@ -153,22 +140,20 @@ public partial class IntermediarioBuilderTests
     // SetEmail Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void SetEmail_OnCpfBuilder_ReturnsBuilder(long cpfNumber)
+    [Fact]
+    public void SetEmail_OnCpfBuilder_ReturnsBuilder()
     {
-        IIntermediarioBuilder result = IntermediarioBuilder.New((Cpf)cpfNumber, true)
+        IIntermediarioBuilder result = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true)
             .SetEmail(new Email("intermediario@teste.com.br"));
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(result);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void SetEmail_OnCpfBuilder_BuildIncludesEmail(long cpfNumber)
+    [Fact]
+    public void SetEmail_OnCpfBuilder_BuildIncludesEmail()
     {
         var email = new Email("intermediario@teste.com.br");
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true)
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true)
             .SetEmail(email)
             .Build();
 
@@ -176,22 +161,20 @@ public partial class IntermediarioBuilderTests
         Assert.Equal(email.ToString(), intermediario.EmailIntermediario.ToString());
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void SetEmail_OnCnpjBuilder_ReturnsBuilder(long cnpjNumber)
+    [Fact]
+    public void SetEmail_OnCnpjBuilder_ReturnsBuilder()
     {
-        IIntermediarioBuilder result = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null)
+        IIntermediarioBuilder result = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null)
             .SetEmail(new Email("intermediario@teste.com.br"));
 
         _ = Assert.IsAssignableFrom<IIntermediarioBuilder>(result);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void SetEmail_MultipleCalls_LastEmailWins(long cnpjNumber)
+    [Fact]
+    public void SetEmail_MultipleCalls_LastEmailWins()
     {
         var email2 = new Email("segundo@teste.com.br");
-        Intermediario intermediario = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null)
+        Intermediario intermediario = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null)
             .SetEmail(new Email("primeiro@teste.com.br"))
             .SetEmail(email2)
             .Build();
@@ -203,13 +186,12 @@ public partial class IntermediarioBuilderTests
     // Complete Chain Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Build_WithCpfAndEmail_AllPropertiesSet(long cpfNumber)
+    [Fact]
+    public void Build_WithCpfAndEmail_AllPropertiesSet()
     {
         var email = new Email("intermediario@teste.com.br");
 
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true)
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true)
             .SetEmail(email)
             .Build();
 
@@ -220,13 +202,12 @@ public partial class IntermediarioBuilderTests
         Assert.Equal(email.ToString(), intermediario.EmailIntermediario.ToString());
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Build_WithCpfAndEmailIssRetidoFalse_AllPropertiesSet(long cpfNumber)
+    [Fact]
+    public void Build_WithCpfAndEmailIssRetidoFalse_AllPropertiesSet()
     {
         var email = new Email("intermediario@teste.com.br");
 
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, false)
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, false)
             .SetEmail(email)
             .Build();
 
@@ -236,11 +217,10 @@ public partial class IntermediarioBuilderTests
         Assert.False(intermediario.IssRetidoIntermediario);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void New_WithCpfAndEmailInDomainObjectsMode_AllPropertiesSet(long cpfNumber)
+    [Fact]
+    public void New_WithCpfAndEmailInDomainObjectsMode_AllPropertiesSet()
     {
-        var cpf = (Cpf)cpfNumber;
+        var cpf = (Cpf)Tests.Helpers.TestConstants.ValidCpf;
         var email = new Email("intermediario@teste.com.br");
 
         Intermediario intermediario = IntermediarioBuilder.New(cpf, true)
@@ -254,11 +234,10 @@ public partial class IntermediarioBuilderTests
         Assert.Equal(email.ToString(), intermediario.EmailIntermediario.ToString());
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void New_WithCnpjAndEmailInDomainObjectsMode_AllPropertiesSet(long cnpjNumber)
+    [Fact]
+    public void New_WithCnpjAndEmailInDomainObjectsMode_AllPropertiesSet()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)Helpers.TestConstants.ValidCnpj;
         var email = new Email("intermediario@teste.com.br");
         var inscricao = new InscricaoMunicipal(1234123);
 
@@ -277,43 +256,38 @@ public partial class IntermediarioBuilderTests
     // IsValid / GetValidationErrors Tests
     // ============================================
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void IsValid_WithCpfBuilder_ReturnsTrue(long cpfNumber) =>
-        Assert.True(IntermediarioBuilder.New((Cpf)cpfNumber, true).IsValid());
+    [Fact]
+    public void IsValid_WithCpfBuilder_ReturnsTrue() =>
+        Assert.True(IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true).IsValid());
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void IsValid_WithCnpjBuilder_ReturnsTrue(long cnpjNumber) =>
-        Assert.True(IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null).IsValid());
+    [Fact]
+    public void IsValid_WithCnpjBuilder_ReturnsTrue() =>
+        Assert.True(IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null).IsValid());
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void GetValidationErrors_WithCpfBuilder_ReturnsEmpty(long cpfNumber)
+    [Fact]
+    public void GetValidationErrors_WithCpfBuilder_ReturnsEmpty()
     {
-        var errors = IntermediarioBuilder.New((Cpf)cpfNumber, true)
+        var errors = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true)
             .GetValidationErrors()
             .ToList();
 
         Assert.Empty(errors);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void GetValidationErrors_WithCnpjBuilder_ReturnsEmpty(long cnpjNumber)
+    [Fact]
+    public void GetValidationErrors_WithCnpjBuilder_ReturnsEmpty()
     {
-        var errors = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null)
+        var errors = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null)
             .GetValidationErrors()
             .ToList();
 
         Assert.Empty(errors);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void PreBuildValidation_WithValidIdentifier_AllowsBuild(long cnpjNumber)
+    [Fact]
+    public void PreBuildValidation_WithValidIdentifier_AllowsBuild()
     {
-        IIntermediarioBuilder builder = IntermediarioBuilder.New(new Cnpj(cnpjNumber), true, null);
+        IIntermediarioBuilder builder = IntermediarioBuilder.New((Cnpj)Helpers.TestConstants.ValidCnpj, true, null);
 
         bool isValid = builder.IsValid();
         var errors = builder.GetValidationErrors().ToList();

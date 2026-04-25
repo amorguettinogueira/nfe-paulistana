@@ -1,8 +1,8 @@
 using Nfe.Paulistana.Models.DataTypes;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V1.Infrastructure;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.V1.Infrastructure;
@@ -10,14 +10,8 @@ namespace Nfe.Paulistana.Tests.V1.Infrastructure;
 /// <summary>
 /// Testes unitários para <see cref="CancelamentoSignatureGenerator"/> (V1).
 /// </summary>
-public sealed class CancelamentoSignatureGeneratorTests
+public sealed class CancelamentoSignatureGeneratorTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static X509Certificate2 CriarCertificado()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1));
-    }
 
     private static DetalheCancelamentoNFe CriarDetalhePadrao() =>
         new(new ChaveNfe(
@@ -34,7 +28,7 @@ public sealed class CancelamentoSignatureGeneratorTests
         // Arrange
         var generator = new CancelamentoSignatureGenerator();
         DetalheCancelamentoNFe? detalhe = null;
-        using X509Certificate2 certificate = CriarCertificado();
+        X509Certificate2 certificate = fixture.Certificate;
 
         // Act & Assert
         _ = Assert.Throws<ArgumentNullException>(() => generator.Sign(detalhe!, certificate));
@@ -62,7 +56,7 @@ public sealed class CancelamentoSignatureGeneratorTests
         // Arrange
         var generator = new CancelamentoSignatureGenerator();
         DetalheCancelamentoNFe detalhe = CriarDetalhePadrao();
-        using X509Certificate2 certificate = CriarCertificado();
+        X509Certificate2 certificate = fixture.Certificate;
 
         // Act
         generator.Sign(detalhe, certificate);
@@ -77,7 +71,7 @@ public sealed class CancelamentoSignatureGeneratorTests
         // Arrange
         var generator = new CancelamentoSignatureGenerator();
         DetalheCancelamentoNFe detalhe = CriarDetalhePadrao();
-        using X509Certificate2 certificate = CriarCertificado();
+        X509Certificate2 certificate = fixture.Certificate;
 
         // Act
         generator.Sign(detalhe, certificate);
@@ -94,7 +88,7 @@ public sealed class CancelamentoSignatureGeneratorTests
         var detalhe = new DetalheCancelamentoNFe(new ChaveNfe(
             new InscricaoMunicipal(12345678),
             new Numero(987654)));
-        using X509Certificate2 certificate = CriarCertificado();
+        X509Certificate2 certificate = fixture.Certificate;
 
         // Act
         generator.Sign(detalhe, certificate);
@@ -110,7 +104,7 @@ public sealed class CancelamentoSignatureGeneratorTests
         // Arrange
         var generator = new CancelamentoSignatureGenerator();
         DetalheCancelamentoNFe detalhe = CriarDetalhePadrao();
-        using X509Certificate2 certificate = CriarCertificado();
+        X509Certificate2 certificate = fixture.Certificate;
 
         generator.Sign(detalhe, certificate);
         byte[] primeiraAssinatura = detalhe.AssinaturaCancelamento!;

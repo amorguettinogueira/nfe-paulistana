@@ -2,11 +2,9 @@ using Nfe.Paulistana.Models;
 using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Models.Enums;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Infrastructure;
 

@@ -1,28 +1,16 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Options;
+using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V2.Builders;
 using Nfe.Paulistana.V2.Models.DataTypes;
 using Nfe.Paulistana.V2.Models.Domain;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Nfe.Paulistana.Tests.V2.Builders;
 
 /// <summary>
 /// Testes unitários para <see cref="PedidoConsultaNFePeriodoFactory"/>.
 /// </summary>
-public sealed class PedidoConsultaNFePeriodoFactoryTests
+public sealed class PedidoConsultaNFePeriodoFactoryTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarCertificado()
-    {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
-
     [Fact]
     public void Construtor_CertificadoNulo_ThrowsArgumentNullException()
     {
@@ -34,7 +22,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void Construtor_CertificadoValido_NaoLancaExcecao()
     {
         // Arrange & Act
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
 
         // Assert
         Assert.NotNull(factory);
@@ -44,7 +32,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCpf_CpfNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
         var dtFim = new DataXsd(new DateTime(2024, 12, 31));
@@ -59,7 +47,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCpf_CpfCnpjNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618);
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
         var dtFim = new DataXsd(new DateTime(2024, 12, 31));
@@ -74,7 +62,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCpf_DtInicioNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618);
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtFim = new DataXsd(new DateTime(2024, 12, 31));
@@ -89,7 +77,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCpf_DtFimNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618);
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
@@ -104,7 +92,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCpf_NumeroPaginaNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618);
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
@@ -119,7 +107,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCpf_ComParametrosValidos_RetornaPedidoAssinado()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpf = new Cpf(46381819618);
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
@@ -142,7 +130,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCnpj_CnpjNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
         var dtFim = new DataXsd(new DateTime(2024, 12, 31));
@@ -157,7 +145,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCnpj_CpfCnpjNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
         var dtFim = new DataXsd(new DateTime(2024, 12, 31));
@@ -172,7 +160,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCnpj_DtInicioNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtFim = new DataXsd(new DateTime(2024, 12, 31));
@@ -187,7 +175,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCnpj_DtFimNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
@@ -202,7 +190,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCnpj_NumeroPaginaNulo_ThrowsArgumentNullException()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));
@@ -217,7 +205,7 @@ public sealed class PedidoConsultaNFePeriodoFactoryTests
     public void NewCnpj_ComParametrosValidos_RetornaPedidoAssinado()
     {
         // Arrange
-        var factory = new PedidoConsultaNFePeriodoFactory(CriarCertificado());
+        var factory = new PedidoConsultaNFePeriodoFactory(fixture.Certificado);
         var cnpj = new Cnpj("12345678000195");
         var cpfCnpj = new CpfOrCnpj(new Cpf(46381819618));
         var dtInicio = new DataXsd(new DateTime(2024, 1, 1));

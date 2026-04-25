@@ -24,7 +24,7 @@ public class RpsBuilderTests
     private static readonly Aliquota Aliquota = (Aliquota)0.05m;
 
     private static readonly Tomador TomadorPadrao =
-        TomadorBuilder.NewCpf(new Cpf(new ValidCpfNumber().Min())).Build();
+        TomadorBuilder.NewCpf((Cpf)TestConstants.ValidCpf).Build();
 
     /// <summary>Retorna a cadeia obrigatória completa até IRpsSetOptionals, com serieRps parametrizável.</summary>
     private static IRpsSetOptionals CadeiaObrigatoria(SerieRps? serie = null) =>
@@ -201,11 +201,10 @@ public class RpsBuilderTests
     // SetIntermediario() Tests
     // ============================================
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void SetIntermediario_WithValidIntermediario_ReturnsIRpsSetOptionals(long cpfNumber)
+    [Fact]
+    public void SetIntermediario_WithValidIntermediario_ReturnsIRpsSetOptionals()
     {
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true).Build();
 
         IRpsSetOptionals result = CadeiaObrigatoria(Serie).SetIntermediario(intermediario);
 
@@ -400,11 +399,10 @@ public class RpsBuilderTests
         Assert.Equal(((Valor)50m).ToString(), rps.ValorCsll?.ToString());
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Build_WithIntermediario_PropagatesCorrectly(long cpfNumber)
+    [Fact]
+    public void Build_WithIntermediario_PropagatesCorrectly()
     {
-        Intermediario intermediario = IntermediarioBuilder.New((Cpf)cpfNumber, true).Build();
+        Intermediario intermediario = IntermediarioBuilder.New((Cpf)Tests.Helpers.TestConstants.ValidCpf, true).Build();
 
         Rps rps = CadeiaObrigatoria(Serie)
             .SetIntermediario(intermediario)
@@ -463,12 +461,11 @@ public class RpsBuilderTests
         Assert.Equal(percentual, rps.PercentualCargaTributaria);
     }
 
-    [Theory()]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Build_WithTomadorCpf_PropagatesCpfAndRazaoSocial(long cpfNumber)
+    [Fact]
+    public void Build_WithTomadorCpf_PropagatesCpfAndRazaoSocial()
     {
         Tomador tomador = TomadorBuilder
-            .NewCpf((Cpf)cpfNumber)
+            .NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf)
             .SetEmail(new Email("tomador@teste.com.br"))
             .Build();
 

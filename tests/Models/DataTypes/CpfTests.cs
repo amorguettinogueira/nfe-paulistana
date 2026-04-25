@@ -2,7 +2,6 @@ using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Tests.Helpers;
 using System.Globalization;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.Models.DataTypes;
 
@@ -12,25 +11,6 @@ public class CpfTests
     {
         var s = value.ToString("D11", CultureInfo.InvariantCulture);
         return $"{s.Substring(0, 3)}.{s.Substring(3, 3)}.{s.Substring(6, 3)}-{s.Substring(9, 2)}";
-    }
-
-    private static string SerializeCpfToXml(Cpf cpf)
-    {
-        var serializer = new XmlSerializer(typeof(Cpf));
-        using (var stringWriter = new StringWriter())
-        {
-            serializer.Serialize(stringWriter, cpf);
-            return stringWriter.ToString();
-        }
-    }
-
-    private static Cpf? DeserializeCpfFromXml(string xml)
-    {
-        var serializer = new XmlSerializer(typeof(Cpf));
-        using (var stringReader = new StringReader(xml))
-        {
-            return (Cpf?)serializer.Deserialize(stringReader);
-        }
     }
 
     // ============================================
@@ -158,8 +138,8 @@ public class CpfTests
         var cpf = new Cpf(value);
 
         // Act
-        var xml = SerializeCpfToXml(cpf);
-        var deserialized = DeserializeCpfFromXml(xml);
+        var xml = XmlTestHelper.SerializarParaXml(cpf);
+        var deserialized = XmlTestHelper.DesserializarDeXml<Cpf>(xml);
 
         // Assert
         Assert.NotNull(deserialized);
@@ -175,7 +155,7 @@ public class CpfTests
         var cpfXml = $@"<?xml version=""1.0"" encoding=""utf-16""?><Cpf xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">{cpfValue}</Cpf>";
 
         // Act
-        var deserialized = DeserializeCpfFromXml(cpfXml);
+        var deserialized = XmlTestHelper.DesserializarDeXml<Cpf>(cpfXml);
 
         // Assert
         Assert.NotNull(deserialized);
@@ -197,7 +177,7 @@ public class CpfTests
         // We verify the underlying SerializationException to properly test our validation logic without coupling
         // the test to XmlSerializer's implementation details.
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCpfFromXml(invalidCpfXml));
+            XmlTestHelper.DesserializarDeXml<Cpf>(invalidCpfXml));
 
         // Verify the actual validation exception is in the inner exception chain
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
@@ -213,7 +193,7 @@ public class CpfTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCpfFromXml(invalidCpfXml));
+            XmlTestHelper.DesserializarDeXml<Cpf>(invalidCpfXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -228,7 +208,7 @@ public class CpfTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCpfFromXml(invalidCpfXml));
+            XmlTestHelper.DesserializarDeXml<Cpf>(invalidCpfXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -243,7 +223,7 @@ public class CpfTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCpfFromXml(invalidCpfXml));
+            XmlTestHelper.DesserializarDeXml<Cpf>(invalidCpfXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -258,7 +238,7 @@ public class CpfTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCpfFromXml(invalidCpfXml));
+            XmlTestHelper.DesserializarDeXml<Cpf>(invalidCpfXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);
@@ -273,7 +253,7 @@ public class CpfTests
         // Act & Assert
         // XmlSerializer wraps exceptions in InvalidOperationException; verify the inner SerializationException
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            DeserializeCpfFromXml(invalidCpfXml));
+            XmlTestHelper.DesserializarDeXml<Cpf>(invalidCpfXml));
 
         var serializationEx = Assert.IsType<SerializationException>(ex.InnerException);
         Assert.Contains("desserializado", serializationEx.Message, StringComparison.InvariantCultureIgnoreCase);

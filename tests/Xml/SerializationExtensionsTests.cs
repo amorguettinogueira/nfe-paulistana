@@ -1,58 +1,26 @@
-using Nfe.Paulistana.Models;
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Models.Enums;
-using Nfe.Paulistana.Options;
-using Nfe.Paulistana.Tests.Helpers;
+using Nfe.Paulistana.Tests.Fixtures;
+using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Builders;
-using Nfe.Paulistana.V1.Models.DataTypes;
-using Nfe.Paulistana.V1.Models.Domain;
 using Nfe.Paulistana.V1.Models.Operations;
 using Nfe.Paulistana.Xml;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml.Serialization;
 
 namespace Nfe.Paulistana.Tests.Xml;
 
 /// <summary>
-/// Testes unit√°rios para <see cref="SerializationExtensions"/>:
+/// Testes unit·rios para <see cref="SerializationExtensions"/>:
 /// <see cref="SerializationExtensions.ToXmlDocument{T}"/>,
 /// <see cref="SerializationExtensions.IsValidXsd{T}"/> e
 /// <see cref="SerializationExtensions.SaveXmlFile{T}"/>.
 /// </summary>
-public class SerializationExtensionsTests
+public class SerializationExtensionsTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
 {
-    private static Certificado CriarConfiguracao()
+    private PedidoEnvioLote CriarLoteAssinado()
     {
-        using var rsa = RSA.Create(2048);
-        var req = new CertificateRequest("CN=Teste", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-        return new Certificado
-        {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
-        };
-    }
-
-    private static readonly Tomador TomadorPadrao =
-        TomadorBuilder.NewCpf(new Cpf(new ValidCpfNumber().Min())).Build();
-
-    private static Rps CriarRps() =>
-        RpsBuilder.New(
-                new InscricaoMunicipal(39616924),
-                TipoRps.NotaFiscalConjugada,
-                new Numero(4105),
-                new Discriminacao("Desenvolvimento de software."),
-                new SerieRps("BB"))
-            .SetNFe(new DataXsd(new DateTime(2024, 1, 20)), (TributacaoNfe)'T', StatusNfe.Normal)
-            .SetServico(new CodigoServico(7617), (Valor)1000m)
-            .SetIss((Aliquota)0.05m, false)
-            .SetTomador(TomadorPadrao)
-            .Build();
-
-    private static PedidoEnvioLote CriarLoteAssinado()
-    {
-        var factory = new PedidoEnvioLoteFactory(CriarConfiguracao());
-        return factory.NewCpf(new Cpf(new ValidCpfNumber().Min()), false, [CriarRps()]);
+        var factory = new PedidoEnvioLoteFactory(fixture.Certificado);
+        return factory.NewCpf((Cpf)Tests.Helpers.TestConstants.ValidCpf, false, [RpsTestFactory.Padrao()]);
     }
 
     // ============================================

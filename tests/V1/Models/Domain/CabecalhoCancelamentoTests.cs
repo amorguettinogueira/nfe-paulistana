@@ -1,5 +1,4 @@
 using Nfe.Paulistana.Models.DataTypes;
-using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.Tests.V1.Helpers;
 using Nfe.Paulistana.V1.Models.DataTypes;
 using Nfe.Paulistana.V1.Models.Domain;
@@ -21,11 +20,10 @@ public class CabecalhoCancelamentoTests
         Assert.Null(cab.CpfOrCnpj);
     }
 
-    [Theory]
-    [ClassData(typeof(ValidCpfNumber))]
-    public void Constructor_ComCpfOrCnpj_DefinePropriedade(long cpfNumber)
+    [Fact]
+    public void Constructor_ComCpfOrCnpj_DefinePropriedade()
     {
-        var cpfOrCnpj = new CpfOrCnpj((Cpf)cpfNumber);
+        var cpfOrCnpj = new CpfOrCnpj((Cpf)Tests.Helpers.TestConstants.ValidCpf);
         var cab = new CabecalhoCancelamento(cpfOrCnpj);
 
         Assert.Equal(cpfOrCnpj, cab.CpfOrCnpj);
@@ -52,11 +50,10 @@ public class CabecalhoCancelamentoTests
     public void HerdaDeCabecalho() =>
         Assert.True(typeof(CabecalhoCancelamento).IsSubclassOf(typeof(Cabecalho)));
 
-    [Theory]
-    [ClassData(typeof(ValidCnpjNumber))]
-    public void Constructor_ComCnpj_DefinePropriedade(long cnpjNumber)
+    [Fact]
+    public void Constructor_ComCnpj_DefinePropriedade()
     {
-        var cnpj = new Cnpj(cnpjNumber);
+        var cnpj = (Cnpj)TestConstants.ValidCnpj;
         var cpfOrCnpj = new CpfOrCnpj(cnpj);
         var cab = new CabecalhoCancelamento(cpfOrCnpj);
 

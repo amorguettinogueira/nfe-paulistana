@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.Response;
 
 namespace Nfe.Paulistana.Tests.V2.Models.Response;
@@ -7,20 +8,6 @@ namespace Nfe.Paulistana.Tests.V2.Models.Response;
 /// </summary>
 public sealed class EventoRetornoTests
 {
-    private static string SerializarParaXml(EventoRetorno obj)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(EventoRetorno));
-        using var sw = new System.IO.StringWriter();
-        serializer.Serialize(sw, obj);
-        return sw.ToString();
-    }
-
-    private static EventoRetorno? DesserializarDeXml(string xml)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(EventoRetorno));
-        using var sr = new System.IO.StringReader(xml);
-        return (EventoRetorno?)serializer.Deserialize(sr);
-    }
 
     [Fact]
     public void Constructor_SemArgumentos_CriaInstancia() =>
@@ -83,7 +70,7 @@ public sealed class EventoRetornoTests
         };
 
         // Act
-        var desserializado = DesserializarDeXml(SerializarParaXml(evento))!;
+        var desserializado = XmlTestHelper.DesserializarDeXml<EventoRetorno>(XmlTestHelper.SerializarParaXml(evento))!;
 
         // Assert
         Assert.Equal(evento.Codigo, desserializado.Codigo);
@@ -103,7 +90,7 @@ public sealed class EventoRetornoTests
         };
 
         // Act
-        var xml = SerializarParaXml(evento);
+        var xml = XmlTestHelper.SerializarParaXml(evento);
 
         // Assert
         Assert.Contains("<Codigo>100</Codigo>", xml);

@@ -1,3 +1,4 @@
+﻿using Nfe.Paulistana.Tests.Helpers;
 using Nfe.Paulistana.V2.Models.Response;
 
 namespace Nfe.Paulistana.Tests.V2.Models.Response;
@@ -7,20 +8,6 @@ namespace Nfe.Paulistana.Tests.V2.Models.Response;
 /// </summary>
 public sealed class CpfCnpjTests
 {
-    private static string SerializarParaXml(CpfCnpj obj)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(CpfCnpj));
-        using var sw = new System.IO.StringWriter();
-        serializer.Serialize(sw, obj);
-        return sw.ToString();
-    }
-
-    private static CpfCnpj? DesserializarDeXml(string xml)
-    {
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(CpfCnpj));
-        using var sr = new System.IO.StringReader(xml);
-        return (CpfCnpj?)serializer.Deserialize(sr);
-    }
 
     [Fact]
     public void Constructor_SemArgumentos_CriaInstancia() =>
@@ -65,7 +52,7 @@ public sealed class CpfCnpjTests
         var doc = new CpfCnpj { Cpf = "12345678901" };
 
         // Act
-        var desserializado = DesserializarDeXml(SerializarParaXml(doc))!;
+        var desserializado = XmlTestHelper.DesserializarDeXml<CpfCnpj>(XmlTestHelper.SerializarParaXml(doc))!;
 
         // Assert
         Assert.Equal(doc.Cpf, desserializado.Cpf);
@@ -79,7 +66,7 @@ public sealed class CpfCnpjTests
         var doc = new CpfCnpj { Cnpj = "12345678000190" };
 
         // Act
-        var desserializado = DesserializarDeXml(SerializarParaXml(doc))!;
+        var desserializado = XmlTestHelper.DesserializarDeXml<CpfCnpj>(XmlTestHelper.SerializarParaXml(doc))!;
 
         // Assert
         Assert.Equal(doc.Cnpj, desserializado.Cnpj);
@@ -93,7 +80,7 @@ public sealed class CpfCnpjTests
         var doc = new CpfCnpj { Cpf = "12345678901", Cnpj = "12345678000190" };
 
         // Act
-        var xml = SerializarParaXml(doc);
+        var xml = XmlTestHelper.SerializarParaXml(doc);
 
         // Assert
         Assert.Contains("<CPF>12345678901</CPF>", xml);
