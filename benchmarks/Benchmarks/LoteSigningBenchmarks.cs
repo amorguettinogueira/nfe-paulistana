@@ -3,6 +3,7 @@ using Nfe.Paulistana.Models.DataTypes;
 using Nfe.Paulistana.Models.Enums;
 using Nfe.Paulistana.Options;
 using Nfe.Paulistana.V2.Models.DataTypes;
+using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using V1Factory = Nfe.Paulistana.V1.Builders.PedidoEnvioLoteFactory;
@@ -93,9 +94,10 @@ public class LoteSigningBenchmarks
     {
         using var rsa = RSA.Create(2048);
         var req = new CertificateRequest("CN=Benchmark", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        using var cert = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1));
         return new Certificado
         {
-            Certificate = req.CreateSelfSigned(DateTimeOffset.Now.AddDays(-1), DateTimeOffset.Now.AddYears(1))
+            RawData = new ReadOnlyCollection<byte>(cert.Export(X509ContentType.Pfx))
         };
     }
 

@@ -114,28 +114,6 @@ public class CertificadoNfePaulistanaTests(CertificadoFixture fixture) : IClassF
     }
 
     [Fact]
-    public void BuildCertificate_ComCertificate_RetornaCertificadoComMesmoThumbprint()
-    {
-        X509Certificate2 original = fixture.Certificate;
-        var config = new Certificado { Certificate = original };
-
-        using X509Certificate2 resultado = config.Build();
-
-        Assert.Equal(original.Thumbprint, resultado.Thumbprint);
-    }
-
-    [Fact]
-    public void BuildCertificate_ComCertificate_RetornaNovaInstancia()
-    {
-        X509Certificate2 original = fixture.Certificate;
-        var config = new Certificado { Certificate = original };
-
-        using X509Certificate2 resultado = config.Build();
-
-        Assert.NotSame(original, resultado);
-    }
-
-    [Fact]
     public void BuildCertificate_ComRawData_RetornaCertificadoComMesmoThumbprint()
     {
         X509Certificate2 original = fixture.Certificate;
@@ -147,15 +125,4 @@ public class CertificadoNfePaulistanaTests(CertificadoFixture fixture) : IClassF
         Assert.Equal(original.Thumbprint, resultado.Thumbprint);
     }
 
-    [Fact]
-    public void BuildCertificate_Chama_Multiplas_Vezes_RetornaInstanciasDiferentes()
-    {
-        X509Certificate2 cert = fixture.Certificate;
-        var config = new Certificado { Certificate = cert };
-
-        using X509Certificate2 r1 = config.Build();
-        using X509Certificate2 r2 = config.Build();
-
-        Assert.NotSame(r1, r2);
-    }
 }

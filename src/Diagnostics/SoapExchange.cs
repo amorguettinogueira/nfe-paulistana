@@ -12,7 +12,11 @@ namespace Nfe.Paulistana.Diagnostics;
 /// (ex.: <c>http://www.prefeitura.sp.gov.br/nfe/ws/consultaNFe</c>).
 /// </param>
 /// <param name="RequestXml">XML completo do envelope SOAP enviado ao webservice.</param>
-/// <param name="ResponseXml">XML completo do envelope SOAP recebido do webservice.</param>
+/// <param name="ResponseXml">
+/// XML completo do envelope SOAP recebido do webservice em caso de erro (4xx/5xx).
+/// Para respostas de sucesso (2xx) este valor é uma string vazia, pois o corpo é lido
+/// de forma incremental pelo serviço sem ser materializado como string.
+/// </param>
 /// <param name="Elapsed">Tempo decorrido entre o envio da requisição e o recebimento da resposta completa.</param>
 /// <param name="IsSuccess">
 /// <see langword="true"/> se o status HTTP da resposta indicou sucesso (2xx);

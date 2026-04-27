@@ -78,8 +78,9 @@ internal abstract class SoapServiceBase<TRequest, TEnvelopeRequest, TEnvelopeRes
         }
 
         var envelope = new SoapEnvelope<TEnvelopeRequest>(CreateEnvelope(request));
-        string responseXml = await _soapClient.SendRequestAsync(envelope, _soapAction, cancellationToken).ConfigureAwait(false);
-        SoapEnvelope<TEnvelopeResponse> responseEnvelope = SoapClient.DeserializeEnvelope<TEnvelopeResponse>(responseXml);
+        using HttpResponseMessage httpResponse = await _soapClient.SendRequestAsync(envelope, _soapAction, cancellationToken).ConfigureAwait(false);
+        Stream responseStream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        SoapEnvelope<TEnvelopeResponse> responseEnvelope = SoapClient.DeserializeEnvelope<TEnvelopeResponse>(responseStream);
 
         return responseEnvelope.Body?.Request is { } body
             ? ExtractPayload(body) ?? throw new InvalidOperationException(MensagemRespostaVazia)

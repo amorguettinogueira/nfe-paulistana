@@ -244,28 +244,6 @@ public class CertificadoTests(CertificadoFixture fixture) : IClassFixture<Certif
     }
 
     // ============================================
-    // Build: Certificate
-    // ============================================
-
-    [Fact]
-    public void Build_WithCertificateInstance_ReturnsCopy()
-    {
-        // Arrange
-        var original = fixture.Certificate;
-        var certificado = new Certificado
-        {
-            Certificate = original
-        };
-
-        // Act
-        using var cert = certificado.Build();
-
-        // Assert
-        Assert.NotNull(cert);
-        Assert.Equal(original.Thumbprint, cert.Thumbprint);
-    }
-
-    // ============================================
     // Build: InvalidOperationException
     // ============================================
 
@@ -296,7 +274,6 @@ public class CertificadoTests(CertificadoFixture fixture) : IClassFixture<Certif
             Password = "test",
             PointerHandle = tempCert.Handle,
             RawData = new ReadOnlyCollection<byte>(rawData),
-            Certificate = tempCert
         };
 
         // Act
@@ -327,27 +304,6 @@ public class CertificadoTests(CertificadoFixture fixture) : IClassFixture<Certif
         // Assert
         Assert.NotNull(cert);
         Assert.Equal(tempCert.Thumbprint, cert.Thumbprint);
-    }
-
-    [Fact]
-    public void Build_WithRawDataAndCertificate_PrefersRawData()
-    {
-        // Arrange
-        var tempCert = fixture.Certificate;
-        var rawData = GetTestCertificateBytes();
-        var certificado = new Certificado
-        {
-            RawData = new ReadOnlyCollection<byte>(rawData),
-            Password = "test",
-            Certificate = tempCert
-        };
-
-        // Act
-        using var cert = certificado.Build();
-
-        // Assert
-        Assert.NotNull(cert);
-        Assert.True(cert.HasPrivateKey);
     }
 
     // ============================================

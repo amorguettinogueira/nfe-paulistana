@@ -16,9 +16,9 @@ namespace Nfe.Paulistana.Diagnostics;
 /// notificação separada. Para observar apenas o resultado final, adicione o handler de diagnóstico
 /// <em>após</em> o de resiliência:
 /// <code>b.AddStandardResilienceHandler().AddNfePaulistanaDiagnostics(onExchange)</code></para>
-/// <para><b>Re-leitura do conteúdo da resposta:</b> após capturar o XML, o conteúdo da resposta é
-/// substituído por um novo <see cref="StringContent"/> equivalente, garantindo que o serviço interno
-/// (<c>SoapClient</c>) consiga lê-lo novamente sem erros de stream já consumido.</para>
+/// <para><b>Corpo da resposta:</b> em respostas de sucesso (2xx) o corpo não é capturado por este handler;
+/// <see cref="SoapExchange.ResponseXml"/> será uma string vazia nesses casos. Em respostas de erro
+/// (4xx/5xx) o corpo é capturado e re-embalado para que o serviço interno consiga lê-lo novamente.</para>
 /// <para><b>Erros HTTP:</b> o callback é invocado inclusive em respostas com status 4xx/5xx
 /// (<see cref="SoapExchange.IsSuccess"/> = <see langword="false"/>). A
 /// <see cref="Exceptions.NfeRequestException"/> é lançada pelo serviço APÓS o retorno deste handler.</para>
@@ -40,12 +40,12 @@ public sealed class SoapDiagnosticsHandler(Action<SoapExchange> onExchange) : De
         ?? throw new ArgumentNullException(nameof(onExchange));
 
     /// <summary>
-    /// Intercepta a chamada HTTP, mede o tempo decorrido, captura os XMLs de requisição e resposta
-    /// e notifica via callback antes de retornar a resposta ao caller.
+    /// Intercepta a chamada HTTP, mede o tempo decorrido, captura o XML de requisição e (em caso de erro)
+    /// o XML de resposta, e notifica via callback antes de retornar a resposta ao caller.
     /// </summary>
     /// <param name="request">Mensagem HTTP da requisição SOAP.</param>
     /// <param name="cancellationToken">Token de cancelamento propagado ao handler interno.</param>
-    /// <returns>A <see cref="HttpResponseMessage"/> recebida do handler interno, com conteúdo re-embalado.</returns>
+    /// <returns>A <see cref="HttpResponseMessage"/> recebida do handler interno.</returns>
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "As exceções lançadas pelo callback de diagnóstico são descartadas intencionalmente.")]
     [SuppressMessage("Roslynator", "RCS1075:Avoid empty catch clause that catches System.Exception", Justification = "As exceções lançadas pelo callback de diagnóstico são descartadas intencionalmente.")]
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -75,21 +75,23 @@ public sealed class SoapDiagnosticsHandler(Action<SoapExchange> onExchange) : De
         HttpResponseMessage response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         sw.Stop();
 
-        string responseXml = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-        // Re-embala o conteúdo para que SoapClient consiga lê-lo novamente (streams HTTP são consumíveis apenas uma vez)
-        response.Content = new StringContent(responseXml, Encoding.UTF8, "text/xml");
-
         _ = activity?.SetTag("http.response.status_code", (int)response.StatusCode);
 
-        if (response.IsSuccessStatusCode)
+        string responseXml = string.Empty;
+
+        if (!response.IsSuccessStatusCode)
         {
-            _ = activity?.SetStatus(ActivityStatusCode.Ok);
+            responseXml = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+            // Re-embala o conteúdo de erro para que SoapClient consiga lê-lo novamente (streams HTTP são consumíveis apenas uma vez)
+            response.Content = new StringContent(responseXml, Encoding.UTF8, "text/xml");
+
+            _ = activity?.SetStatus(ActivityStatusCode.Error, $"HTTP {(int)response.StatusCode}");
+            _ = activity?.SetTag("error.type", $"HTTP_{(int)response.StatusCode}");
         }
         else
         {
-            _ = activity?.SetStatus(ActivityStatusCode.Error, $"HTTP {(int)response.StatusCode}");
-            _ = activity?.SetTag("error.type", $"HTTP_{(int)response.StatusCode}");
+            _ = activity?.SetStatus(ActivityStatusCode.Ok);
         }
 
         try

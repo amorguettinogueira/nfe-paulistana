@@ -30,10 +30,14 @@ public class SoapSerializationBenchmarks
     }
 
     [Benchmark(Baseline = true, Description = "Serialize V1")]
-    public string SerializeV1() =>
-        SoapClient.SerializeEnvelope(_v1Envelope);
+    public void SerializeV1()
+    {
+        using MemoryStream stream = SoapClient.SerializeEnvelope(_v1Envelope);
+    }
 
     [Benchmark(Description = "Serialize V2")]
-    public string SerializeV2() =>
-        SoapClient.SerializeEnvelope(_v2Envelope);
+    public void SerializeV2()
+    {
+        using MemoryStream stream = SoapClient.SerializeEnvelope(_v2Envelope);
+    }
 }
