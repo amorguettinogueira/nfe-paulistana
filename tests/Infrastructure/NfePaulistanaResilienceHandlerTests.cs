@@ -236,6 +236,60 @@ public sealed class NfePaulistanaResilienceHandlerTests
     }
 
     // ============================================
+    // Bufferização de corpo da requisição para retry
+    // ============================================
+
+    [Fact]
+    public async Task SendAsync_PostRequestWithBody_BuffersContentForRetry()
+    {
+        // Arrange
+        int calls = 0;
+        var handler = new NfePaulistanaResilienceHandler(FastTimeout, NoDelay);
+        handler.InnerHandler = new FakeHttpMessageHandler(_ =>
+        {
+            calls++;
+            return Task.FromResult(calls < 2 ? Transient() : Ok());
+        });
+        using var httpClient = new HttpClient(handler) { BaseAddress = new Uri("http://test/") };
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "http://test/")
+        {
+            Content = new StringContent("<soap/>")
+        };
+
+        // Act
+        using var response = await httpClient.SendAsync(requestMessage);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(2, calls);
+    }
+
+    [Fact]
+    public async Task SendAsync_PostRequestWithBody_SuccessOnFirstAttempt_MakesSingleAttempt()
+    {
+        // Arrange
+        int calls = 0;
+        var handler = new NfePaulistanaResilienceHandler(FastTimeout, NoDelay);
+        handler.InnerHandler = new FakeHttpMessageHandler(_ =>
+        {
+            calls++;
+            return Task.FromResult(Ok());
+        });
+        using var httpClient = new HttpClient(handler) { BaseAddress = new Uri("http://test/") };
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "http://test/")
+        {
+            Content = new StringContent("<soap/>")
+        };
+
+        // Act
+        using var response = await httpClient.SendAsync(requestMessage);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(1, calls);
+    }
+
+    // ============================================
     // Fake handler para testes
     // ============================================
 
