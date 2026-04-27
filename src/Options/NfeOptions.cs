@@ -18,4 +18,14 @@ public sealed class NfeOptions
     /// e assinatura dos documentos XML. O certificado é obrigatório para o funcionamento do serviço.
     /// </summary>
     public Certificado Certificado { get; set; } = new();
+
+    /// <summary>
+    /// Tempo limite por tentativa de requisição, em segundos, aplicado pelo handler de resiliência embutido.
+    /// Padrão: 10 segundos.
+    /// </summary>
+    /// <remarks>
+    /// Ignorado quando o consumidor fornece o delegate <c>configureClient</c>, pois nesse caso
+    /// o handler embutido não é registrado e a responsabilidade de timeout é inteiramente do consumidor.
+    /// </remarks>
+    public int TimeoutPorTentativa { get; set; } = 10;
 }

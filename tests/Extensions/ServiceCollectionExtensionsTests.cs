@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Nfe.Paulistana.Constants;
 using Nfe.Paulistana.Extensions;
 using Nfe.Paulistana.Options;
-using Nfe.Paulistana.Tests.Fixtures;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Services;
 using System.Collections.ObjectModel;
@@ -16,7 +15,7 @@ namespace Nfe.Paulistana.Tests.Extensions;
 /// guard clauses, validação de certificado, verificação de registro de serviços
 /// e invocação do delegate <c>configureClient</c>.
 /// </summary>
-public class ServiceCollectionExtensionsTests(CertificadoFixture fixture) : IClassFixture<CertificadoFixture>
+public class ServiceCollectionExtensionsTests
 {
 
     // ============================================
@@ -121,17 +120,6 @@ public class ServiceCollectionExtensionsTests(CertificadoFixture fixture) : ICla
         _ = services.AddNfePaulistanaV1(opt => opt.Certificado.FilePath = "cert.pfx");
 
         Assert.Contains(services, s => s.ServiceType == typeof(IConsultaCNPJService));
-    }
-
-    [Fact]
-    public void AddNfePaulistanaV1_CertificadoX509_RegistraIEnvioLoteRpsService()
-    {
-        var services = new ServiceCollection();
-        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.Certificate = fixture.Certificate);
-
-        using ServiceProvider provider = services.BuildServiceProvider();
-
-        Assert.NotNull(provider.GetService<IEnvioLoteRpsService>());
     }
 
     [Fact]
@@ -314,7 +302,7 @@ public class ServiceCollectionExtensionsTests(CertificadoFixture fixture) : ICla
     public void AddNfePaulistanaV1_FactoryResolvidaPeloContainer()
     {
         var services = new ServiceCollection();
-        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.Certificate = fixture.Certificate);
+        _ = services.AddNfePaulistanaV1(opt => opt.Certificado.FilePath = "cert.pfx");
 
         using ServiceProvider provider = services.BuildServiceProvider();
 

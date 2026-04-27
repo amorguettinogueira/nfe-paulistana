@@ -100,8 +100,9 @@ internal abstract class DualModeSoapServiceBase<TRequest, TEnvelopeRequest, TEnv
     private async Task<TResponse> SendProducaoAsync(TRequest request, CancellationToken cancellationToken)
     {
         var envelope = new SoapEnvelope<TEnvelopeRequest>(CreateEnvelope(request));
-        string responseXml = await _soapClient.SendRequestAsync(envelope, _soapAction, cancellationToken).ConfigureAwait(false);
-        SoapEnvelope<TEnvelopeResponse> responseEnvelope = SoapClient.DeserializeEnvelope<TEnvelopeResponse>(responseXml);
+        using HttpResponseMessage httpResponse = await _soapClient.SendRequestAsync(envelope, _soapAction, cancellationToken).ConfigureAwait(false);
+        Stream responseStream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        SoapEnvelope<TEnvelopeResponse> responseEnvelope = SoapClient.DeserializeEnvelope<TEnvelopeResponse>(responseStream);
 
         return responseEnvelope.Body?.Request is { } body
             ? ExtractPayload(body) ?? throw new InvalidOperationException(MensagemRespostaVazia)
@@ -111,8 +112,9 @@ internal abstract class DualModeSoapServiceBase<TRequest, TEnvelopeRequest, TEnv
     private async Task<TResponse> SendTesteAsync(TRequest request, CancellationToken cancellationToken)
     {
         var envelope = new SoapEnvelope<TTesteRequest>(CreateTesteEnvelope(request));
-        string responseXml = await _soapClient.SendRequestAsync(envelope, _soapActionTeste, cancellationToken).ConfigureAwait(false);
-        SoapEnvelope<TTesteResponse> responseEnvelope = SoapClient.DeserializeEnvelope<TTesteResponse>(responseXml);
+        using HttpResponseMessage httpResponse = await _soapClient.SendRequestAsync(envelope, _soapActionTeste, cancellationToken).ConfigureAwait(false);
+        Stream responseStream = await httpResponse.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        SoapEnvelope<TTesteResponse> responseEnvelope = SoapClient.DeserializeEnvelope<TTesteResponse>(responseStream);
 
         return responseEnvelope.Body?.Request is { } body
             ? ExtractTestePayload(body) ?? throw new InvalidOperationException(MensagemRespostaVazia)

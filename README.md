@@ -22,6 +22,7 @@ Biblioteca .NET para integração com o webservice SOAP da **Nota Fiscal de Serv
 - [Exemplos de uso](#exemplos-de-uso)
 - [Tratamento de erros](#tratamento-de-erros)
 - [Arquitetura](#arquitetura)
+- [Otimizações de performance](#otimizações-de-performance)
 - [Contribuindo](#contribuindo)
 - [Licença](#licença)
 
@@ -63,7 +64,7 @@ builder.Services.AddNfePaulistanaV1(options =>
 
 ### Fontes de certificado
 
-`CertificadoNfePaulistana` aceita quatro fontes alternativas. Configure apenas uma delas:
+`CertificadoNfePaulistana` aceita três fontes alternativas. Configure apenas uma delas:
 
 ```csharp
 // 1. Caminho de arquivo no sistema de arquivos
@@ -74,17 +75,17 @@ options.Certificado.Password = "senha";
 byte[] certBytes = await secretClient.GetSecretValueAsync("certificado");
 options.Certificado.RawData = new ReadOnlyCollection<byte>(certBytes);
 
-// 3. Handle nativo (certificado já carregado pelo sistema operacional)
+// 3. Handle nativo (certificado já carregado pelo sistema operacional ou hardware token)
 options.Certificado.PointerHandle = handleNativo;
-
-// 4. Instância já construída (o chamador é responsável pelo ciclo de vida)
-options.Certificado.Certificate = x509Certificate2Instance;
 ```
 
-Exclusivamente para o carregamento via sistema de arquivos controle, opcionalmente, o armazenamento da chave privada:
+> **Já tem um `X509Certificate2`?** Use `cert.Export(X509ContentType.Pfx, senha)` para obter os bytes e configure via `RawData`, ou passe `cert.Handle` diretamente em `PointerHandle`.
+
+Por padrão a chave privada é carregada com `EphemeralKeySet` — permanece apenas na memória, sem escrita no disco ou no key store do sistema operacional. Para persistir a chave (opt-out do padrão efêmero):
 
 ```csharp
-options.Certificado.KeyStorageFlags = X509KeyStorageFlags.EphemeralKeySet; // sem persistência em disco
+// Persiste no key store da máquina — necessário apenas em cenários que exigem acesso entre processos
+options.Certificado.KeyStorageFlags = X509KeyStorageFlags.MachineKeySet;
 ```
 
 ### Configuração de endpoint
@@ -99,9 +100,44 @@ options.EndpointUrl = new Uri("https://mock-nfe.intranet.exemplo.com/lotenfe.asm
 
 ## Resiliência
 
-Todos os `HttpClient` registrados pela biblioteca são configurados de forma uniforme através do parâmetro opcional `configureClient`, que recebe um `Action<IHttpClientBuilder>` aplicado a **cada cliente**:
+### Comportamento padrão (sem `configureClient`)
 
-### Microsoft.Extensions.Http.Resilience (recomendado para .NET 8+)
+Quando o parâmetro `configureClient` é omitido, a biblioteca registra automaticamente um handler interno de resiliência sem nenhuma dependência adicional. O comportamento é:
+
+| Dimensão | Valor |
+|---|---|
+| Tentativas máximas | 3 |
+| Backoff entre tentativas | 1 s → 2 s (exponencial) |
+| Timeout por tentativa | Configurável via `TimeoutPorTentativa` (padrão: 10 s) |
+| Códigos HTTP com retry | 408, 429, 500, 502, 503, 504 |
+| Falha de rede | Retry em `HttpRequestException` |
+| Cancelamento pelo chamador | Interrompe imediatamente, sem nova tentativa |
+| Circuit breaker | Não incluso — use `configureClient` se necessário |
+
+```csharp
+// Configuração mínima: resiliência embutida com timeout padrão de 10 s por tentativa
+builder.Services.AddNfePaulistanaV1(options =>
+{
+    options.Certificado.FilePath = "/run/secrets/certificado.pfx";
+    options.Certificado.Password = "senha";
+});
+
+// Ajustar o timeout por tentativa (em segundos)
+builder.Services.AddNfePaulistanaV1(options =>
+{
+    options.Certificado.FilePath = "/run/secrets/certificado.pfx";
+    options.Certificado.Password = "senha";
+    options.TimeoutPorTentativa  = 15;
+});
+```
+
+### Resiliência customizada (com `configureClient`)
+
+Ao fornecer `configureClient`, o handler interno é **completamente ignorado** — retry, backoff e timeout passam a ser responsabilidade exclusiva do consumidor. Isso vale mesmo que `TimeoutPorTentativa` esteja definido.
+
+O parâmetro é aplicado uniformemente a **cada** `IHttpClientBuilder` registrado.
+
+#### Microsoft.Extensions.Http.Resilience (recomendado para .NET 8+)
 
 ```bash
 dotnet add package Microsoft.Extensions.Http.Resilience
@@ -145,7 +181,7 @@ builder.Services.AddNfePaulistanaV2(
     }));
 ```
 
-### Polly
+#### Polly
 
 ```bash
 dotnet add package Microsoft.Extensions.Http.Polly
@@ -183,7 +219,7 @@ builder.Services.AddNfePaulistanaAll(
 
 ## Diagnóstico
 
-A biblioteca expõe um handler de diagnóstico SOAP via `AddNfePaulistanaDiagnostics`, que intercepta cada intercâmbio e entrega um `SoapExchange` com os XMLs completos de requisição e resposta, o tempo decorrido e o status HTTP.
+A biblioteca expõe um handler de diagnóstico SOAP via `AddNfePaulistanaDiagnostics`, que intercepta cada intercâmbio e entrega um `SoapExchange` com o XML de requisição, metadados da operação (SOAPAction, tempo decorrido, status HTTP) e, em caso de erro (4xx/5xx), o XML de resposta. Em respostas de sucesso (2xx) `ResponseXml` é uma string vazia — o corpo é lido de forma incremental pelo serviço sem ser materializado como string, reduzindo o consumo de memória em lotes grandes.
 
 ### Logging estruturado via ILogger (recomendado)
 
@@ -211,11 +247,14 @@ builder.Services.AddNfePaulistanaV2(
 configureClient: b => b.AddNfePaulistanaDiagnostics(exchange =>
 {
     Console.WriteLine($"Request:\n{exchange.RequestXml}");
-    Console.WriteLine($"Response:\n{exchange.ResponseXml}");
+
+    // ResponseXml é preenchido apenas em respostas de erro (4xx/5xx)
+    if (!exchange.IsSuccess)
+        Console.WriteLine($"Response (erro):\n{exchange.ResponseXml}");
 })
 ```
 
-`SoapExchange` expõe: `SoapAction`, `RequestXml`, `ResponseXml`, `Elapsed` e `IsSuccess`.
+`SoapExchange` expõe: `SoapAction`, `RequestXml`, `ResponseXml` (preenchido apenas em erros), `Elapsed` e `IsSuccess`.
 
 ---
 
@@ -374,6 +413,26 @@ Para detalhes de implementação e decisões de design, consulte:
 | [`docs/adr/0004`](docs/adr/0004-assinatura-digital-e-validacao-xsd.md) | Decisão: assinatura digital e validação XSD |
 
 ---
+
+## Otimizações de performance
+
+Todas as otimizações descritas aqui são totalmente transparentes para o consumidor e não requerem configuração adicional.
+
+### Cache de XmlSerializer
+
+A biblioteca implementa um **cache estático de instâncias de `XmlSerializer`** usando `ConcurrentDictionary<Type, XmlSerializer>`. Essa estratégia elimina três fontes de custo presentes na construção de serializadores por chamada:
+
+- **Alocação por chamada:** Cada `new XmlSerializer(type)` aloca um novo objeto no heap, mesmo quando o assembly de serialização já foi compilado pelo BCL. O cache garante que apenas uma instância por tipo existe durante todo o tempo de vida do processo.
+- **Contenção de lock em alta concorrência:** O cache interno do BCL usa um `Hashtable` protegido por lock. Em cenários com muitas threads simultâneas, cada construção disputa esse lock. O `ConcurrentDictionary` utiliza leituras lock-free em caminhos quentes, reduzindo a contenção.
+- **Corrida no cold start:** Múltiplas threads que chegam simultaneamente antes da primeira entrada no cache do BCL podem cada uma disparar uma compilação independente do assembly de serialização. O `GetOrAdd` do `ConcurrentDictionary` limita isso a no máximo uma construção extra descartada, estabilizando imediatamente após.
+
+### Streaming de respostas e buffers poolados
+
+Lotes de NFS-e com muitos itens e assinaturas embutidas podem gerar payloads SOAP de vários MB. Para evitar picos de memória nesses cenários, a biblioteca adota duas estratégias complementares:
+
+- **Deserialização incremental via stream:** A resposta HTTP é lida com `ResponseHeadersRead` e entregue diretamente ao `XmlSerializer` como `Stream`. O envelope SOAP completo nunca é materializado como `string` — a deserialização ocorre incrementalmente conforme os bytes chegam da rede.
+- **Buffers poolados com `RecyclableMemoryStream`:** Todas as instâncias de `MemoryStream` usadas na serialização do envelope de requisição e na serialização interna de conteúdo XML assinado são alocadas via `RecyclableMemoryStreamManager` (backed por `ArrayPool<byte>`), reduzindo a pressão no GC e evitando alocações no LOH em payloads grandes.
+
 
 ## Contribuindo
 

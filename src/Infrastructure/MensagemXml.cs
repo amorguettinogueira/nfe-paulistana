@@ -1,4 +1,5 @@
-﻿using Nfe.Paulistana.Models;
+using Microsoft.IO;
+using Nfe.Paulistana.Models;
 using System.ComponentModel;
 using System.Text;
 using System.Xml;
@@ -94,7 +95,7 @@ public sealed class MensagemXml<TPayload> : IXmlSerializable where TPayload : cl
             return;
         }
 
-        using var ms = new MemoryStream();
+        using RecyclableMemoryStream ms = StreamManager.Instance.GetStream();
         using var innerWriter = XmlWriter.Create(ms, _innerWriterSettings);
         Serializer.Serialize(innerWriter, Payload, EmptyNamespaces);
         innerWriter.Flush();

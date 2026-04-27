@@ -49,18 +49,19 @@ public sealed class SoapDiagnosticsHandlerTests
     {
         // Arrange
         SoapExchange? captured = null;
-        using var invoker = CriarInvoker(
+        using HttpMessageInvoker invoker = CriarInvoker(
             exchange => captured = exchange,
             HttpStatusCode.OK,
             "<response/>");
 
         // Act
-        using var response = await invoker.SendAsync(CriarRequisicao("<xml/>"), CancellationToken.None);
+        using HttpResponseMessage response = await invoker.SendAsync(CriarRequisicao("<xml/>"), CancellationToken.None);
 
         // Assert
         Assert.NotNull(captured);
         Assert.Equal("<xml/>", captured.RequestXml);
-        Assert.Equal("<response/>", captured.ResponseXml);
+        // Em respostas de sucesso, ResponseXml é string vazia (corpo lido de forma incremental pelo serviço)
+        Assert.Equal(string.Empty, captured.ResponseXml);
         Assert.True(captured.IsSuccess);
         Assert.True(captured.Elapsed >= TimeSpan.Zero);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -117,7 +118,7 @@ public sealed class SoapDiagnosticsHandlerTests
         using var response = await invoker.SendAsync(CriarRequisicao(), CancellationToken.None);
         var body = await response.Content.ReadAsStringAsync();
 
-        // Assert — conteúdo re-embalado pelo handler ainda é legível após falha do callback
+        // Assert — conteúdo da resposta acessível após falha do callback
         Assert.Equal("<body/>", body);
     }
 
@@ -328,32 +329,46 @@ public sealed class SoapDiagnosticsHandlerTests
     }
 
     // ============================================
-    // Re-embalagem do conteúdo (linha 83)
+    // Tratamento do corpo da resposta por tipo de status
     // ============================================
 
     [Fact]
-    public async Task SendAsync_AfterReading_ResponseContentIsRereadable()
+    public async Task SendAsync_SuccessResponse_ResponseBodyNotReembaled()
     {
-        // Arrange
-        using var invoker = CriarInvoker(_ => { }, HttpStatusCode.OK, "<original/>");
+        // Arrange — verifica que em sucesso o conteúdo não é re-embalado (stream passado direto ao caller)
+        using HttpMessageInvoker invoker = CriarInvoker(_ => { }, HttpStatusCode.OK, "<original/>");
 
         // Act
-        using var response = await invoker.SendAsync(CriarRequisicao(), CancellationToken.None);
+        using HttpResponseMessage response = await invoker.SendAsync(CriarRequisicao(), CancellationToken.None);
+        string body = await response.Content.ReadAsStringAsync();
 
-        // Lê o conteúdo duas vezes para garantir que foi re-embalado
-        var firstRead = await response.Content.ReadAsStringAsync();
-        var secondRead = await response.Content.ReadAsStringAsync();
+        // Assert — conteúdo legível (StringContent do FakeHttpClient é sempre buffered)
+        Assert.Equal("<original/>", body);
+    }
+
+    [Fact]
+    public async Task SendAsync_ErrorResponse_ResponseBodyIsReembaled()
+    {
+        // Arrange — em erro o corpo é re-embalado para permitir releitura pelo SoapClient
+        using HttpMessageInvoker invoker = CriarInvoker(_ => { }, HttpStatusCode.InternalServerError, "<error/>");
+
+        // Act
+        using HttpResponseMessage response = await invoker.SendAsync(CriarRequisicao(), CancellationToken.None);
+
+        // Lê duas vezes para confirmar que foi re-embalado
+        string firstRead = await response.Content.ReadAsStringAsync();
+        string secondRead = await response.Content.ReadAsStringAsync();
 
         // Assert
-        Assert.Equal("<original/>", firstRead);
-        Assert.Equal("<original/>", secondRead);
+        Assert.Equal("<error/>", firstRead);
+        Assert.Equal("<error/>", secondRead);
     }
 
     [Fact]
     public async Task SendAsync_WithNullRequest_ThrowsArgumentNullException()
     {
         // Arrange
-        using var invoker = CriarInvoker(_ => { });
+        using HttpMessageInvoker invoker = CriarInvoker(_ => { });
 
         // Act & Assert
         _ = await Assert.ThrowsAnyAsync<ArgumentNullException>(

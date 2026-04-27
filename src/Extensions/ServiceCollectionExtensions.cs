@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Nfe.Paulistana.Infrastructure;
 using Nfe.Paulistana.Options;
 using Nfe.Paulistana.V1.Builders;
 using Nfe.Paulistana.V1.Services;
@@ -26,9 +27,12 @@ public static class ServiceCollectionExtensions
     /// será lançada durante o registro.
     /// </param>
     /// <param name="configureClient">
-    /// Delegate opcional aplicado a cada <see cref="IHttpClientBuilder"/> registrado, permitindo
-    /// configurar políticas de resiliência uniformemente, por exemplo:
-    /// <c>b => b.AddStandardResilienceHandler()</c>.
+    /// Delegate opcional aplicado a cada <see cref="IHttpClientBuilder"/> registrado.
+    /// <strong>Quando informado, substitui completamente o handler de resiliência embutido</strong>:
+    /// retry, backoff e timeout passam a ser responsabilidade exclusiva do consumidor, independentemente
+    /// do valor de <see cref="NfeOptions.TimeoutPorTentativa"/>.
+    /// Quando omitido, a biblioteca registra automaticamente um handler interno com até 3 tentativas,
+    /// backoff exponencial e timeout configurável via <see cref="NfeOptions.TimeoutPorTentativa"/>.
     /// </param>
     /// <returns>O próprio <see cref="IServiceCollection"/> para encadeamento.</returns>
     /// <exception cref="ArgumentNullException">Lançado quando <paramref name="services"/> ou <paramref name="configure"/> é nulo.</exception>
@@ -56,9 +60,12 @@ public static class ServiceCollectionExtensions
     /// será lançada durante o registro.
     /// </param>
     /// <param name="configureClient">
-    /// Delegate opcional aplicado a cada <see cref="IHttpClientBuilder"/> registrado, permitindo
-    /// configurar políticas de resiliência uniformemente, por exemplo:
-    /// <c>b => b.AddStandardResilienceHandler()</c>.
+    /// Delegate opcional aplicado a cada <see cref="IHttpClientBuilder"/> registrado.
+    /// <strong>Quando informado, substitui completamente o handler de resiliência embutido</strong>:
+    /// retry, backoff e timeout passam a ser responsabilidade exclusiva do consumidor, independentemente
+    /// do valor de <see cref="NfeOptions.TimeoutPorTentativa"/>.
+    /// Quando omitido, a biblioteca registra automaticamente um handler interno com até 3 tentativas,
+    /// backoff exponencial e timeout configurável via <see cref="NfeOptions.TimeoutPorTentativa"/>.
     /// </param>
     /// <returns>O próprio <see cref="IServiceCollection"/> para encadeamento.</returns>
     /// <exception cref="ArgumentNullException">Lançado quando <paramref name="services"/> ou <paramref name="configure"/> é nulo.</exception>
@@ -87,9 +94,12 @@ public static class ServiceCollectionExtensions
     /// será lançada durante o registro.
     /// </param>
     /// <param name="configureClient">
-    /// Delegate opcional aplicado a cada <see cref="IHttpClientBuilder"/> registrado, permitindo
-    /// configurar políticas de resiliência uniformemente, por exemplo:
-    /// <c>b => b.AddStandardResilienceHandler()</c>.
+    /// Delegate opcional aplicado a cada <see cref="IHttpClientBuilder"/> registrado.
+    /// <strong>Quando informado, substitui completamente o handler de resiliência embutido</strong>:
+    /// retry, backoff e timeout passam a ser responsabilidade exclusiva do consumidor, independentemente
+    /// do valor de <see cref="NfeOptions.TimeoutPorTentativa"/>.
+    /// Quando omitido, a biblioteca registra automaticamente um handler interno com até 3 tentativas,
+    /// backoff exponencial e timeout configurável via <see cref="NfeOptions.TimeoutPorTentativa"/>.
     /// </param>
     /// <returns>O próprio <see cref="IServiceCollection"/> para encadeamento.</returns>
     /// <exception cref="ArgumentNullException">Lançado quando <paramref name="services"/> ou <paramref name="configure"/> é nulo.</exception>
@@ -116,7 +126,7 @@ public static class ServiceCollectionExtensions
 
         Certificado c = options.Certificado;
 
-        return c.FilePath is null && c.PointerHandle is null && c.RawData is null && c.Certificate is null
+        return c.FilePath is null && c.PointerHandle is null && c.RawData is null
             ? throw new InvalidOperationException(CertificadoNaoConfigurado)
             : ((NfeOptions Options, Func<HttpMessageHandler> HandlerFactory))(options, HandlerFactory);
 
@@ -142,7 +152,16 @@ public static class ServiceCollectionExtensions
             IHttpClientBuilder builder = services
                 .AddHttpClient<TService, TImpl>(c => c.BaseAddress = options.EndpointUrl)
                 .ConfigurePrimaryHttpMessageHandler(handlerFactory);
-            configureClient?.Invoke(builder);
+
+            if (configureClient is null)
+            {
+                _ = builder.AddHttpMessageHandler(() =>
+                    new NfePaulistanaResilienceHandler(TimeSpan.FromSeconds(options.TimeoutPorTentativa)));
+            }
+            else
+            {
+                configureClient(builder);
+            }
         }
 
         Add<IConsultaCNPJService, ConsultaCNPJService>();
@@ -179,7 +198,16 @@ public static class ServiceCollectionExtensions
             IHttpClientBuilder builder = services
                 .AddHttpClient<TService, TImpl>(name, c => c.BaseAddress = options.EndpointUrl)
                 .ConfigurePrimaryHttpMessageHandler(handlerFactory);
-            configureClient?.Invoke(builder);
+
+            if (configureClient is null)
+            {
+                _ = builder.AddHttpMessageHandler(() =>
+                    new NfePaulistanaResilienceHandler(TimeSpan.FromSeconds(options.TimeoutPorTentativa)));
+            }
+            else
+            {
+                configureClient(builder);
+            }
         }
 
         Add<V2.Services.IConsultaCNPJService, V2.Services.ConsultaCNPJService>("ConsultaCNPJServiceV2");
