@@ -90,6 +90,18 @@ if "!LOCAL_SHA!" neq "!REMOTE_SHA!" (
     exit /b 1
 )
 
+:: Executa os testes de integração locais antes de criar a tag
+:: Os testes são pulados automaticamente quando os User Secrets não estão configurados.
+echo.
+echo  Executando testes de integração locais...
+dotnet test integration-tests\Nfe.Paulistana.IntegrationTests.csproj -c Release --nologo -v minimal
+if errorlevel 1 (
+    echo.
+    echo  ERRO: testes de integração falharam. Corrija os erros antes de publicar a nova versão.
+    echo.
+    exit /b 1
+)
+
 :: Exibe o estado atual do repositório
 echo.
 echo  Repositório : %CD%

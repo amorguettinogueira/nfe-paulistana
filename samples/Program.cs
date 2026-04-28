@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Nfe.Paulistana.Integration.Sample.Configuration;
 using Nfe.Paulistana.Integration.Sample.Host;
 using Nfe.Paulistana.Integration.Sample.Presentation.Console;
 
@@ -7,7 +8,7 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.InputEncoding = System.Text.Encoding.UTF8;
 
 // Load and validate configuration (secret configuration should be stored in User Secrets, see README.md)
-var settings = AppSettingsLoader.LoadAndValidate();
+AppSettings? settings = AppSettingsLoader.LoadAndValidate();
 if (settings is null)
 {
     return;
@@ -16,7 +17,7 @@ if (settings is null)
 // Build DI container
 var services = new ServiceCollection();
 ServiceConfigurator.RegisterServices(services, settings);
-await using var provider = services.BuildServiceProvider();
+await using ServiceProvider provider = services.BuildServiceProvider();
 
 // Run interactive menu
 var runner = new ConsoleMenuHost(provider);
