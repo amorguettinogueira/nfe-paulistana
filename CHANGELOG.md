@@ -5,6 +5,14 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2026-04-28
+
+### Corrigido
+- `Certificado.Build()` agora usa `X509KeyStorageFlags.DefaultKeySet` como padrão quando
+  `KeyStorageFlags` não é definido explicitamente, delegando ao sistema operacional a decisão
+  de armazenamento e garantindo compatibilidade com todas as plataformas suportadas.
+  O padrão anterior (`EphemeralKeySet`) causava falhas em macOS e algumas distribuições Linux.
+
 ## [2.0.0] - 2026-04-27
 
 ### Adicionado
@@ -38,5 +46,6 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.
   consulta de NF-e pela plataforma Nota do Milhão da Prefeitura de São Paulo, com suporte
   aos webservices SOAP V1 e V2.
 
+[2.0.1]: https://github.com/amorguettinogueira/nfe-paulistana/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/amorguettinogueira/nfe-paulistana/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/amorguettinogueira/nfe-paulistana/releases/tag/v1.0.0
