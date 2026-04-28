@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NsDepCopConfig IsEnabled="true"
+                ChildCanDependOnParentImplicitly="true"
+                ParentCanDependOnChildImplicitly="false"
+                MaxIssueCount="0"
+                AutoLowerMaxIssueCount="false">
+
+	<!-- ─── .NET framework namespaces: always accessible ─────────────── -->
+	<Allowed From="*" To="System" />
+	<Allowed From="*" To="System.*" />
+	<Allowed From="*" To="Microsoft.*" />
+
+	<!-- ─── Shared kernel: accessible from any namespace ──────────────── -->
+	<Allowed From="*" To="Nfe.Paulistana.Abstractions" />
+	<Allowed From="*" To="Nfe.Paulistana.Constants" />
+	<Allowed From="*" To="Nfe.Paulistana.Exceptions" />
+	<Allowed From="*" To="Nfe.Paulistana.Models" />
+	<Allowed From="*" To="Nfe.Paulistana.Models.*" />
+	<Allowed From="*" To="Nfe.Paulistana.Options" />
+
+	<!-- ─── Shared infrastructure: accessible to all implementation code ── -->
+	<Allowed From="Nfe.Paulistana.*" To="Nfe.Paulistana.Infrastructure" />
+	<Allowed From="Nfe.Paulistana.*" To="Nfe.Paulistana.Infrastructure.*" />
+	<Allowed From="Nfe.Paulistana.*" To="Nfe.Paulistana.Xml" />
+	<Allowed From="Nfe.Paulistana.*" To="Nfe.Paulistana.Diagnostics" />
+	<Allowed From="Nfe.Paulistana.*" To="Nfe.Paulistana.Extensions" />
+
+	<!-- ─── V1 internal cross-references ──────────────────────────────── -->
+	<Allowed From="Nfe.Paulistana.V1.*" To="Nfe.Paulistana.V1.*" />
+
+	<!-- ─── V2 internal cross-references ──────────────────────────────── -->
+	<Allowed From="Nfe.Paulistana.V2.*" To="Nfe.Paulistana.V2.*" />
+
+	<!-- ─── Composition root: Extensions may reference anything ──────── -->
+	<Allowed From="Nfe.Paulistana.Extensions" To="*" />
+
+	<!-- ═══ DISALLOWED — Disallowed always overrides Allowed ═══════════ -->
+
+	<!-- No cross-version contamination -->
+	<Disallowed From="Nfe.Paulistana.V1.*" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.V2.*" To="Nfe.Paulistana.V1.*" />
+
+	<!-- Shared infrastructure layers must not know about versioned code -->
+	<Disallowed From="Nfe.Paulistana.Infrastructure" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Infrastructure" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.Xml" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Xml" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.Diagnostics" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Diagnostics" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.Constants" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Constants" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.Exceptions" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Exceptions" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.Models" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Models" To="Nfe.Paulistana.V2.*" />
+	<Disallowed From="Nfe.Paulistana.Options" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Options" To="Nfe.Paulistana.V2.*" />
+
+	<!-- V1 model layer must not depend on V1 implementation layers -->
+	<Disallowed From="Nfe.Paulistana.V1.Models.*" To="Nfe.Paulistana.V1.Services" />
+	<Disallowed From="Nfe.Paulistana.V1.Models.*" To="Nfe.Paulistana.V1.Builders" />
+	<Disallowed From="Nfe.Paulistana.V1.Models.*" To="Nfe.Paulistana.V1.Infrastructure" />
+	<Disallowed From="Nfe.Paulistana.V1.Models.*" To="Nfe.Paulistana.V1.Infrastructure.*" />
+
+	<!-- V2 model layer must not depend on V2 implementation layers -->
+	<Disallowed From="Nfe.Paulistana.V2.Models.*" To="Nfe.Paulistana.V2.Services" />
+	<Disallowed From="Nfe.Paulistana.V2.Models.*" To="Nfe.Paulistana.V2.Builders" />
+	<Disallowed From="Nfe.Paulistana.V2.Models.*" To="Nfe.Paulistana.V2.Infrastructure" />
+	<Disallowed From="Nfe.Paulistana.V2.Models.*" To="Nfe.Paulistana.V2.Infrastructure.*" />
+
+	<!-- Shared model layer must not depend on infrastructure or versioned code -->
+	<!-- Note: Models.DataTypes legitimately depends on Extensions (formatting utilities). -->
+	<!-- Note: V1/V2.Models.Operations legitimately depends on Xml (XSD validation). -->
+	<Disallowed From="Nfe.Paulistana.Models.*" To="Nfe.Paulistana.Infrastructure" />
+	<Disallowed From="Nfe.Paulistana.Models.*" To="Nfe.Paulistana.Infrastructure.*" />
+	<Disallowed From="Nfe.Paulistana.Models.*" To="Nfe.Paulistana.Xml" />
+	<Disallowed From="Nfe.Paulistana.Models.*" To="Nfe.Paulistana.Diagnostics" />
+	<Disallowed From="Nfe.Paulistana.Models.*" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Models.*" To="Nfe.Paulistana.V2.*" />
+
+	<!-- Abstractions must remain pure interfaces with no concrete dependencies -->
+	<Disallowed From="Nfe.Paulistana.Abstractions" To="Nfe.Paulistana.Infrastructure" />
+	<Disallowed From="Nfe.Paulistana.Abstractions" To="Nfe.Paulistana.Infrastructure.*" />
+	<Disallowed From="Nfe.Paulistana.Abstractions" To="Nfe.Paulistana.Diagnostics" />
+	<Disallowed From="Nfe.Paulistana.Abstractions" To="Nfe.Paulistana.Xml" />
+	<Disallowed From="Nfe.Paulistana.Abstractions" To="Nfe.Paulistana.V1.*" />
+	<Disallowed From="Nfe.Paulistana.Abstractions" To="Nfe.Paulistana.V2.*" />
+</NsDepCopConfig>

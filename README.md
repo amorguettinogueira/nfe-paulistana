@@ -81,9 +81,12 @@ options.Certificado.PointerHandle = handleNativo;
 
 > **Já tem um `X509Certificate2`?** Use `cert.Export(X509ContentType.Pfx, senha)` para obter os bytes e configure via `RawData`, ou passe `cert.Handle` diretamente em `PointerHandle`.
 
-Por padrão a chave privada é carregada com `EphemeralKeySet` — permanece apenas na memória, sem escrita no disco ou no key store do sistema operacional. Para persistir a chave (opt-out do padrão efêmero):
+Por padrão o carregamento usa `DefaultKeySet`, delegando ao sistema operacional a decisão de armazenamento — compatível com todas as plataformas. Sobrescreva quando necessário:
 
 ```csharp
+// Mantém a chave privada apenas na memória — requer suporte a chaves efêmeras na plataforma (Linux, Windows 10+/Server 2016+)
+options.Certificado.KeyStorageFlags = X509KeyStorageFlags.EphemeralKeySet;
+
 // Persiste no key store da máquina — necessário apenas em cenários que exigem acesso entre processos
 options.Certificado.KeyStorageFlags = X509KeyStorageFlags.MachineKeySet;
 ```
@@ -439,7 +442,7 @@ Lotes de NFS-e com muitos itens e assinaturas embutidas podem gerar payloads SOA
 Contribuições são bem-vindas. Antes de abrir um PR, leia:
 
 - [`docs/adr/`](docs/adr/) — decisões arquiteturais registradas; entenda o *porquê* das escolhas antes de propor alterações
-- [`tests/README.md`](tests/README.md) — convenções de teste e como executar a suíte
+- [`tests/README.md`](tests/README.md) — convenções de teste, estrutura da suíte em três níveis (Tier 1 unitários, Tier 2 integração estrutural, Tier 3 integração real) e como executar cada nível
 - Toda contribuição deve incluir testes correspondentes seguindo o padrão `Método_Estado_ResultadoEsperado`
 
 > ⚠️ Este repositório exige assinatura de CLA antes de aceitar contribuições externas.

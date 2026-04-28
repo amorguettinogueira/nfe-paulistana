@@ -66,9 +66,10 @@ public sealed class Certificado
 
     /// <summary>
     /// Opções de armazenamento de chave aplicadas ao carregar o certificado via <see cref="FilePath"/> ou <see cref="RawData"/>.
-    /// O padrão é <see cref="X509KeyStorageFlags.EphemeralKeySet"/>, que mantém a chave privada apenas na memória sem
-    /// persistência em disco — o comportamento mais seguro para a maioria dos cenários de servidor.
-    /// Atribua explicitamente para sobrescrever, por exemplo <c>X509KeyStorageFlags.MachineKeySet</c>.
+    /// O padrão é <see cref="X509KeyStorageFlags.DefaultKeySet"/>, que delega ao sistema operacional a decisão de
+    /// armazenamento — comportamento compatível com todas as plataformas suportadas.
+    /// Atribua explicitamente para sobrescrever, por exemplo <c>X509KeyStorageFlags.EphemeralKeySet</c> para manter
+    /// a chave privada apenas na memória (requer suporte a chaves efêmeras na plataforma).
     /// </summary>
     public X509KeyStorageFlags? KeyStorageFlags { get; set; }
 
@@ -79,7 +80,7 @@ public sealed class Certificado
     /// <exception cref="InvalidOperationException">Lançada quando nenhuma fonte de certificado válida está configurada.</exception>
     public X509Certificate2 Build()
     {
-        X509KeyStorageFlags flags = KeyStorageFlags ?? X509KeyStorageFlags.EphemeralKeySet;
+        X509KeyStorageFlags flags = KeyStorageFlags ?? X509KeyStorageFlags.DefaultKeySet;
 
         if (!string.IsNullOrEmpty(FilePath))
         {

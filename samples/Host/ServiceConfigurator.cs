@@ -63,10 +63,10 @@ internal static class ServiceConfigurator
             }
         });
 
-        services.AddNfePaulistanaAll(options => options.Certificado = new Certificado
+        _ = services.AddNfePaulistanaAll(options => options.Certificado = new Certificado
         {
             FilePath = settings.Certificado.CaminhoArquivo,
-            Password = settings.Certificado.Senha
+            Password = settings.Certificado.Senha,
         },
         configureClient: b => b
             .AddNfePaulistanaDiagnostics(sp =>
