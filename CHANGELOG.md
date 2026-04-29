@@ -5,6 +5,12 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2026-04-29
+
+### Observação
+- Lançamento de validação para teste do fluxo de release (GitHub Release Skill).
+  Nenhuma mudança funcional no código.
+
 ## [2.0.1] - 2026-04-28
 
 ### Corrigido
@@ -46,6 +52,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.
   consulta de NF-e pela plataforma Nota do Milhão da Prefeitura de São Paulo, com suporte
   aos webservices SOAP V1 e V2.
 
+[2.0.2]: https://github.com/amorguettinogueira/nfe-paulistana/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/amorguettinogueira/nfe-paulistana/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/amorguettinogueira/nfe-paulistana/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/amorguettinogueira/nfe-paulistana/releases/tag/v1.0.0
